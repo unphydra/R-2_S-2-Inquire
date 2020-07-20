@@ -1,0 +1,23 @@
+{
+  "name": "inquire",
+  "version": "1.0.0",
+  "description": "it's a platform for your programming queries",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "nyc mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unphydra/R-2_S-2-Inquire.git"
+  },
+  "author": "Ragini, Rivu, Santhosh, Satheesh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/unphydra/R-2_S-2-Inquire/issues"
+  },
+  "homepage": "https://github.com/unphydra/R-2_S-2-Inquire#readme"
+}
