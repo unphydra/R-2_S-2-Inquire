@@ -1,12 +1,5 @@
-const { log } = console;
-const express = require('express');
-
+const { stdout } = require('process');
+const { app } = require('./src/app');
 const PORT = 8000;
-const app = express();
 
-app.use((req, res, next) => {
-  log(`${req.method} ${req.url}`);
-  next();
-});
-
-app.listen(PORT, () => log(`listening on port ${PORT}...`));
+app.listen(PORT, () => stdout.write(`listening on port ${PORT}...\n`));
