@@ -19,5 +19,21 @@
   "bugs": {
     "url": "https://github.com/unphydra/R-2_S-2-Inquire/issues"
   },
-  "homepage": "https://github.com/unphydra/R-2_S-2-Inquire#readme"
+  "homepage": "https://github.com/unphydra/R-2_S-2-Inquire#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^7.5.0",
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0",
+    "sinon": "^9.0.2",
+    "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "cookie-session": "^1.4.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.4",
+    "sqlite3": "^5.0.0",
+    "superagent": "^5.3.1"
+  }
 }
