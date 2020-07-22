@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - 12.16.1
+notifications:
+  slack:
+    secure: tCiL6DPlO5kvKpDF/k6dFWkg9DW8JwB8Lr+6qafgsNTVEH86Ffxvxa31DcPSdgtD61G5fmj93dmwTvVISWJ4CReLEQ77E8FQ5dESo1LU5gZWxjEYatkeacN3PIjAiAFvv1KB0ecwzZowXeVP/VC5Sc552w6hxdKBpXDRrDDHgwooSIw4Tn9GFR2uAMMKL8ZMgjGcu2EhpcQdl6aeSBkw/Z5/hEwnn0/MjuEIZMvYKOPBeW24f72fblU+F/0vBtmF0PsIamXwa+lJpQJsKUFibiHww5VvJ4LoC4rpKy+Qe3TzvkrHy4coGJXu4DC75AXeusxPSXqBZereTXD0+MPa8F1Omm6S4Yp/+phhzWJVq8xPK6OaL9EkwZRY3MkoS0keVHH5liGpiQM9M+3AlgPMfFsz38t96FJ+lvys3rvt7vEWpyQA+VmKzZ2BWyCPeLva3U91HluCnQXkqdlRl8/L0e7vnlO7YUosqL5e2xl8JltBco9JQ/lPYZB8Th0QidHiveNdbR2h2iAs4lhLfb/ObzKIgHMkcAfELrhBk3f7w356sqzV+sZ1GA/hND4S2ze/GYLp8zaN4QpQNNgLI2dfzxoEQJQcafIi9uf2chDr3URUE8GJ4rN/kJRkipRh2JrcBdtftHF0xtYTlz1sz7YgxCirQc5of2kxSzCjVa8IInA=
+    on_success: always
+    on_failure: always
+    template:
+      - 'Repo `%{repository_slug}` *%{result}* build (<%{build_url}|#%{build_number}>) for commit (<%{compare_url}|%{commit}>) on branch `%{branch}`  by %{author}.'
+      - 'Execution time: *%{duration}*'
+      - 'Message: %{message}'
