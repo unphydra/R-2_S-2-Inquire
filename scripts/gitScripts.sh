@@ -9,13 +9,6 @@ if [ \$? != 0 ]; then
   exit 1;
 fi;
 
-grep -w "//" *.js src/*.js test/*.js
-
-if [ \$? == 0 ]; then
-  echo "\nRemove the commented lines ...\n"
-  exit 1
-fi;
-
 npm run lint
 
 if [ \$? != 0 ]; then 
@@ -33,13 +26,6 @@ npm test
 
 if [ \$? != 0 ];
   then echo "\n Tests are failing ...\n";
-  exit 1;
-fi;
-
-grep -w "//" src/*.js test/*.js
-
-if [ \$? == 0];
-  then echo "\nRemove the commented lines ...\n"
   exit 1;
 fi;
 

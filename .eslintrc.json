@@ -15,6 +15,9 @@
     "ecmaVersion": 2018
   },
   "rules": {
+    "no-inline-comments":"warn",
+    "multiline-comment-style":"warn",
+    "line-comment-position":["warn",{ "position": "beside" }],
     "indent": ["error", 2],
     "quotes": ["error", "single"],
     "linebreak-style": ["error", "unix"],
