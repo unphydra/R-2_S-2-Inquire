@@ -1,10 +1,10 @@
 language: node_js
 node_js:
-  - 12.16.1
+- 12.16.1
 notifications:
   slack:
-    secure: tCiL6DPlO5kvKpDF/k6dFWkg9DW8JwB8Lr+6qafgsNTVEH86Ffxvxa31DcPSdgtD61G5fmj93dmwTvVISWJ4CReLEQ77E8FQ5dESo1LU5gZWxjEYatkeacN3PIjAiAFvv1KB0ecwzZowXeVP/VC5Sc552w6hxdKBpXDRrDDHgwooSIw4Tn9GFR2uAMMKL8ZMgjGcu2EhpcQdl6aeSBkw/Z5/hEwnn0/MjuEIZMvYKOPBeW24f72fblU+F/0vBtmF0PsIamXwa+lJpQJsKUFibiHww5VvJ4LoC4rpKy+Qe3TzvkrHy4coGJXu4DC75AXeusxPSXqBZereTXD0+MPa8F1Omm6S4Yp/+phhzWJVq8xPK6OaL9EkwZRY3MkoS0keVHH5liGpiQM9M+3AlgPMfFsz38t96FJ+lvys3rvt7vEWpyQA+VmKzZ2BWyCPeLva3U91HluCnQXkqdlRl8/L0e7vnlO7YUosqL5e2xl8JltBco9JQ/lPYZB8Th0QidHiveNdbR2h2iAs4lhLfb/ObzKIgHMkcAfELrhBk3f7w356sqzV+sZ1GA/hND4S2ze/GYLp8zaN4QpQNNgLI2dfzxoEQJQcafIi9uf2chDr3URUE8GJ4rN/kJRkipRh2JrcBdtftHF0xtYTlz1sz7YgxCirQc5of2kxSzCjVa8IInA=
-    on_success: always
+    secure: EPcmYwSfJ5Jqi+A6fzy7gOuHTRzBHtgouO0BkCTCjV0y1gnEV0DqxUIoYTCS78gTOm6241m5VdmFm6RwaWaS8ROq72IFXjXpm6g922qDIjiOLQjClNSGbNWW4TQhWHjGSozDR08GLDXKhLV6f7ak+UMitdVcP6Uc9rlyIpBdE/hVVXMURIMESHYbzePn5UyIYMAsgpcPKhGNvvyaFkOrHHuU4RHbBeqhRyp/CmMnDPqtbw++i3X5S7aL6F6flVuVy+7KqVb8oAnqw0d5fBQFTK3RZAsrp7jP9J1JLXTluKOt5QMSOgAx/GD4zbBG5YwtNyjZhRLpI0zPRiDDnXT13BGTQk2a2Pp7kO4FHh8Ul8ASDUwtuvXOUdUUUZXajAa82T1odT/JvZjun8syPpwmJudAQujWMrelTGc4nXzmALFyRQiEI+lgPfY9A3Ww9xA2U7sEbF/INZqZmuNPqQwJlzUe+Ag4Qhkj7PVgQKTzJ3PXUA5/uLQekJ6ePC0cg0YAqyrdpLzOsd7flIWi/3XyqOj8PVg6tiZdu71BSG4Qg9joLAAd4pqitnRsBV1eLPqk49ohm0onIFAa7iRukz6O2benBWiiy2+yjpKhNxMN3vvqjQ/kYeFtWO+nfpOqHZzTCztUfGIvQz4alkIiUHbVpyXJ6RyMrssVs23+8biNQwg=
+    on_success: always 
     on_failure: always
     template:
       - 'Repo `%{repository_slug}` *%{result}* build (<%{build_url}|#%{build_number}>) for commit (<%{compare_url}|%{commit}>) on branch `%{branch}`  by %{author}.'
