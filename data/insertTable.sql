@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS questions
   title VARCHAR(30) NOT NULL,
   body VARCHAR(1000) NOT NULL,
   votes NUMERIC(5) DEFAULT 0,
-  recievedAt Date DEFAULT (datetime('now','localtime')),
+  receivedAt Date DEFAULT (datetime('now','localtime')),
   modifiedAt Date DEFAULT (datetime('now','localtime')),
   FOREIGN KEY (ownerId)
   REFERENCES users(id)
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS answers
   questionId VARCHAR(30) NOT NULL,
   ownerId VARCHAR(30) NOT NULL,
   answer VARCHAR(1000) NOT NULL,
-  recievedAt Date DEFAULT (datetime('now','localtime')),
+  receivedAt Date DEFAULT (datetime('now','localtime')),
   modifiedAt Date DEFAULT (datetime('now','localtime')),
   is_accepted BOOLEAN DEFAULT FALSE,
   votes NUMERIC(5) DEFAULT 0,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS comments
   responseId VARCHAR(30) NOT NULL,
   ownerId VARCHAR(30) NOT NULL,
   comment VARCHAR(400) NOT NULL,
-  recievedAt Date DEFAULT (datetime('now','localtime'))
+  receivedAt DATE NOT NULL DEFAULT (datetime('now','localtime'))
 );
 
 DROP TABLE IF EXISTS voteLog;
@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS voteLog
 (
   ownerId VARCHAR(30),
   responseId VARCHAR(30),
-  vote BOOLEAN
+  vote BOOLEAN,
+  PRIMARY KEY (ownerId,responseId)
 );
 
 DROP TABLE IF EXISTS tags;
