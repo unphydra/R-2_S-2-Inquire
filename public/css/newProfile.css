@@ -1,0 +1,12 @@
+#container {
+  margin-top: 3%;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  width: 30%;
+}

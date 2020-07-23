@@ -11,7 +11,7 @@
     "start": "node -r dotenv/config server.js  ",
     "lint": "eslint src/*.js test/*.js public/js/*.js *.js",
     "setup": "chmod +x scripts/runScripts.sh; ./scripts/runScripts.sh",
-    "createDb":"run(){ cat data/insertTable.sql data/insertData.sql | sqlite3 data/$1; }; run"
+    "createDb": "run(){ cat data/insertTable.sql data/insertData.sql | sqlite3 data/$1; }; run"
   },
   "repository": {
     "type": "git",

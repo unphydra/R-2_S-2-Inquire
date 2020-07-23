@@ -31,7 +31,8 @@ const handleLogin = async function (req, res) {
   const code = req.query.code;
   const token = await getToken(code, ClientSecret, ClientID);
   const userInfo = await getUserInfo(token);
-  res.send(userInfo);
+  req.session = { id: userInfo.id, avatar: userInfo['avatar_url'] };
+  res.redirect('/html/newProfile.html');
 };
 
 const serveHomepage = (req, res) => {
@@ -52,4 +53,17 @@ const serveQuestions = (req, res) => {
   res.end();
 };
 
-module.exports = { reqLogin, handleLogin, serveHomepage, serveQuestions };
+const registerNewUser = async function (req, res) {
+  const { dataStore } = req.app.locals;
+  const { id, avatar } = req.session;
+  await dataStore.addNewUser({ id, avatar, ...req.body });
+  res.redirect('/');
+};
+
+module.exports = {
+  reqLogin,
+  handleLogin,
+  serveHomepage,
+  serveQuestions,
+  registerNewUser,
+};

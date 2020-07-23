@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inquire</title>
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/newProfile.css">
+  </head>
+
+  <body>
+    <div id="root">
+      <div id="titlebar">
+        <div class="logo">Inquire</div>
+        <div>
+          <button>Login</button>
+          <button>Signup</button>
+        </div>
+      </div>
+
+      <div id="container">
+        <form action="/newProfile" method="POST">
+          <label>NAME : </label>
+          <input type="text" name="name">
+          <label>USERNAME : </label>
+          <input type="text" name="username">
+          <label>EMAIL : </label>
+          <input type="text" name="email">
+          <label>COMPANY : </label>
+          <input type="text" name="company">
+          <label>BIO : </label>
+          <input type="text" name="bio">
+          <button>SUBMIT</button>
+          <a href="/">CANCEL</a>
+        </form>
+      </div>
+    </div>
+  </body>
+
+</html>
