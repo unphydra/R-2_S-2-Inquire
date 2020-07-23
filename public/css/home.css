@@ -5,16 +5,19 @@ body {
 #titlebar {
   display: flex;
   flex-direction: row;
-  padding: 10px;
+  padding: 0px 10px;
   justify-content: space-between;
-  border-bottom: 1px black solid;
+  border-bottom: 1px #c5c5c5 solid;
 }
 .logo {
   font-size: xx-large;
-  padding-left: 10px;
+  padding: 10px 0px 0px 10px;
 }
 button {
-  margin: 10px;
+  padding: 8px;
+  margin: 1vw;
+  height: 4.5vh;
+  font-size: medium;
 }
 .container {
   display: flex;
@@ -23,12 +26,48 @@ button {
 #menubar {
   width: 20vw;
   height: 90vh;
-  border-right: 1px black solid;
+  border-right: 1px #c5c5c5 solid;
   display: flex;
   flex-direction: column;
 }
 .menu-item {
   font-size: larger;
   padding: 10px 20px;
-  border-bottom: solid black 1px;
+  border-bottom: solid #c5c5c5 1px;
+}
+.highlight {
+  border-right: solid burlywood 7px;
+}
+
+.question {
+  width: 78vw;
+  padding: 15px 10px;
+  border-bottom: solid #c5c5c5 1px;
+  display: flex;
+  flex-direction: row;
+}
+.count {
+  width: 5vw;
+  height: 8vh;
+  margin-left: 1vw;
+  text-align: center;
+  line-height: 2em;
+  font-size: xx-large;
+  border: solid #c5c5c5 1px;
+}
+.title {
+  width: 60vw;
+  margin: 0 0 1vh 2vw;
+  font-size: 23px;
+}
+.tags {
+  display: flex;
+  flex-direction: row;
+  margin-left: 2vw;
+}
+.tags > div {
+  border: solid #c5c5c5 1px;
+  margin-right: 1vw;
+  font-size: large;
+  padding: 2px 4px;
 }
