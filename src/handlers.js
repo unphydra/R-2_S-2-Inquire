@@ -1,4 +1,5 @@
 const request = require('superagent');
+const path = require('path');
 const {env} = process;
 const { ClientID, ClientSecret} = env;
 
@@ -33,4 +34,7 @@ const handleLogin = async function(req, res) {
   res.send(userInfo);
 };
 
-module.exports = { reqLogin, handleLogin};
+const serveHomepage = (req, res) => {
+  res.sendFile(path.resolve(`${__dirname}/../public/html/home.html`));
+};
+module.exports = { reqLogin, handleLogin, serveHomepage };

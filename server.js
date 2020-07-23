@@ -1,5 +1,5 @@
 const { stdout } = require('process');
-const { app } = require('./src/app');
+const { app } = require('./src/router');
 const {env} = process;
 const PORT = env.PORT;
 
