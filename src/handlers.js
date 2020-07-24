@@ -27,12 +27,16 @@ const getUserInfo = function (token) {
 };
 
 const handleLogin = async function (req, res) {
-  const { ClientID, ClientSecret } = req.app.locals;
+  const { ClientID, ClientSecret, dataStore } = req.app.locals;
   const code = req.query.code;
   const token = await getToken(code, ClientSecret, ClientID);
   const userInfo = await getUserInfo(token);
   req.session = { id: userInfo.id, avatar: userInfo['avatar_url'] };
-  res.redirect('/html/newProfile.html');
+  const isRegisteredUser = await dataStore.findUser(userInfo.id);
+  if (isRegisteredUser) {
+    return res.redirect('/');
+  }
+  res.sendFile(path.resolve(`${__dirname}/../private/newProfile.html`));
 };
 
 const serveHomepage = (req, res) => {
