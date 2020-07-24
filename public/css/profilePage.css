@@ -1,0 +1,47 @@
+#sideContainer {
+  width: 78vw;
+  padding: 15px 10px;
+  border-bottom: solid #c5c5c5 1px;
+}
+
+.topBox {
+  display: flex;
+  margin: 5vh 3vw;
+}
+
+.avatar {
+  width: 18vw;
+  height: 30vh;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.avatar > img {
+  width: 18vw;
+  height: 30vh;
+}
+
+.details {
+  margin-left: 3vw;
+}
+
+.username {
+  font-size: 30px;
+  font-weight: 500;
+  margin-top: 5vh;
+  margin-bottom: 3vh;
+}
+
+.name, .sideInfo {
+  margin: 1vh 0;
+}
+
+.bio {
+  margin: 1vh 3vw;
+  width: 40vw;
+  word-break: break-word;
+}
+
+#sideContainer > h3 {
+  margin-left: 3vw;
+}

@@ -13,6 +13,8 @@ const {
   serveHomepage,
   serveQuestions,
   registerNewUser,
+  serveProfilePage,
+  serveProfileDetails
 } = require('./handlers');
 
 const { env } = process;
@@ -32,5 +34,7 @@ app.get('/user/auth', fetchUserDetails, handleLogin);
 app.get('/home', serveHomepage);
 app.get('/questions', serveQuestions);
 app.post('/newProfile', checkOptions('name', 'username'), registerNewUser);
+app.get('/viewProfile', serveProfilePage);
+app.get('/getProfile', serveProfileDetails);
 
 module.exports = { app };

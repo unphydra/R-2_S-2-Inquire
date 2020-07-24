@@ -55,7 +55,11 @@ const fetchUserDetails = async function (req, res, next) {
 const handleLogin = async function (req, res) {
   const { userInfo, app } = req;
   const { dataStore } = app.locals;
-  req.session = { id: userInfo.id, avatar: userInfo['avatar_url'] };
+  req.session = { 
+    id: userInfo.id,
+    avatar: userInfo['avatar_url'],
+    time: new Date().toJSON()
+  };
   const isRegisteredUser = await dataStore.findUser(userInfo.id);
   if (isRegisteredUser) {
     return res.redirect('/');
@@ -86,6 +90,27 @@ const registerNewUser = async function (req, res) {
   res.redirect('/');
 };
 
+const serveProfilePage = function(req, res) {
+  const {id} = req.query;
+  if(!id) {
+    return res.status('400').send('bad request');
+  }
+  res.sendFile(path.resolve(`${__dirname}/../private/profilePage.html`));
+};
+
+const serveProfileDetails = async function(req, res) {
+  const {id} = req.query;
+  if(!id) {
+    return res.status('400').send('bad request');
+  }
+  const {dataStore} = req.app.locals;
+  const details = await dataStore.findUser(id);
+  if(!details) {
+    return res.status('404').send('not found');
+  }
+  res.json(details);
+};
+
 module.exports = {
   checkOptions,
   reqLogin,
@@ -94,4 +119,6 @@ module.exports = {
   serveHomepage,
   serveQuestions,
   registerNewUser,
+  serveProfilePage,
+  serveProfileDetails
 };

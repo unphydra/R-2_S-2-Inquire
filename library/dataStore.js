@@ -19,7 +19,7 @@ class DataStore {
   }
 
   findUser(id) {
-    const query = `Select id from users where id='u${id}';`;
+    const query = `Select * from users where id='u${id}';`;
     return new Promise((resolve, reject) => {
       this.db.get(query, (err, data) => {
         if (err) {
