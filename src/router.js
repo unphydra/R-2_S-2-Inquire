@@ -6,6 +6,7 @@ const DataStore = require('../library/dataStore');
 const app = express();
 
 const {
+  checkOptions,
   reqLogin,
   handleLogin,
   serveHomepage,
@@ -29,6 +30,6 @@ app.get('/login', reqLogin);
 app.get('/user/auth', handleLogin);
 app.get('/home', serveHomepage);
 app.get('/questions', serveQuestions);
-app.post('/newProfile', registerNewUser);
+app.post('/newProfile', checkOptions('name', 'username'), registerNewUser);
 
 module.exports = { app };

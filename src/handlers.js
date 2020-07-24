@@ -1,6 +1,16 @@
 const request = require('superagent');
 const path = require('path');
 
+const checkOptions = function(...args) {
+  return function(req, res, next) {
+    const hasOptions = args.every(arg => req.body[arg]);
+    if (!hasOptions) {
+      return res.status('400').send('bad request');
+    }
+    next();
+  };
+};
+
 const reqLogin = function (req, res) {
   const { ClientID } = req.app.locals;
   const redirectUri = 'http://localhost:8000/user/auth';
@@ -29,8 +39,10 @@ const getUserInfo = function (token) {
 const handleLogin = async function (req, res) {
   const { ClientID, ClientSecret, dataStore } = req.app.locals;
   const code = req.query.code;
-  const token = await getToken(code, ClientSecret, ClientID);
-  const userInfo = await getUserInfo(token);
+  const token = await getToken(code, ClientSecret, ClientID)
+    .catch(err => err && res.status('400').send('bad request'));
+  const userInfo = await getUserInfo(token)
+    .catch(err => err && res.status('400').send('bad request'));
   req.session = { id: userInfo.id, avatar: userInfo['avatar_url'] };
   const isRegisteredUser = await dataStore.findUser(userInfo.id);
   if (isRegisteredUser) {
@@ -58,6 +70,7 @@ const registerNewUser = async function (req, res) {
 };
 
 module.exports = {
+  checkOptions,
   reqLogin,
   handleLogin,
   serveHomepage,
