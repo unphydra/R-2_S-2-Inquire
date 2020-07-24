@@ -46,15 +46,21 @@ button {
   display: flex;
   flex-direction: row;
 }
-.count {
+.countName {
   width: 5vw;
   height: 8vh;
   margin-left: 1vw;
   text-align: center;
   line-height: 2em;
-  font-size: xx-large;
   border: solid #c5c5c5 1px;
+  font-weight: 100;
 }
+
+.count {
+  font-size: x-large;
+  font-weight: 1000;
+}
+
 .title {
   width: 60vw;
   margin: 0 0 1vh 2vw;

@@ -6,8 +6,12 @@ const renderQuestions = (questions) => {
     const { votes, answers, title, tags } = question;
     const tagshtml = tags.map((tag) => `<div>${tag}</div>`);
     html += `<div class="question">
-            <div class="count">${answers}</div>
-            <div class="count">${votes}</div>
+            <div class="countName"> 
+              <span class="count"> ${answers} </span> <br /> answers
+            </div>
+            <div class="countName"> 
+              <span class="count"> ${votes} </span> <br /> votes
+            </div>
             <div>
               <div class="title">${title}</div>
               <div class="tags">${tagshtml.join('')}</div>
