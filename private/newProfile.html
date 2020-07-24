@@ -14,21 +14,22 @@
       <div id="titlebar">
         <div class="logo">Inquire</div>
       </div>
-
       <div id="container">
         <form action="/newProfile" method="POST">
           <label>NAME : </label>
-          <input type="text" name="name">
+          <input type="text" name="name" required>
           <label>USERNAME : </label>
-          <input type="text" name="username">
+          <input type="text" name="username" required>
           <label>EMAIL : </label>
           <input type="text" name="email">
           <label>COMPANY : </label>
           <input type="text" name="company">
           <label>BIO : </label>
-          <input type="text" name="bio">
-          <button>SUBMIT</button>
-          <a href="/">CANCEL</a>
+          <textarea name="bio" id="bio"rows="10"></textarea>
+          <div id='formFooter'>
+            <button>SUBMIT</button>
+            <a href="/" id="cancelButton">CANCEL</a>
+          </div>
         </form>
       </div>
     </div>
