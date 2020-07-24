@@ -32,6 +32,14 @@ describe('DataStore', function () {
       ];
       assert.deepStrictEqual(actual, expected);
     });
+    it('should throw error when the db is close', async () => {
+      const message = 'SQLITE_MISUSE: Database handle is closed';
+      dataStore.db.close();
+      const actual = await dataStore
+        .getAllQuestions()
+        .catch((err) => assert.deepStrictEqual(err.message, message));
+      assert.deepStrictEqual(actual, undefined);
+    });
   });
   
   context('AddNewUser', function(){
@@ -79,46 +87,4 @@ describe('DataStore', function () {
     });
   });
 
-  context('GetAnswerAndVoteCount', function(){
-    it('should give answer and vote count for all questions', async() => {
-      const actual = await dataStore.getAnswerAndVoteCount();
-      const expected = [
-        { id: 'q00001', title: 'what is sqlite?', votes: -1, answers: 1 },
-        {
-          id: 'q00002',
-          title: 'what is the most powerful thing in database?',
-          votes: 0,
-          answers: 1
-        }
-      ];
-      assert.deepStrictEqual(actual, expected);
-    });
-
-    it('should throw error when the db is close', async() => {
-      const message = 'SQLITE_MISUSE: Database handle is closed';
-      dataStore.db.close();
-      const actual = await dataStore.getAnswerAndVoteCount()
-        .catch(err => assert.deepStrictEqual(err.message, message));
-      assert.deepStrictEqual(actual, undefined);
-    });
-  });
-
-  context('GetTags', function(){
-    it('should give answer and vote count for all questions', async() => {
-      const actual = await dataStore.getTags();
-      const expected = [
-        { questionId: 'q00001', tags: 'java,javaScript' },
-        { questionId: 'q00002', tags: 'node' }
-      ];
-      assert.deepStrictEqual(actual, expected);
-    });
-
-    it('should throw error when the db is close', async() => {
-      const message = 'SQLITE_MISUSE: Database handle is closed';
-      dataStore.db.close();
-      const actual = await dataStore.getTags()
-        .catch(err => assert.deepStrictEqual(err.message, message));
-      assert.deepStrictEqual(actual, undefined);
-    });
-  });
 });
