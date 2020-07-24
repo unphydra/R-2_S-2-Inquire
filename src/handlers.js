@@ -39,7 +39,8 @@ const getUserInfo = function (token) {
 const fetchUserDetails = async function (req, res, next) {
   const { ClientID, ClientSecret } = req.app.locals;
   const code = req.query.code;
-  const token = await getToken(code, ClientSecret, ClientID).catch((err) => err);
+  const token = await getToken(code, ClientSecret, ClientID)
+    .catch((err) => err);
   if (!token) {
     return res.status('400').send('bad request');
   }
