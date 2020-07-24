@@ -12,11 +12,18 @@ body {
 .logo {
   font-size: 30px;
 }
-button {
+.unauthBtn {
   padding: 8px;
   margin-left: 1vw;
   height: 4.5vh;
   font-size: medium;
+}
+.avatar {
+  height: 4vh;
+  border-radius: 50%;
+}
+.hide {
+  display: none;
 }
 .container {
   display: flex;

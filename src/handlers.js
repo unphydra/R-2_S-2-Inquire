@@ -1,9 +1,9 @@
 const request = require('superagent');
 const path = require('path');
 
-const checkOptions = function(...args) {
-  return function(req, res, next) {
-    const hasOptions = args.every(arg => req.body[arg]);
+const checkOptions = function (...args) {
+  return function (req, res, next) {
+    const hasOptions = args.every((arg) => req.body[arg]);
     if (!hasOptions) {
       return res.status('400').send('bad request');
     }
@@ -36,16 +36,14 @@ const getUserInfo = function (token) {
     .then((res) => res.body);
 };
 
-const fetchUserDetails = async function(req, res, next) {
+const fetchUserDetails = async function (req, res, next) {
   const { ClientID, ClientSecret } = req.app.locals;
   const code = req.query.code;
-  const token = await getToken(code, ClientSecret, ClientID)
-    .catch(err => err);
-  if(!token) {
+  const token = await getToken(code, ClientSecret, ClientID).catch((err) => err);
+  if (!token) {
     return res.status('400').send('bad request');
   }
-  const userInfo = await getUserInfo(token)
-    .catch(err => err );
+  const userInfo = await getUserInfo(token).catch((err) => err);
   if (!userInfo) {
     return res.status('400').send('bad request');
   }
@@ -54,7 +52,7 @@ const fetchUserDetails = async function(req, res, next) {
 };
 
 const handleLogin = async function (req, res) {
-  const {userInfo, app} = req;
+  const { userInfo, app } = req;
   const { dataStore } = app.locals;
   req.session = { id: userInfo.id, avatar: userInfo['avatar_url'] };
   const isRegisteredUser = await dataStore.findUser(userInfo.id);
@@ -71,7 +69,12 @@ const serveHomepage = (req, res) => {
 const serveQuestions = async (req, res) => {
   const { dataStore } = req.app.locals;
   const questions = await dataStore.getAllQuestions();
-  res.json(questions);
+  if (req.session.id) {
+    const { id, avatar } = req.session;
+    res.json({ userId: id, avatar, questions });
+  } else {
+    res.json({ questions });
+  }
   res.end();
 };
 

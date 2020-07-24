@@ -1,4 +1,5 @@
-const getElementById = (id) => document.getElementById(id);
+const getElement = (selector) => document.querySelector(selector);
+const getAllElements = (selector) => document.querySelectorAll(selector);
 
 const renderQuestions = (questions) => {
   let html = '';
@@ -18,11 +19,24 @@ const renderQuestions = (questions) => {
             </div>
           </div>`;
   });
-  getElementById('questions').innerHTML = html;
+  getElement('#questions').innerHTML = html;
+};
+
+const renderHomepage = (res) => {
+  if (res.userId) {
+    getAllElements('.unauthBtn').forEach((btn) => btn.classList.add('hide'));
+    getAllElements('.menu-item').forEach((item) => {
+      item.classList.remove('hide');
+    });
+    const avatar = getElement('.avatar');
+    avatar.setAttribute('src', res.avatar);
+    avatar.classList.remove('hide');
+  }
+  renderQuestions(res.questions);
 };
 
 const getQuestions = () => {
-  sendRequest('/questions', renderQuestions);
+  sendRequest('/questions', renderHomepage);
 };
 
 window.onload = getQuestions;
