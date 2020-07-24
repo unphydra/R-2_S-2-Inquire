@@ -46,7 +46,7 @@ const serveHomepage = (req, res) => {
 const serveQuestions = async (req, res) => {
   const { dataStore } = req.app.locals;
   const questions = await dataStore.getAllQuestions();
-  res.write(JSON.stringify(questions));
+  res.json(questions);
   res.end();
 };
 

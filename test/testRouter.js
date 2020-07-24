@@ -13,4 +13,13 @@ describe('get', function () {
         .expect(/Your Questions/);
     });
   });
+  context('questions', function () {
+    it('should give the allquestion details ', function (done) {
+      request(app)
+        .get('/questions')
+        .expect(statusCodes.ok)
+        .expect('Content-Type', 'application/json; charset=utf-8', done)
+        .expect(/answers/);
+    });
+  });
 });
