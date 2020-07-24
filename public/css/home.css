@@ -53,13 +53,17 @@ body {
 .highlight {
   border-right: solid burlywood 7px;
 }
-
 .question {
   width: 78vw;
   padding: 15px 10px;
   border-bottom: solid #c5c5c5 1px;
   display: flex;
   flex-direction: row;
+}
+.content-space {
+  justify-content: space-between;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 .countName {
   width: 5vw;

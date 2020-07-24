@@ -19,12 +19,13 @@ const renderQuestions = (questions) => {
             </div>
           </div>`;
   });
-  getElement('#questions').innerHTML = html;
+  getElement('#questions').innerHTML += html;
 };
 
 const renderHomepage = (res) => {
   if (res.userId) {
     getAllElements('.unauthBtn').forEach((btn) => btn.classList.add('hide'));
+    getElement('#askbtn').classList.remove('hide');
     getAllElements('.menu-item').forEach((item) => {
       item.classList.remove('hide');
     });
