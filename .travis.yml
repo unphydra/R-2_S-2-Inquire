@@ -11,4 +11,4 @@ notifications:
       - 'Execution time: *%{duration}*'
       - 'Message: %{message}'
 before-script:
-  - npm run createDb test.db
+  - npm run createTestDb
