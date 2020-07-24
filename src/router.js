@@ -8,6 +8,7 @@ const app = express();
 const {
   checkOptions,
   reqLogin,
+  fetchUserDetails,
   handleLogin,
   serveHomepage,
   serveQuestions,
@@ -27,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public', { index: '/html/home.html' }));
 
 app.get('/login', reqLogin);
-app.get('/user/auth', handleLogin);
+app.get('/user/auth', fetchUserDetails, handleLogin);
 app.get('/home', serveHomepage);
 app.get('/questions', serveQuestions);
 app.post('/newProfile', checkOptions('name', 'username'), registerNewUser);

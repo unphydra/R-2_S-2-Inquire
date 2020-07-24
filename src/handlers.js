@@ -36,13 +36,26 @@ const getUserInfo = function (token) {
     .then((res) => res.body);
 };
 
-const handleLogin = async function (req, res) {
-  const { ClientID, ClientSecret, dataStore } = req.app.locals;
+const fetchUserDetails = async function(req, res, next) {
+  const { ClientID, ClientSecret } = req.app.locals;
   const code = req.query.code;
   const token = await getToken(code, ClientSecret, ClientID)
-    .catch(err => err && res.status('400').send('bad request'));
+    .catch(err => err);
+  if(!token) {
+    return res.status('400').send('bad request');
+  }
   const userInfo = await getUserInfo(token)
-    .catch(err => err && res.status('400').send('bad request'));
+    .catch(err => err );
+  if (!userInfo) {
+    return res.status('400').send('bad request');
+  }
+  req.userInfo = userInfo;
+  next();
+};
+
+const handleLogin = async function (req, res) {
+  const {userInfo, app} = req;
+  const { dataStore } = app.locals;
   req.session = { id: userInfo.id, avatar: userInfo['avatar_url'] };
   const isRegisteredUser = await dataStore.findUser(userInfo.id);
   if (isRegisteredUser) {
@@ -72,6 +85,7 @@ const registerNewUser = async function (req, res) {
 module.exports = {
   checkOptions,
   reqLogin,
+  fetchUserDetails,
   handleLogin,
   serveHomepage,
   serveQuestions,
