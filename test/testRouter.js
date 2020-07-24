@@ -1,5 +1,7 @@
 const request = require('supertest');
 require('dotenv').config({ path: './.env' });
+const {env} = process;
+env.DatabaseUrl = './data/test.db';
 const { app } = require('../src/router');
 const statusCodes = { ok: 200 };
 
