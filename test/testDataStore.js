@@ -34,7 +34,7 @@ describe('DataStore', function () {
     });
     it('should throw error when the db is close', async () => {
       const message = 'SQLITE_MISUSE: Database handle is closed';
-      dataStore.db.close();
+      await dataStore.db.close();
       const actual = await dataStore
         .getAllQuestions()
         .catch((err) => assert.deepStrictEqual(err.message, message));
@@ -80,7 +80,7 @@ describe('DataStore', function () {
 
     it('should throw error when the db is close', async() => {
       const message = 'SQLITE_MISUSE: Database handle is closed';
-      dataStore.db.close();
+      await dataStore.db.close();
       const actual = await dataStore.findUser('123')
         .catch(err => assert.deepStrictEqual(err.message, message));
       assert.deepStrictEqual(actual, undefined);
