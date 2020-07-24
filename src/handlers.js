@@ -14,8 +14,8 @@ const getToken = function (code, ClientSecret, ClientID) {
     .post('https://github.com/login/oauth/access_token')
     .send({ code, ['client_secret']: ClientSecret, ['client_id']: ClientID })
     .set('Accept', 'application/json')
-    .then(res => res.body)
-    .then(data => data.access_token);
+    .then((res) => res.body)
+    .then((data) => data.access_token);
 };
 
 const getUserInfo = function (token) {
@@ -23,7 +23,7 @@ const getUserInfo = function (token) {
     .get('https://api.github.com/user')
     .set('User-Agent', 'r2s2-inquire')
     .set('Authorization', `token ${token}`)
-    .then(res => res.body);
+    .then((res) => res.body);
 };
 
 const handleLogin = async function (req, res) {
@@ -43,16 +43,9 @@ const serveHomepage = (req, res) => {
   res.sendFile(path.resolve(`${__dirname}/../public/html/home.html`));
 };
 
-const serveQuestions = (req, res) => {
-  const questions = [
-    { title: 'What is express ?', votes: 5, answers: 7, tags: ['express'] },
-    {
-      title: 'nodejs v/s angularjs ?',
-      votes: 5,
-      answers: 7,
-      tags: ['js', 'node'],
-    },
-  ];
+const serveQuestions = async (req, res) => {
+  const { dataStore } = req.app.locals;
+  const questions = await dataStore.getAllQuestions();
   res.write(JSON.stringify(questions));
   res.end();
 };

@@ -40,7 +40,7 @@ INSERT INTO questionTags
 VALUES
   ('q00001','t00001'),
   ('q00001','t00002'),
-  ('q00001','t00003')
+  ('q00002','t00003')
   ;
 
 UPDATE questions
