@@ -5,17 +5,16 @@ body {
 #titlebar {
   display: flex;
   flex-direction: row;
-  padding: 0px 10px;
   justify-content: space-between;
   border-bottom: 1px #c5c5c5 solid;
+  padding: 1.5vh 3vh 1.5vh 2.5vh;
 }
 .logo {
-  font-size: xx-large;
-  padding: 10px 0px 0px 10px;
+  font-size: 30px;
 }
 button {
   padding: 8px;
-  margin: 1vw;
+  margin-left: 1vw;
   height: 4.5vh;
   font-size: medium;
 }
