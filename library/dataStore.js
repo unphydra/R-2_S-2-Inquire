@@ -36,7 +36,7 @@ class DataStore {
   async getAllQuestions() {
     const query1 = `SELECT t1.id, t1.title, t1.votes, count(t2.id) as answers
                     FROM questions t1 LEFT JOIN answers t2 
-                    ON t1.id = t2.questionId GROUP BY(t2.questionId)`;
+                    ON t1.id = t2.questionId GROUP BY(t1.id)`;
     const query2 = `SELECT t1.questionId, GROUP_CONCAT(t2.title) as tags
                     FROM questionTags t1 LEFT JOIN tags t2
                     ON t1.tagId = t2.id GROUP BY t1.questionId`;

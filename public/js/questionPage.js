@@ -5,7 +5,7 @@ const commentsTemplate = (comments) => {
   return `
     <div class="comments">
       <span>Comments:</span>
-      ${comments.map(comment => `<div>${comment.comment}</div>`).join('')}
+      ${comments.map(comment => `<div>${comment.comment}</div><br />`).join('')}
     </div>`;
 };
 
@@ -37,7 +37,7 @@ const renderQuestionDetails = (questionDetails) => {
     ${commentsTemplate(comments)}<hr/>
     <div class="answers"> 
       <span>${answers.length} Answers:</span>
-      ${answers.map(answer => answerTemplate(answer))}<hr/>
+      ${answers.map(answer => answer && answerTemplate(answer))}<hr/>
     </div>`;
 
   getElement('.question-details').innerHTML = html;

@@ -1,5 +1,7 @@
 #container {
-  margin-top: 3%;
+  position: absolute;
+  top: 8vh;
+  width: 100vw;
 }
 
 form {
@@ -27,7 +29,7 @@ label {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 15%;
+  width: 16%;
 }
 
 #cancelButton {

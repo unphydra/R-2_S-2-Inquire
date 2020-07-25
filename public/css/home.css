@@ -1,20 +1,26 @@
 body {
   margin: auto 0px;
   font-family: Helvetica, sans-serif;
+  word-break: break-word;
 }
 #root {
-  width: 100vw;
+  width: 98vw;
 }
 #titlebar {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   border-bottom: 1px #c5c5c5 solid;
-  padding: 1vh 1.5vw 1.5vh 1.5vw;
   background: white;
+  position: absolute;
+  position: fixed;
+  width: 100vw;
+  z-index: 1;
+  height: 8vh;
 }
 .logo {
   font-size: 30px;
+  margin: 2vh 1.5vw;
 }
 .unauthBtn {
   padding: 8px;
@@ -25,6 +31,7 @@ body {
   border-style: outset;
   background-color: rgb(239, 239, 239);
   border-radius: 2px;
+  margin: 2vh 1.5vw;
 }
 .unauthBtn > a {
   color: black;
@@ -33,6 +40,7 @@ body {
 .avatar {
   height: 4vh;
   border-radius: 50%;
+  margin: 2vh 2vw;
 }
 .hide {
   display: none;
@@ -43,10 +51,13 @@ body {
 }
 #menubar {
   width: 20vw;
-  height: 90vh;
+  height: 92vh;
   top: 8vh;
   display: flex;
   flex-direction: column;
+  border-right: 1px #c5c5c5 solid;
+  position: fixed;
+  top: 8vh;
 }
 .menu-item {
   font-size: larger;
@@ -57,12 +68,19 @@ body {
   border-right: solid burlywood 7px;
 }
 .question-details{
-  border-left: 1px #c5c5c5 solid;
   text-align: justify;
-  position: relative;
+  width: 80vw;
+  position: absolute;
+  left: 20vw;
+  top: 8vh;
+  overflow-y: scroll;
+  
 }
+.question-details::-webkit-scrollbar {
+  display: none;
+}
+
 .question {
-  width: 78vw;
   padding: 15px 10px;
   border-bottom: solid #c5c5c5 1px;
   display: flex;
@@ -92,6 +110,9 @@ body {
   width: 60vw;
   margin: 0 0 1vh 2vw;
   font-size: 23px;
+}
+.title >a {
+  text-decoration: none;
 }
 .tags {
   display: flex;

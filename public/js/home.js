@@ -5,7 +5,7 @@ const renderQuestions = (questions) => {
   let html = '';
   questions.forEach((question) => {
     const { id, votes, answers, title, tags } = question;
-    const tagshtml = tags.map((tag) => `<div>${tag}</div>`);
+    const tagshtml = tags ? tags.map((tag) => `<div>${tag}</div>`) : [];
     html += `<div class="question">
             <div class="countName"> 
               <span class="count"> ${answers} </span> <br /> answers
