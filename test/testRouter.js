@@ -2,7 +2,7 @@ const request = require('supertest');
 require('dotenv').config({ path: './.env' });
 const sinon = require('sinon');
 const { app } = require('../src/router');
-const statusCodes = { ok: 200, redirect: 302 };
+const statusCodes = { ok: 200, redirect: 302, badRequest: 400};
 
 describe('get', function () {
 
@@ -16,7 +16,8 @@ describe('get', function () {
           title: 'what is sqlite?',
           votes: -1,
         }]
-      )
+      ),
+      addNewUser: sinon.mock().returns()
     };
   });
 
@@ -45,6 +46,23 @@ describe('get', function () {
       request(app)
         .get('/login')
         .expect(statusCodes.redirect, done);
+    });
+  });
+
+  context('registerNewUser', () => {
+    it('should redirected to the home page when registered', (done) => {
+      const body = JSON.stringify({name: 'test', username: 'test'});
+      request(app)
+        .post('/newProfile')
+        .set('content-type', 'application/json',)
+        .send(body)
+        .expect(statusCodes.redirect, done);
+    });
+
+    it('should give bad request when name & username is absent', (done) => {
+      request(app)
+        .post('/newProfile')
+        .expect(statusCodes.badRequest, done);
     });
   });
 });

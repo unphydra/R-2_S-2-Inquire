@@ -29,6 +29,7 @@ app.locals = { ClientID, ClientSecret, dataStore, CookieSecret };
 app.use(morgan('tiny'));
 app.use(cookeSession({ secret: app.locals.CookieSecret }));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static('public', { index: '/html/home.html' }));
 
 app.get('/login', reqLogin);
