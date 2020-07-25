@@ -76,7 +76,7 @@ class DataStore {
     const answers = await this.executeQuery(query);
     for(let index = 0; index < answers.length; index++) {
       const comments = await this.getComments(answers[index]['id']);
-      answers[index]['comments'] = comments['comments'].split('|');
+      answers[index].comments = comments.comments.split('|');
     }
     return answers;
   }
@@ -89,9 +89,9 @@ class DataStore {
                       where t1.questionId="${id}"  group by t1.questionId`;
     
     const result = await this.getQuery(query1);
-    result['tags'] = (await this.getQuery(query2))['tags'].split(',');
-    result['comments'] = (await this.getComments(id))['comments'].split('|');
-    result['answers'] = await this.getAnswers(id);
+    result.tags = (await this.getQuery(query2)).tags.split(',');
+    result.comments = (await this.getComments(id)).comments.split('|');
+    result.answers = await this.getAnswers(id);
     return result;
   }
   
