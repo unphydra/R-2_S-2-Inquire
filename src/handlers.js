@@ -83,6 +83,25 @@ const serveQuestions = async (req, res) => {
   res.end();
 };
 
+const serveQuestionPage = async (req, res) => {
+  const { id } = req.params;
+  if(!id) {
+    return res.status('400').send('bad request');
+  }
+  res.sendFile(path.resolve(`${__dirname}/../private/questionPage.html`));
+};
+
+const serveQuestionDetails = async (req, res) => {
+  const { id } = req.params;
+  if(!id) {
+    return res.status('400').send('bad request');
+  }
+  const { dataStore } = req.app.locals;
+  const questionDetails = dataStore.getQuestionDetails(id);
+  res.json(questionDetails);
+  res.end();
+};
+
 const registerNewUser = async function (req, res) {
   const { dataStore } = req.app.locals;
   const { id, avatar } = req.session;
@@ -118,6 +137,8 @@ module.exports = {
   handleLogin,
   serveHomepage,
   serveQuestions,
+  serveQuestionPage,
+  serveQuestionDetails,
   registerNewUser,
   serveProfilePage,
   serveProfileDetails

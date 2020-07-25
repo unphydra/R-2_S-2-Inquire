@@ -4,7 +4,7 @@ const getAllElements = (selector) => document.querySelectorAll(selector);
 const renderQuestions = (questions) => {
   let html = '';
   questions.forEach((question) => {
-    const { votes, answers, title, tags } = question;
+    const { id, votes, answers, title, tags } = question;
     const tagshtml = tags.map((tag) => `<div>${tag}</div>`);
     html += `<div class="question">
             <div class="countName"> 
@@ -14,7 +14,9 @@ const renderQuestions = (questions) => {
               <span class="count"> ${votes} </span> <br /> votes
             </div>
             <div>
-              <div class="title">${title}</div>
+              <div class="title" id="${id}">
+                <a href="/question/${id}">${title}</a>
+              </div>
               <div class="tags">${tagshtml.join('')}</div>
             </div>
           </div>`;

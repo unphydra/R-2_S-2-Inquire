@@ -12,6 +12,8 @@ const {
   handleLogin,
   serveHomepage,
   serveQuestions,
+  serveQuestionPage,
+  serveQuestionDetails,
   registerNewUser,
   serveProfilePage,
   serveProfileDetails
@@ -33,6 +35,8 @@ app.get('/login', reqLogin);
 app.get('/user/auth', fetchUserDetails, handleLogin);
 app.get('/home', serveHomepage);
 app.get('/questions', serveQuestions);
+app.get('/question/:id', serveQuestionPage);
+app.get('/questionDetails/:id', serveQuestionDetails);
 app.post('/newProfile', checkOptions('name', 'username'), registerNewUser);
 app.get('/viewProfile', serveProfilePage);
 app.get('/getProfile', serveProfileDetails);
