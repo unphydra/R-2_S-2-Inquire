@@ -32,14 +32,6 @@ describe('DataStore', function () {
       ];
       assert.deepStrictEqual(actual, expected);
     });
-    it('should throw error when the db is close', async () => {
-      const message = 'SQLITE_MISUSE: Database handle is closed';
-      await dataStore.db.close();
-      const actual = await dataStore
-        .getAllQuestions()
-        .catch((err) => assert.deepStrictEqual(err.message, message));
-      assert.deepStrictEqual(actual, undefined);
-    });
   });
   
   context('AddNewUser', function(){
@@ -77,14 +69,5 @@ describe('DataStore', function () {
         }
       );
     });
-
-    it('should throw error when the db is close', async() => {
-      const message = 'SQLITE_MISUSE: Database handle is closed';
-      await dataStore.db.close();
-      const actual = await dataStore.findUser('123')
-        .catch(err => assert.deepStrictEqual(err.message, message));
-      assert.deepStrictEqual(actual, undefined);
-    });
   });
-
 });
