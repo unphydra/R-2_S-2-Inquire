@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS answers
   answer VARCHAR(1000) NOT NULL,
   receivedAt Date DEFAULT (datetime('now','localtime')),
   modifiedAt Date DEFAULT (datetime('now','localtime')),
-  is_accepted BOOLEAN DEFAULT FALSE,
+  isAccepted BOOLEAN DEFAULT FALSE,
   votes NUMERIC(5) DEFAULT 0,
   FOREIGN KEY (ownerId)
   REFERENCES users(id),

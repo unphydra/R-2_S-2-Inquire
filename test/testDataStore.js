@@ -1,4 +1,5 @@
 const { assert } = require('chai');
+const sinon = require('sinon');
 const DataStore = require('../library/dataStore');
 const dataSeeding = require('./testDataSeeding');
 const { dropTables, createTables, insertIntoTables } = dataSeeding;
@@ -73,6 +74,60 @@ describe('DataStore', function () {
           bio: 'hi i\'m a developer'
         },
       );
+    });
+  });
+
+  context('GetQuestionDetails', () => {
+    it('should name something', async () => {
+      sinon.useFakeTimers();
+      const actual = await dataStore.getQuestionDetails('q00001');
+      const expected = {
+        id: 'q00001',
+        title: 'what is sqlite?',
+        body: 'i want to know about sqlite',
+        votes: -1,
+        receivedAt: '2020-07-25 15:14:36',
+        modifiedAt: '2020-07-25 15:14:36',
+        tags: [{ title: 'java' }, { title: 'javaScript' }],
+        comments: [
+          {
+            id: 'c00001',
+            responseId: 'q00001',
+            ownerId: 'u58027206',
+            comment: 'what you want to know',
+            receivedAt: '2020-07-25 15:14:36'
+          }
+        ],
+        answers: [
+          {
+            id: 'a00001',
+            questionId: 'q00001',
+            ownerId: 'u58027206',
+            answer: 'search it on google',
+            receivedAt: '2020-07-25 15:14:36',
+            modifiedAt: '2020-07-25 15:14:36',
+            isAccepted: 0,
+            votes: 0,
+            comments: [
+              {
+                id: 'c00002',
+                responseId: 'a00001',
+                ownerId: 'u58026024',
+                comment: 'yes you are right',
+                receivedAt: '2020-07-25 15:14:36'
+              },
+              {
+                id: 'c00004',
+                responseId: 'a00001',
+                ownerId: 'u58029024',
+                comment: 'you are wrong',
+                receivedAt: '2020-07-25 15:14:36'
+              }
+            ]
+          }
+        ]
+      };
+      assert.deepStrictEqual(actual, expected);
     });
   });
 });
