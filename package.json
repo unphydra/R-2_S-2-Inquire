@@ -7,8 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "ci":"nyc mocha",
-    "test": "npm run createTestDb; nyc mocha",
+    "test": "nyc mocha",
     "start": "node -r dotenv/config server.js  ",
     "lint": "eslint src/*.js test/*.js public/js/*.js *.js",
     "setup": "chmod +x scripts/runScripts.sh; ./scripts/runScripts.sh",
