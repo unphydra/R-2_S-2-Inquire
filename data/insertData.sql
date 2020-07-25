@@ -19,7 +19,9 @@ VALUES
 INSERT INTO comments(id,responseId,ownerId,comment)
 VALUES
   ('c00001','q00001','u58027206','what you want to know'),
-  ('c00002','a00002', 'u58026024','yes you are right')
+  ('c00002','a00001', 'u58026024','yes you are right'),
+  ('c00003','a00002', 'u58027024','It is wrong'),
+  ('c00004','a00001', 'u58029024','you are wrong')
   ;
 
 INSERT INTO voteLog

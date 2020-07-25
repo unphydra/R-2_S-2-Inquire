@@ -92,7 +92,7 @@ const serveQuestionDetails = async (req, res) => {
     return res.status('400').send('bad request');
   }
   const { dataStore } = req.app.locals;
-  const questionDetails = dataStore.getQuestionDetails(id);
+  const questionDetails = await dataStore.getQuestionDetails(id);
   res.json(questionDetails);
   res.end();
 };
