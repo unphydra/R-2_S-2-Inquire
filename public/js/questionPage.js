@@ -33,11 +33,11 @@ const renderQuestionDetails = (questionDetails) => {
     </div>
     <div class="tags">
       ${tags.map(tag => `<div>${tag.title}</div>`).join('')}
-    </div>
-    ${commentsTemplate(comments)}
+    </div><hr/>
+    ${commentsTemplate(comments)}<hr/>
     <div class="answers"> 
-      <span>2 Answers:</span>
-      ${answers.map(answer => answerTemplate(answer))}
+      <span>${answers.length} Answers:</span>
+      ${answers.map(answer => answerTemplate(answer))}<hr/>
     </div>`;
 
   getElement('.question-details').innerHTML = html;
