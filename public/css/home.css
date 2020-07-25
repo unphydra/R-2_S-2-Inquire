@@ -2,19 +2,22 @@ body {
   margin: auto 0px;
   font-family: Helvetica, sans-serif;
 }
+#root {
+  width: 100vw;
+}
 #titlebar {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   border-bottom: 1px #c5c5c5 solid;
-  padding: 1.5vh 3vh 1.5vh 2.5vh;
+  padding: 1vh 1.5vw 1.5vh 1.5vw;
+  background: white;
 }
 .logo {
   font-size: 30px;
 }
 .unauthBtn {
   padding: 8px;
-  margin-left: 1vw;
   height: 4.5vh;
   font-size: medium;
   border: 1px solid;
@@ -41,7 +44,7 @@ body {
 #menubar {
   width: 20vw;
   height: 90vh;
-  border-right: 1px #c5c5c5 solid;
+  top: 8vh;
   display: flex;
   flex-direction: column;
 }
@@ -53,12 +56,18 @@ body {
 .highlight {
   border-right: solid burlywood 7px;
 }
+.question-details{
+  border-left: 1px #c5c5c5 solid;
+  text-align: justify;
+  position: relative;
+}
 .question {
   width: 78vw;
   padding: 15px 10px;
   border-bottom: solid #c5c5c5 1px;
   display: flex;
   flex-direction: row;
+  text-align: justify;
 }
 .content-space {
   justify-content: space-between;
@@ -70,7 +79,6 @@ body {
   height: 8vh;
   margin-left: 1vw;
   text-align: center;
-  line-height: 2em;
   border: solid #c5c5c5 1px;
   font-weight: 100;
 }
@@ -89,6 +97,7 @@ body {
   display: flex;
   flex-direction: row;
   margin-left: 2vw;
+  margin-top: 2vh;
 }
 .tags > div {
   border: solid #c5c5c5 1px;

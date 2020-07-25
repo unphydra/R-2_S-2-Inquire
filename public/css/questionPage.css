@@ -1,0 +1,36 @@
+.question-title {
+  font-size: xx-large;
+  margin-left: 2vw;
+}
+.question-body {
+  padding-top: 10px;
+  font-size: large;
+  line-height: 25px;
+  margin-left: 2vw;
+  width: 60vw;
+}
+.answers {
+  margin-top: 2vh;
+}
+.answers > span{
+  font-size: x-large;
+  margin-left: 2vw;
+}
+.comments {
+  margin-left: 2vw;
+  margin-top: 2vh;
+}
+.comments > span {
+  font-size: 20px;
+}
+.comments >div {
+  line-height:25px;
+  font-size: 16px;
+  font-weight: 100;
+}
+.flex-row {
+  width: 72vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
