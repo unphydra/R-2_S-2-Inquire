@@ -2,7 +2,7 @@ const request = require('supertest');
 require('dotenv').config({ path: './.env' });
 const sinon = require('sinon');
 const { app } = require('../src/router');
-const statusCodes = { ok: 200, redirect: 302, badRequest: 400};
+const statusCodes = { ok: 200, redirect: 302, badRequest: 400, notFound: 404};
 
 describe('get', function () {
 
@@ -17,7 +17,9 @@ describe('get', function () {
           votes: -1,
         }]
       ),
-      addNewUser: sinon.mock().returns()
+      addNewUser: sinon.mock().returns(),
+      findUser: sinon.mock()
+        .returns({name: 'test', username: 'test', avatar: 'test'})
     };
   });
 
@@ -63,6 +65,46 @@ describe('get', function () {
       request(app)
         .post('/newProfile')
         .expect(statusCodes.badRequest, done);
+    });
+  });
+
+  context('viewProfile', () => {
+    it('should get the view profile page', (done) => {
+      request(app)
+        .get('/viewProfile')
+        .query({id: 123})
+        .expect(statusCodes.ok)
+        .expect('Content-Type', 'text/html; charset=UTF-8', done);
+    });
+
+    it('should not get the view profile page when id is absent', (done) => {
+      request(app)
+        .get('/viewProfile')
+        .expect(statusCodes.badRequest, done);
+    });
+  });
+
+  context('getProfile', () => {
+    it('should get the profile details', (done) => {
+      request(app)
+        .get('/getProfile')
+        .query({id: 123})
+        .expect(statusCodes.ok)
+        .expect('Content-Type', /application\/json/, done);
+    });
+
+    it('should not get the profile details when id is absent', (done) => {
+      request(app)
+        .get('/getProfile')
+        .expect(statusCodes.badRequest, done);
+    });
+
+    it('should not get profile details when user is not present', (done) => {
+      app.locals.dataStore.findUser = sinon.mock().returns();
+      request(app)
+        .get('/getProfile')
+        .query({id: 123})
+        .expect(statusCodes.notFound, done);
     });
   });
 });

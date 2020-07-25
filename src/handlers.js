@@ -74,13 +74,8 @@ const serveHomepage = (req, res) => {
 const serveQuestions = async (req, res) => {
   const { dataStore } = req.app.locals;
   const questions = await dataStore.getAllQuestions();
-  if (req.session.id) {
-    const { id, avatar } = req.session;
-    res.json({ userId: id, avatar, questions });
-  } else {
-    res.json({ questions });
-  }
-  res.end();
+  const { id, avatar } = req.session;
+  res.json({ userId: id, avatar, questions });
 };
 
 const serveQuestionPage = async (req, res) => {
