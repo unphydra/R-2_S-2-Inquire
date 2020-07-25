@@ -39,41 +39,48 @@ describe('DataStore', function () {
       assert.deepStrictEqual(actual, expected);
     });
   });
-  
-  context('AddNewUser', function(){
-    it('should add a new user to database', async function(){
-      const actual = await dataStore.addNewUser(
-        {id: '123', name: 'test', username: 'test', email: 'test', bio: 'test'}
-      );
+
+  context('AddNewUser', function () {
+    it('should add a new user to database', async function () {
+      const actual = await dataStore.addNewUser({
+        id: '123',
+        name: 'test',
+        username: 'test',
+        email: 'test',
+        bio: 'test',
+      });
       assert.deepStrictEqual(actual, []);
     });
 
-    it('should not add a new user when the user already present', async() => {
+    it('should not add a new user when the user already present', async () => {
       const message = 'SQLITE_CONSTRAINT: UNIQUE constraint failed: users.id';
-      const actual = await dataStore.addNewUser(
-        {id: '123', name: 'test', username: 'test', email: 'test', bio: 'test'}
-      ).catch(err => {
-        assert.deepStrictEqual(err.message, message);
-      });
+      const actual = await dataStore
+        .addNewUser({
+          id: '123',
+          name: 'test',
+          username: 'test',
+          email: 'test',
+          bio: 'test',
+        })
+        .catch((err) => {
+          assert.deepStrictEqual(err.message, message);
+        });
       assert.deepStrictEqual(actual, []);
     });
   });
 
-  context('FindUser', function() {
+  context('FindUser', function () {
     it('should get user details when the user is present', async () => {
       const actual = await dataStore.findUser('58026024');
-      assert.deepStrictEqual(
-        actual, 
-        {
-          id: 'u58026024', 
-          name: 'Rivu', 
-          username: 'unphydra',
-          company: 'thoughtworks',
-          email: 'rivu123@gmail.com',
-          avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
-          bio: 'hi i\'m a developer'
-        },
-      );
+      assert.deepStrictEqual(actual, {
+        id: 'u58026024',
+        name: 'Rivu',
+        username: 'unphydra',
+        company: 'thoughtworks',
+        email: 'rivu123@gmail.com',
+        avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
+        bio: 'hi i\'m a developer',
+      });
     });
   });
 
@@ -95,8 +102,8 @@ describe('DataStore', function () {
             responseId: 'q00001',
             ownerId: 'u58027206',
             comment: 'what you want to know',
-            receivedAt: '2020-07-25 15:14:36'
-          }
+            receivedAt: '2020-07-25 15:14:36',
+          },
         ],
         answers: [
           {
@@ -114,20 +121,28 @@ describe('DataStore', function () {
                 responseId: 'a00001',
                 ownerId: 'u58026024',
                 comment: 'yes you are right',
-                receivedAt: '2020-07-25 15:14:36'
+                receivedAt: '2020-07-25 15:14:36',
               },
               {
                 id: 'c00004',
                 responseId: 'a00001',
                 ownerId: 'u58029024',
                 comment: 'you are wrong',
-                receivedAt: '2020-07-25 15:14:36'
-              }
-            ]
-          }
-        ]
+                receivedAt: '2020-07-25 15:14:36',
+              },
+            ],
+          },
+        ],
       };
       assert.deepStrictEqual(actual, expected);
+    });
+
+    it('should give error if the question id is invalid', async function () {
+      const actual = await dataStore.getQuestionDetails('abcd').catch((err) => {
+        const message = 'TypeError: Cannot set property \'tags\' of undefined';
+        assert.deepStrictEqual(err.message, message);
+      });
+      assert.isUndefined(actual);
     });
   });
 });
@@ -140,11 +155,12 @@ describe('DataStore rejection', function () {
     dropTables(db);
   });
 
-  context('getAllQuestions', async() => {
+  context('getAllQuestions', async () => {
     it('should give all the details of the questions ', async function () {
       const message = 'SQLITE_ERROR: no such table: questions';
-      const actual = await dataStore.getAllQuestions()
-        .catch(err => assert.deepStrictEqual(err.message, message));
+      const actual = await dataStore
+        .getAllQuestions()
+        .catch((err) => assert.deepStrictEqual(err.message, message));
       assert.isUndefined(actual);
     });
   });
@@ -152,8 +168,9 @@ describe('DataStore rejection', function () {
   context('findUser', () => {
     it('should name something', async () => {
       const message = 'SQLITE_ERROR: no such table: users';
-      const actual = await dataStore.findUser('123')
-        .catch(err => assert.deepStrictEqual(err.message, message));
+      const actual = await dataStore
+        .findUser('123')
+        .catch((err) => assert.deepStrictEqual(err.message, message));
       assert.isUndefined(actual);
     });
   });

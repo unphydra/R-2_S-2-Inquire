@@ -64,7 +64,7 @@ class DataStore {
     const query = `select *
                     from answers where questionId="${questionId}"`;
     const answers = await this.executeQuery(query);
-    for(let index = 0; index < answers.length; index++) {
+    for (let index = 0; index < answers.length; index++) {
       answers[index].comments = await this.getComments(answers[index].id);
     }
     return answers;
@@ -77,14 +77,16 @@ class DataStore {
                     from questionTags t1 join tags t2
                     on t1.tagId = t2.id 
                     where t1.questionId="${id}"`;
-    
-    const [result] = await this.executeQuery(query1);
-    result.tags = await this.executeQuery(query2);
-    result.comments = await this.getComments(id);
-    result.answers = await this.getAnswers(id);
-    return result;
+    try {
+      const [result] = await this.executeQuery(query1);
+      result.tags = await this.executeQuery(query2);
+      result.comments = await this.getComments(id);
+      result.answers = await this.getAnswers(id);
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
-  
 }
 
 module.exports = DataStore;

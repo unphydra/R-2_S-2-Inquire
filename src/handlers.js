@@ -39,8 +39,9 @@ const getUserInfo = function (token) {
 const fetchUserDetails = async function (req, res, next) {
   const { ClientID, ClientSecret } = req.app.locals;
   const code = req.query.code;
-  const token = await getToken(code, ClientSecret, ClientID)
-    .catch((err) => err);
+  const token = await getToken(code, ClientSecret, ClientID).catch(
+    (err) => err
+  );
   if (!token) {
     return res.status('400').send('bad request');
   }
@@ -55,7 +56,7 @@ const fetchUserDetails = async function (req, res, next) {
 const handleLogin = async function (req, res) {
   const { userInfo, app } = req;
   const { dataStore } = app.locals;
-  req.session = { 
+  req.session = {
     id: userInfo.id,
     avatar: userInfo['avatar_url'],
     time: new Date().toJSON()
@@ -79,23 +80,20 @@ const serveQuestions = async (req, res) => {
 };
 
 const serveQuestionPage = async (req, res) => {
-  const { id } = req.params;
-  if(!id) {
-    return res.status('400').send('bad request');
-  }
   res.sendFile(path.resolve(`${__dirname}/../private/questionPage.html`));
 };
 
 const serveQuestionDetails = async (req, res) => {
   const { id } = req.params;
-  if(!id) {
-    return res.status('400').send('bad request');
-  }
   const { dataStore } = req.app.locals;
-  const questionDetails = await dataStore.getQuestionDetails(id);
-  const { avatar } = req.session;
-  res.json({userId: req.session.id, avatar, questionDetails});
-  res.end();
+
+  try {
+    const questionDetails = await dataStore.getQuestionDetails(id);
+    const { avatar } = req.session;
+    return res.json({ userId: req.session.id, avatar, questionDetails });
+  } catch (err) {
+    return res.status('400').send('not found');
+  }
 };
 
 const registerNewUser = async function (req, res) {
@@ -105,22 +103,22 @@ const registerNewUser = async function (req, res) {
   res.redirect('/');
 };
 
-const serveProfilePage = function(req, res) {
-  const {id} = req.query;
-  if(!id) {
+const serveProfilePage = function (req, res) {
+  const { id } = req.query;
+  if (!id) {
     return res.status('400').send('bad request');
   }
   res.sendFile(path.resolve(`${__dirname}/../private/profilePage.html`));
 };
 
-const serveProfileDetails = async function(req, res) {
-  const {id} = req.query;
-  if(!id) {
+const serveProfileDetails = async function (req, res) {
+  const { id } = req.query;
+  if (!id) {
     return res.status('400').send('bad request');
   }
-  const {dataStore} = req.app.locals;
+  const { dataStore } = req.app.locals;
   const details = await dataStore.findUser(id);
-  if(!details) {
+  if (!details) {
     return res.status('404').send('not found');
   }
   res.json(details);
@@ -137,5 +135,5 @@ module.exports = {
   serveQuestionDetails,
   registerNewUser,
   serveProfilePage,
-  serveProfileDetails
+  serveProfileDetails,
 };
