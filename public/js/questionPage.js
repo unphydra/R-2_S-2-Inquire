@@ -1,4 +1,5 @@
 const getElement = (selector) => document.querySelector(selector);
+const getAllElements = (selector) => document.querySelectorAll(selector);
 
 const commentsTemplate = (comments) => {
   return `
@@ -19,8 +20,8 @@ const answerTemplate = (answer) => {
     ${commentsTemplate(answer.comments)}`;
 };
 
-const renderQuestionDetails = (res) => {
-  const {id, title, body, tags, comments, answers, votes} = res;
+const renderQuestionDetails = (questionDetails) => {
+  const {title, body, tags, comments, answers, votes} = questionDetails;
 
   const html = `
   <div class="question-title"> ${title} </div>
@@ -42,7 +43,20 @@ const renderQuestionDetails = (res) => {
   getElement('.question-details').innerHTML = html;
 };
 
+const renderQuestionPage = (res) => {
+  if(res.userId) {
+    getAllElements('.unauthBtn').forEach((btn) => btn.classList.add('hide'));
+    getAllElements('.menu-item').forEach((item) => {
+      item.classList.remove('hide');
+    });
+    const avatar = getElement('.avatar');
+    avatar.setAttribute('src', res.avatar);
+    avatar.classList.remove('hide');
+  }
+  renderQuestionDetails(res.questionDetails);
+};
+
 const getQuestion = () => {
   const [,, id] = document.location.pathname.split('/');
-  sendRequest(`/questionDetails/${id}`, renderQuestionDetails);
+  sendRequest(`/questionDetails/${id}`, renderQuestionPage);
 };

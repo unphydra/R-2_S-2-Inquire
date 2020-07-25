@@ -93,7 +93,8 @@ const serveQuestionDetails = async (req, res) => {
   }
   const { dataStore } = req.app.locals;
   const questionDetails = await dataStore.getQuestionDetails(id);
-  res.json(questionDetails);
+  const { avatar } = req.session;
+  res.json({userId: req.session.id, avatar, questionDetails});
   res.end();
 };
 
