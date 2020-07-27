@@ -21,6 +21,7 @@ body {
 .logo {
   font-size: 30px;
   margin: 2vh 1.5vw;
+  cursor: pointer;
 }
 .unauthBtn {
   padding: 8px;
@@ -41,7 +42,13 @@ body {
   height: 4vh;
   border-radius: 50%;
   margin: 2vh 2vw;
+  cursor: pointer;
 }
+
+.avatar:hover {
+  box-shadow: 0px 0px 3px 0px rgb(66, 66, 66);
+}
+
 .hide {
   display: none;
 }
@@ -63,7 +70,13 @@ body {
   font-size: larger;
   padding: 10px 20px;
   border-bottom: solid #c5c5c5 1px;
+  cursor: pointer;
 }
+
+.menu-item:hover {
+  background-color: whitesmoke;
+}
+
 .highlight {
   border-right: solid burlywood 7px;
 }

@@ -34,6 +34,9 @@ const renderHomepage = (res) => {
     const avatar = getElement('.avatar');
     avatar.setAttribute('src', res.avatar);
     avatar.classList.remove('hide');
+    avatar.onclick = function(){
+      window.location.href = `/viewProfile?id=${res.userId}`;
+    };
   }
   renderQuestions(res.questions);
 };
