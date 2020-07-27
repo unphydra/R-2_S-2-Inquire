@@ -16,7 +16,8 @@ const {
   serveQuestionDetails,
   registerNewUser,
   serveProfilePage,
-  serveProfileDetails
+  serveProfileDetails,
+  cancelRegistration
 } = require('./handlers');
 
 const { env } = process;
@@ -41,5 +42,6 @@ app.get('/questionDetails/:id', serveQuestionDetails);
 app.post('/newProfile', checkOptions('name', 'username'), registerNewUser);
 app.get('/viewProfile', serveProfilePage);
 app.get('/getProfile', serveProfileDetails);
+app.get('/cancel', cancelRegistration);
 
 module.exports = { app };

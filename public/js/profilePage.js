@@ -1,6 +1,6 @@
 const createProfileDetailsHtml = function(details) {
   let html = `<div class="topBox">
-  <div class="avatar">
+  <div class="bigAvatar">
     <img src=${details.avatar} alt="avatar">
   </div>
   <div class="details">

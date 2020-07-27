@@ -130,4 +130,13 @@ describe('get', function () {
         .expect('Content-Type', /text\/html/, done);
     });
   });
+
+  context('cancelRegistration', () => {
+    it('should redirect to home page after clearing the cookie', (done) => {
+      request(app)
+        .get('/cancel')
+        .expect(statusCodes.redirect)
+        .expect('content-type', /text\/plain/, done);
+    });
+  });
 });

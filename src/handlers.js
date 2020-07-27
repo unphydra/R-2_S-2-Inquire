@@ -124,6 +124,11 @@ const serveProfileDetails = async function (req, res) {
   res.json(details);
 };
 
+const cancelRegistration = function (req, res) {
+  req.session = null;
+  res.redirect('/');
+};
+
 module.exports = {
   checkOptions,
   reqLogin,
@@ -136,4 +141,5 @@ module.exports = {
   registerNewUser,
   serveProfilePage,
   serveProfileDetails,
+  cancelRegistration
 };

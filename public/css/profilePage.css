@@ -8,14 +8,14 @@
   margin: 5vh 3vw;
 }
 
-.avatar {
-  width: 18vw;
+.bigAvatar {
   height: 30vh;
   border-radius: 50%;
+  margin-left: 2vh 2vw;
   overflow: hidden;
 }
 
-.avatar > img {
+.bigAvatar > img {
   width: 18vw;
   height: 30vh;
 }
