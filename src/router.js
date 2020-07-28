@@ -16,13 +16,19 @@ const {
   registerNewUser,
   serveProfilePage,
   serveProfileDetails,
-  cancelRegistration
+  cancelRegistration,
+  saveQuestion,
+  servePostQuestionPage
 } = require('./handlers');
 
 const { env } = process;
 const { ClientID, ClientSecret, DatabaseUrl, CookieSecret } = env;
 const db = new sqlite.Database(DatabaseUrl);
 const dataStore = new DataStore(db);
+dataStore.fetchIds('questions');
+dataStore.fetchIds('answers');
+dataStore.fetchIds('tags');
+dataStore.fetchIds('comments');
 
 app.locals = { ClientID, ClientSecret, dataStore, CookieSecret };
 
@@ -42,5 +48,7 @@ app.post('/newProfile', checkOptions('name', 'username'), registerNewUser);
 app.get('/viewProfile', serveProfilePage);
 app.get('/getProfile', serveProfileDetails);
 app.get('/cancel', cancelRegistration);
+app.post('/postQuestion', saveQuestion);
+app.get('/askQuestion', servePostQuestionPage);
 
 module.exports = { app };

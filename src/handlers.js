@@ -128,6 +128,22 @@ const cancelRegistration = function (req, res) {
   res.redirect('/');
 };
 
+const saveQuestion = async function(req, res){
+  const {dataStore} = req.app.locals;
+  const {user} = req.session;
+  if(!user){
+    res.status('401').send('unauthorized');
+    return;
+  }
+  const {title, body, tags} = req.body;
+  const id = await dataStore.insertQuestion(user, title, body, tags);
+  res.redirect(`/questionDetails/${id}`);
+};
+
+const servePostQuestionPage = function(req, res){
+  res.sendFile(path.resolve(`${__dirname}/../views/postQuestion.pug`));
+};
+
 module.exports = {
   checkOptions,
   reqLogin,
@@ -139,5 +155,7 @@ module.exports = {
   registerNewUser,
   serveProfilePage,
   serveProfileDetails,
-  cancelRegistration
+  cancelRegistration,
+  saveQuestion,
+  servePostQuestionPage
 };
