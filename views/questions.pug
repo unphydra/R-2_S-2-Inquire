@@ -1,0 +1,16 @@
+div(class="container")
+  div(class="container-h")
+    div(class="con-header-title") All Questions
+    if login
+      button(class="askBtn") Ask Question
+  div(class="container-b")
+    each question in questions
+      div(class="question")
+        div(class=question.answers > 0? "countName-a":"countName")
+          div(class="count")=`${question.answers}`
+            div(class="ansCount") answers
+        div
+          div(class="title" onClick=`window.location.href='/question/${question.id}'`)=question.title
+          div(class="tags")
+            each tag in question.tags
+              div(class="tag")=tag

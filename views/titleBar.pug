@@ -1,0 +1,8 @@
+div(class="titleBar")
+      div(class="logo" onClick="window.location.href='/'") Inquire
+      div(class="userInfo")
+        if userId
+          div(class="userName")=userInfo.username
+          img(class="avatar" src=`${userInfo.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${userId}'`)
+        else
+          button(class="pageBtn" onClick="window.location.href='/html/login.html'") Login

@@ -1,4 +1,5 @@
 const request = require('supertest');
+const nock = require('nock');
 require('dotenv').config({ path: './.env' });
 const sinon = require('sinon');
 const { app } = require('../src/router');
@@ -26,29 +27,24 @@ describe('get', function () {
     };
   });
 
+  afterEach(() => sinon.restore());
+
   context('home', function () {
     it('should give the home.html page ', function (done) {
       request(app)
         .get('/home')
         .expect(statusCodes.ok)
-        .expect('Content-Type', 'text/html; charset=UTF-8', done)
-        .expect(/Your Questions/);
-    });
-  });
-
-  context('serveQuestions', function () {
-    it('should give the all question details ', function (done) {
-      request(app)
-        .get('/questions')
-        .expect(statusCodes.ok)
-        .expect('Content-Type', 'application/json; charset=utf-8', done)
-        .expect(/answers/);
+        .expect('Content-Type', /text\/html/)
+        .expect(/Your Questions/, done);
     });
   });
 
   context('reqLogin', () => {
     it('should redirect to github authenticate page', (done) => {
-      request(app).get('/login').expect(statusCodes.redirect, done);
+      request(app)
+        .get('/login')
+        .expect('location', /github/)
+        .expect(statusCodes.redirect, done);
     });
   });
 

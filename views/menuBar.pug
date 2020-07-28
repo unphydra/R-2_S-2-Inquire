@@ -1,0 +1,5 @@
+div(class="menubar")
+  div(class="menu-item highlight" onClick="window.location.href='/home'") Home
+  -let list = ["Your Questions","Your Answers","Your Tags"]
+  each item in list
+    div(class="menu-item")=item

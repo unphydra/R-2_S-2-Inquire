@@ -40,13 +40,15 @@ const fetchUserDetails = async function (req, res, next) {
   const { ClientID, ClientSecret } = req.app.locals;
   const code = req.query.code;
   const token = await getToken(code, ClientSecret, ClientID).catch(
-    (err) => err
+    (err) => {
+      err;
+    }
   );
   if (!token) {
     return res.status('400').send('bad request');
   }
   const userInfo = await getUserInfo(token).catch((err) => err);
-  if (!userInfo) {
+  if (!userInfo.id) {
     return res.status('400').send('bad request');
   }
   req.userInfo = userInfo;
@@ -68,15 +70,12 @@ const handleLogin = async function (req, res) {
   res.sendFile(path.resolve(`${__dirname}/../private/newProfile.html`));
 };
 
-const serveHomepage = (req, res) => {
-  res.sendFile(path.resolve(`${__dirname}/../public/html/home.html`));
-};
-
-const serveQuestions = async (req, res) => {
+const serveHomepage = async (req, res) => {
   const { dataStore } = req.app.locals;
   const questions = await dataStore.getAllQuestions();
-  const { id, avatar } = req.session;
-  res.json({ userId: id, avatar, questions });
+  const { id } = req.session;
+  const userInfo = await dataStore.findUser(id);
+  res.render('home', {userInfo, userId: id, questions});
 };
 
 const serveQuestionPage = async (req, res) => {
@@ -135,7 +134,6 @@ module.exports = {
   fetchUserDetails,
   handleLogin,
   serveHomepage,
-  serveQuestions,
   serveQuestionPage,
   serveQuestionDetails,
   registerNewUser,
