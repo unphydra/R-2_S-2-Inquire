@@ -77,8 +77,9 @@ class DataStore {
   }
 
   async getComments(responseId) {
-    const query = `select * 
-                    from comments
+    const query = `select t1.*, t2.username 
+                    from comments t1 join users t2
+                    on t1.ownerId=t2.id 
                     where responseId="${responseId}"`;
     return this.executeQuery(query);
   }
@@ -94,8 +95,7 @@ class DataStore {
   }
 
   async getQuestionDetails(id) {
-    const query1 = `select id,title,body,votes,receivedAt,modifiedAt 
-                          from questions where id="${id}"`;
+    const query1 = `select * from questions where id="${id}"`;
     const query2 = `select t2.title
                     from questionTags t1 join tags t2
                     on t1.tagId = t2.id 

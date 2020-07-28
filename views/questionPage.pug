@@ -1,0 +1,51 @@
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    title QuestionPage
+    style
+      include ../public/css/home.css
+      include ../public/css/questionPage.css
+  body
+    include titleBar
+    include menuBar
+    div(class="container")
+      if !questionDetails
+        div not found
+      else
+        -const {title,body,tags,comments,answers,votes} = questionDetails
+        -const {id,avatar,username} = ownerInfo
+        div(class="container-h")
+          div(class="question-title")
+            div(class="question-title-h")=title
+            div(class="question-title-b")
+              div(class="avatar-div")
+                img(class="avatar author-avatar" src=`${avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${id.slice(1)}'`)
+              div
+                div(class="author")=username
+                div(class="time") one minute ago
+        div(class="question-body")
+          div(class="question-body-c")=body
+            div(class="tags" style="margin-left:0")
+              each tag in tags
+                div(class="tag q-tag")=tag.title
+          div(class="countName votes")
+            div(class="count")=votes
+              div(class="ansCount") votes
+        div(class="comments") 
+          span Comments 
+          each comment in comments
+            div(class="comment")=comment.comment
+            div(class="c-author")=`${comment.username}, ${comment.receivedAt}`
+        div(class="answers")
+          span=`${answers.length} Answers`
+          each answer in answers
+            div(class="question-body")
+              div(class="question-body-c")=answer.answer
+              div(class="countName votes")
+                div(class="count")=answer.votes
+                  div(class="ansCount") votes
+            div(class="comments a-comments") 
+              span Comments 
+              each comment in answer.comments
+                div(class="comment")=comment.comment
+                div(class="c-author")=`${comment.username}, ${comment.receivedAt}`

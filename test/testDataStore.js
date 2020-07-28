@@ -95,6 +95,7 @@ describe('DataStore', function () {
         votes: -1,
         receivedAt: '2020-07-25 15:14:36',
         modifiedAt: '2020-07-25 15:14:36',
+        ownerId: 'u58026024',
         tags: [{ title: 'java' }, { title: 'javaScript' }],
         comments: [
           {
@@ -103,6 +104,7 @@ describe('DataStore', function () {
             ownerId: 'u58027206',
             comment: 'what you want to know',
             receivedAt: '2020-07-25 15:14:36',
+            username: 'satheesh-chandran'
           },
         ],
         answers: [
@@ -122,13 +124,7 @@ describe('DataStore', function () {
                 ownerId: 'u58026024',
                 comment: 'yes you are right',
                 receivedAt: '2020-07-25 15:14:36',
-              },
-              {
-                id: 'c00004',
-                responseId: 'a00001',
-                ownerId: 'u58029024',
-                comment: 'you are wrong',
-                receivedAt: '2020-07-25 15:14:36',
+                username: 'unphydra'
               },
             ],
           },

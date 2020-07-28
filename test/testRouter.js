@@ -19,11 +19,56 @@ describe('get', function () {
       ]),
       addNewUser: sinon.mock().returns(),
       findUser: sinon
-        .mock()
-        .returns({ name: 'test', username: 'test', avatar: 'test' }),
+        .fake
+        .returns(
+          Promise.resolve(
+            { name: 'test', username: 'test', avatar: 'test', id: '12345'}
+          )
+        ),
       getQuestionDetails: sinon
         .mock()
-        .returns(Promise.resolve({ question: 'questionDetails' })),
+        .returns(Promise.resolve({
+          id: 'q00001',
+          title: 'what is sqlite?',
+          body: 'i want to know about sqlite',
+          votes: -1,
+          receivedAt: '2020-07-25 15:14:36',
+          modifiedAt: '2020-07-25 15:14:36',
+          ownerId: 'u58026024',
+          tags: [{ title: 'java' }, { title: 'javaScript' }],
+          comments: [
+            {
+              id: 'c00001',
+              responseId: 'q00001',
+              ownerId: 'u58027206',
+              comment: 'what you want to know',
+              receivedAt: '2020-07-25 15:14:36',
+              username: 'satheesh-chandran'
+            },
+          ],
+          answers: [
+            {
+              id: 'a00001',
+              questionId: 'q00001',
+              ownerId: 'u58027206',
+              answer: 'search it on google',
+              receivedAt: '2020-07-25 15:14:36',
+              modifiedAt: '2020-07-25 15:14:36',
+              isAccepted: 0,
+              votes: 0,
+              comments: [
+                {
+                  id: 'c00002',
+                  responseId: 'a00001',
+                  ownerId: 'u58026024',
+                  comment: 'yes you are right',
+                  receivedAt: '2020-07-25 15:14:36',
+                  username: 'unphydra'
+                },
+              ],
+            },
+          ],
+        })),
     };
   });
 
@@ -105,24 +150,19 @@ describe('get', function () {
       request(app)
         .get('/question/q00001')
         .expect(statusCodes.ok)
-        .expect('Content-Type', /text\/html/, done);
-    });
-  });
-
-  context('serveQuestionDetails', () => {
-    it('should get the question details', (done) => {
-      request(app)
-        .get('/questionDetails/q00001')
-        .expect(statusCodes.ok)
-        .expect('Content-Type', /application\/json/, done);
+        .expect('Content-Type', /text\/html/)
+        .end(() => {
+          sinon.assert.calledTwice(app.locals.dataStore.findUser);
+          done();
+        });
     });
 
-    it('should not get the question details', (done) => {
+    it('should give not found when question id invalid', (done) => {
       app.locals.dataStore.getQuestionDetails = sinon
         .mock()
         .throws(new Error('notFound'));
       request(app)
-        .get('/questionDetails/qabcd1')
+        .get('/question/qabcd1')
         .expect(statusCodes.badRequest)
         .expect('Content-Type', /text\/html/, done);
     });

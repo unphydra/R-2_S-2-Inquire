@@ -79,19 +79,24 @@ const serveHomepage = async (req, res) => {
 };
 
 const serveQuestionPage = async (req, res) => {
-  res.sendFile(path.resolve(`${__dirname}/../private/questionPage.html`));
-};
-
-const serveQuestionDetails = async (req, res) => {
   const { id } = req.params;
   const { dataStore } = req.app.locals;
-
+  const userInfo = await dataStore.findUser(req.session.id);
   try {
     const questionDetails = await dataStore.getQuestionDetails(id);
-    const { avatar } = req.session;
-    return res.json({ userId: req.session.id, avatar, questionDetails });
+    const ownerInfo = await dataStore.findUser(
+      questionDetails.ownerId.slice('1')
+    );
+    return res.render('questionPage', {
+      userInfo,
+      userId: req.session.id,
+      questionDetails,
+      ownerInfo
+    });
   } catch (err) {
-    return res.status('400').send('not found');
+    return res
+      .status('400')
+      .render('questionPage', { userId: req.session.id, userInfo }); 
   }
 };
 
@@ -154,7 +159,6 @@ module.exports = {
   handleLogin,
   serveHomepage,
   serveQuestionPage,
-  serveQuestionDetails,
   registerNewUser,
   serveProfilePage,
   serveProfileDetails,

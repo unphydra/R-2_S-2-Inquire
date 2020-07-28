@@ -2,6 +2,7 @@ body {
   margin: auto 0px;
   font-family: Helvetica, sans-serif;
   word-break: break-word;
+  overflow-x: hidden;
 }
 
 .titleBar {
@@ -115,7 +116,7 @@ body {
   flex-direction: row;
   justify-content: space-between;
   height: auto;
-  padding: 5vh 0vw 5vh 3vw;
+  padding: 3vh 0vw 3vh 2vw;
   margin-right: 4vw;
   border-bottom: 5px solid rgb(140 140 140);
   font-weight: 400;
@@ -131,14 +132,14 @@ body {
   align-self: center;
   height: 5vh;
   font-size: larger;
-  background-color: rgba(41, 41, 41, 0.9);
-  color: #f4f4f4;
+  background-color: #00a8cc;
+  color: #ffffff;
   border: none;
   transition: border .3s ease-in;
 }
 
 .askBtn:hover {
-  border: 1px solid rgba(41, 41, 41, 0.9);
+  border: 1px solid #00a8cc;
   cursor: pointer;
 }
 
