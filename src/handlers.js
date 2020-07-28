@@ -142,7 +142,7 @@ const saveQuestion = async function(req, res){
   const { title, body } = req.body;
   const tags = req.body.tags.split(' ');
   const questionId = await dataStore.insertQuestion(id, title, body, tags);
-  res.redirect(`/questionDetails/${questionId}`);
+  res.redirect(`/question/${questionId}`);
 };
 
 const servePostQuestionPage = async function(req, res) {

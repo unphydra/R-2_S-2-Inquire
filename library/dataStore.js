@@ -69,7 +69,7 @@ class DataStore {
     tags.forEach((tag) => {
       result.forEach((question) => {
         if (tag.questionId === question.id) {
-          question['tags'] = tag['tags'].split(',');
+          question['tags'] = tag['tags'] && tag['tags'].split(',');
         }
       });
     });
@@ -133,7 +133,7 @@ class DataStore {
   async insertQuestion(owner, title, body, tags) {
     const currentId = `${++this.questionsId}`.padStart(FIVE, ZERO);
     const insertQuery = `INSERT INTO questions(id, ownerId, title, body)
-                   VALUES ('q${currentId}', '${owner}', '${title}', '${body}')`;
+                  VALUES ('q${currentId}', 'u${owner}', '${title}', '${body}')`;
     const tagIds = tags.map(this.getTagId.bind(this));
     
     tagIds.forEach(async (id) => {
