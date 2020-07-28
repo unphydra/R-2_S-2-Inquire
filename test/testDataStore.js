@@ -175,3 +175,63 @@ describe('DataStore rejection', function () {
     });
   });
 });
+
+describe('fetching the last used ids of the tables', function () {
+  let dataStore;
+  beforeEach(() => {
+    const db = new sqlite.Database(env.DatabaseUrl);
+    dataStore = new DataStore(db);
+    dropTables(db);
+    createTables(db);
+  });
+
+  context('fetchIds', async () => {
+    it('should give the last id after fetching', async function () {
+      insertIntoTables(dataStore.db);
+      const actual = await dataStore.fetchIds('questions');
+      assert.equal(actual, 3);
+    });
+
+    it('should return zero if no data is present on the table', async () => {
+      const actual = await dataStore.fetchIds('questions');
+      assert.equal(actual, 0);
+    });
+  });
+});
+
+describe('inserting questions into table', function () {
+  let dataStore;
+  beforeEach(() => {
+    const db = new sqlite.Database(env.DatabaseUrl);
+    dataStore = new DataStore(db);
+    dropTables(db);
+    createTables(db);
+  });
+
+  context('insert question', async () => {
+    it('should give the new question id after insertion', async function () {
+      const tags = ['javaScript', 'node'];
+      const actual = await dataStore
+        .insertQuestion('u123', 'title', 'body', tags);
+      assert.deepStrictEqual(actual, 'q00001');
+    });
+  });
+});
+
+describe('getting the tag id', function () {
+  let dataStore;
+  beforeEach(() => {
+    const db = new sqlite.Database(env.DatabaseUrl);
+    dataStore = new DataStore(db);
+    dropTables(db);
+    createTables(db);
+  });
+
+  context('insert question', async () => {
+    it('should give the new tag-id by inserting if not exists', async () => {
+      const actual = await dataStore
+        .getTagId('java');
+      assert.deepStrictEqual(actual, 't00001');
+    });
+  });
+});

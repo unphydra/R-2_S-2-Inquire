@@ -54,3 +54,9 @@ UPDATE answers
 SET votes=votes+1
 WHERE id='a00002'
 ;
+
+SELECT MAX (id) from questions;
+
+SELECT MAX(id) FROM tags;
+
+SELECT id FROM tags WHERE title = 'node';
