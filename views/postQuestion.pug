@@ -3,5 +3,14 @@ html
     title Inquire
     style
       include ../public/css/home.css
+      include ../public/css/askQuestion.css
   body
     include titleBar
+    div(id="container")
+      h2 POST your answer
+      form(action="/postQuestion" method="POST")
+        input(type="text" name="title" placeholder="Enter title ...")
+        textarea(name="body", cols="30", rows="10" placeholder="Enter content...")
+        input(type="text" name="tags" placeholder="Enter tags ...")
+        input(type="submit" name="submit" class="submit-tag")
+        button(onClick="window.location.href='/home'") Cancel

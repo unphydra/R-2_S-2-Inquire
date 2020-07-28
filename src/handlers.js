@@ -130,18 +130,21 @@ const cancelRegistration = function (req, res) {
 
 const saveQuestion = async function(req, res){
   const {dataStore} = req.app.locals;
-  const {user} = req.session;
-  if(!user){
-    res.status('401').send('unauthorized');
-    return;
+  const { id } = req.session;
+  if(!id) {
+    return res.status('401').send('unauthorized');
   }
-  const {title, body, tags} = req.body;
-  const id = await dataStore.insertQuestion(user, title, body, tags);
-  res.redirect(`/questionDetails/${id}`);
+  const { title, body } = req.body;
+  const tags = req.body.tags.split(' ');
+  const questionId = await dataStore.insertQuestion(id, title, body, tags);
+  res.redirect(`/questionDetails/${questionId}`);
 };
 
-const servePostQuestionPage = function(req, res){
-  res.sendFile(path.resolve(`${__dirname}/../views/postQuestion.pug`));
+const servePostQuestionPage = async function(req, res) {
+  const { dataStore } = req.app.locals;
+  const { id } = req.session;
+  const userInfo = await dataStore.findUser(id);
+  res.render('postQuestion', { userId: id, userInfo });
 };
 
 module.exports = {

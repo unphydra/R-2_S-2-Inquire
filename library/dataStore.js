@@ -135,6 +135,7 @@ class DataStore {
     const insertQuery = `INSERT INTO questions(id, ownerId, title, body)
                    VALUES ('q${currentId}', '${owner}', '${title}', '${body}')`;
     const tagIds = tags.map(this.getTagId.bind(this));
+    
     tagIds.forEach(async (id) => {
       const insertQuestionTag = `insert into questionTags 
                                  values ('q${currentId}', '${id}')`;
