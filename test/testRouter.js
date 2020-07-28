@@ -139,4 +139,90 @@ describe('get', function () {
         .expect('content-type', /text\/plain/, done);
     });
   });
+
+  context('handle Login', () => {
+    it('should redirect to new Profile when user is new', (done) => {
+      nock('https://github.com')
+        .post('/login/oauth/access_token')
+        .reply(200, {['access_token']: '54321'});
+
+      nock('https://api.github.com')
+        .get('/user')
+        .reply(200, {id: '12345', avatar: 'avatar'});
+      
+      app.locals.dataStore.findUser = sinon.mock().returns();
+
+      request(app)
+        .get('/user/auth')
+        .expect('content-type', /text\/html/)
+        .expect(200, done);
+    });
+
+    it('should redirect to home page when user is registered', (done) => {
+      nock('https://github.com')
+        .post('/login/oauth/access_token')
+        .reply(200, {['access_token']: '54321'});
+
+      nock('https://api.github.com')
+        .get('/user')
+        .reply(200, {id: '58026024', avatar: 'avatar'});
+      
+      request(app)
+        .get('/user/auth')
+        .expect('content-type', /text\/plain/)
+        .expect(302, done);
+    });
+
+    it('should give bad request when req with bad code', (done) => {
+      nock('https://github.com')
+        .post('/login/oauth/access_token')
+        .reply(200, {['access_token']: undefined});
+
+      request(app)
+        .get('/user/auth')
+        .expect('content-type', /text\/html/)
+        .expect(400, done);
+    });
+
+    it('should give bad request when there is no user info', (done) => {
+      nock('https://github.com')
+        .post('/login/oauth/access_token')
+        .reply(200, {['access_token']: '54321'});
+
+      nock('https://api.github.com')
+        .get('/user')
+        .reply(200);
+      
+      request(app)
+        .get('/user/auth')
+        .expect('content-type', /text\/html/)
+        .expect(400, done);
+    });
+
+    it('should give bad request when req for token', (done) => {
+      nock('https://github.com')
+        .post('/login/oauth/access_token')
+        .replyWithError(new Error('bad'));
+
+      request(app)
+        .get('/user/auth')
+        .expect('content-type', /text\/html/)
+        .expect(400, done);
+    });
+
+    it('should give bad request when req for user info', (done) => {
+      nock('https://github.com')
+        .post('/login/oauth/access_token')
+        .reply(200, {['access_token']: '54321'});
+
+      nock('https://api.github.com')
+        .get('/user')
+        .replyWithError(new Error('no user Info'));
+      
+      request(app)
+        .get('/user/auth')
+        .expect('content-type', /text\/html/)
+        .expect(400, done);
+    });
+  });
 });
