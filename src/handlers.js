@@ -153,6 +153,10 @@ const servePostQuestionPage = async function(req, res) {
   res.render('postQuestion', { userId: id, userInfo });
 };
 
+const serveLoginPage = function(req, res) {
+  res.render('loginPage');
+};
+
 module.exports = {
   checkOptions,
   reqLogin,
@@ -165,5 +169,6 @@ module.exports = {
   serveProfileDetails,
   cancelRegistration,
   saveQuestion,
-  servePostQuestionPage
+  servePostQuestionPage,
+  serveLoginPage
 };

@@ -78,7 +78,7 @@ label {
   width: 30%;
   height: 5vh;
   font-size: larger;
-  background-color: #00a8cc;
+  background-image: linear-gradient(to right,#16b3d6, #00a8cc ,#16b3d6);
   color: #ffffff;
   border: none;
   transition: border .3s ease-in;

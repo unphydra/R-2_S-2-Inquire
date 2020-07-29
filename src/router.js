@@ -17,7 +17,8 @@ const {
   serveProfileDetails,
   cancelRegistration,
   saveQuestion,
-  servePostQuestionPage
+  servePostQuestionPage,
+  serveLoginPage
 } = require('./handlers');
 
 const { env } = process;
@@ -35,6 +36,7 @@ app.use(express.json());
 app.use(express.static('public', { index: '/html/home.html' }));
 
 app.get('/login', reqLogin);
+app.get('/loginPage', serveLoginPage);
 app.get('/user/auth', fetchUserDetails, handleLogin);
 app.get(['/', '/home'], serveHomepage);
 app.get('/question/:id', serveQuestionPage);
