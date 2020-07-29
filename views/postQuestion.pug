@@ -7,7 +7,7 @@ html
   body
     include titleBar
     div(id="container")
-      p POST your question
+      p Post Your Question
       form(action="/postQuestion" method="POST")
         label Title :
         input(type="text" name="title" placeholder="Enter title ..." required autofocus)
@@ -15,6 +15,9 @@ html
         textarea(name="body", cols="30", rows="10" placeholder="Enter content...")
         label Tags :
         input(type="text" name="tags" placeholder="Enter tags ...")
+        //- div(class="formFooter")
+        //-   button(type="submit" name="submit" class="submit-tag")
+        //-   a(href="/home" id="cancelButton") Cancel
         div(id="formFooter")
-          input(type="submit" name="submit" class="submit-tag")
+          button Submit
           a(href="/home" id="cancelButton") Cancel
