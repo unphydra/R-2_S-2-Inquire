@@ -123,24 +123,29 @@ class DataStore {
     const query = `SELECT id FROM tags WHERE title = '${tag}';`;
     let tagId = await this.getQuery(query);
     if (!tagId) {
-      tagId = 't' + `${++this.tagsId}`.padStart(FIVE, ZERO);
-      const insertTag = `insert into tags values ('${tagId}', '${tag}')`;
+      tagId = { id: 't' + `${++this.tagsId}`.padStart(FIVE, ZERO) };
+      const insertTag = `insert into tags values ('${tagId.id}', '${tag}')`;
       await this.executeQuery(insertTag);
     }
-    return tagId;
+    return tagId.id;
   }
 
-  async insertQuestion(owner, title, body, tags) {
+  async insertTags(questionId, tags) {
+    tags.forEach(async (tag) => {
+      const id = await this.getTagId(tag);
+      const insertQuestionTag = `insert into questionTags 
+                                  values ('${questionId}', '${id}')`;
+      await this.executeQuery(insertQuestionTag);
+      return id;
+    });
+  }
+
+  async insertQuestion(owner, title, body) {
     const currentId = `${++this.questionsId}`.padStart(FIVE, ZERO);
     const insertQuery = `INSERT INTO questions(id, ownerId, title, body)
                   VALUES ('q${currentId}', 'u${owner}', '${title}', '${body}')`;
-    const tagIds = tags.map((tag) => this.getTagId(tag));
-    
-    return Promise.all(tagIds).then((tags) => tags.forEach(async (id) => {
-      const insertQuestionTag = `insert into questionTags 
-                                 values ('q${currentId}', '${id}')`;
-      await this.executeQuery(insertQuestionTag);
-    })).then(() => this.executeQuery(insertQuery)).then(() => `q${currentId}`);
+    await this.executeQuery(insertQuery);
+    return `q${currentId}`;
   }
 }
 

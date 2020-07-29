@@ -24,10 +24,15 @@ const { env } = process;
 const { ClientID, ClientSecret, DatabaseUrl, CookieSecret } = env;
 const db = new sqlite.Database(DatabaseUrl);
 const dataStore = new DataStore(db);
-dataStore.fetchIds('questions');
-dataStore.fetchIds('answers');
-dataStore.fetchIds('tags');
-dataStore.fetchIds('comments');
+
+const fetchAllIds = async function () {
+  await dataStore.fetchIds('questions');
+  await dataStore.fetchIds('answers');
+  await dataStore.fetchIds('tags');
+  await dataStore.fetchIds('comments');
+};
+
+fetchAllIds();
 
 app.locals = { ClientID, ClientSecret, dataStore, CookieSecret };
 
