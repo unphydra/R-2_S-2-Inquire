@@ -7,11 +7,10 @@ html(lang='en')
       include ../public/css/home.css
       include ../public/css/newProfile.css
   body
-    div(class="titleBar")
-      div(class="logo" onClick="window.location.href='/'") Inquire
     div(id="container")
       form(action="/newProfile", method="post")
-        legend Welcome to Inquire! Fill the Form to continue
+        legend Welcome to Inquire!
+        legend Fill the Form to continue
         label Name
           input(type="text" name="name" required autofocus)
         label Username
