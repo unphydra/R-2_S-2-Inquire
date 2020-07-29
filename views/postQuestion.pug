@@ -7,11 +7,14 @@ html
   body
     include titleBar
     div(id="container")
-      h2 POST your question
+      p POST your question
       form(action="/postQuestion" method="POST")
-        input(type="text" name="title" placeholder="Enter title ...")
+        label Title :
+        input(type="text" name="title" placeholder="Enter title ..." required autofocus)
+        label Body :
         textarea(name="body", cols="30", rows="10" placeholder="Enter content...")
+        label Tags :
         input(type="text" name="tags" placeholder="Enter tags ...")
-        input(type="submit" name="submit" class="submit-tag")
-        a(href="/home" id="cancelButton") Cancel
-        //- button(onClick=`window.location.href='/home'`) Cancel
+        div(id="formFooter")
+          input(type="submit" name="submit" class="submit-tag")
+          a(href="/home" id="cancelButton") Cancel
