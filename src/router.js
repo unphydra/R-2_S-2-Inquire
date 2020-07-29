@@ -25,15 +25,6 @@ const { ClientID, ClientSecret, DatabaseUrl, CookieSecret } = env;
 const db = new sqlite.Database(DatabaseUrl);
 const dataStore = new DataStore(db);
 
-const fetchAllIds = async function () {
-  await dataStore.fetchIds('questions');
-  await dataStore.fetchIds('answers');
-  await dataStore.fetchIds('tags');
-  await dataStore.fetchIds('comments');
-};
-
-fetchAllIds();
-
 app.locals = { ClientID, ClientSecret, dataStore, CookieSecret };
 
 app.use(morgan('tiny'));

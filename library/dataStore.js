@@ -2,17 +2,13 @@ const ZERO = 0;
 const ONE = 1;
 const FIVE = 5;
 
-const incrementId = function (source) {
-  return source ? +source.slice(ONE) + ONE : ZERO;
+const parseInteger = function (source) {
+  return source ? +source.slice(ONE) : ZERO;
 };
 
 class DataStore {
   constructor(db) {
     this.db = db;
-    this.questionsId = 0;
-    this.commentsId = 0;
-    this.answersId = 0;
-    this.tagsId = 0;
   }
 
   async executeQuery(query) {
@@ -114,8 +110,7 @@ class DataStore {
   async fetchIds(table) {
     const query = `SELECT MAX (id) as id from ${table};`;
     const row = await this.getQuery(query);
-    const id = incrementId(row.id);
-    this[`${table}Id`] = id;
+    const id = parseInteger(row.id);
     return id;
   }
 
@@ -123,7 +118,8 @@ class DataStore {
     const query = `SELECT id FROM tags WHERE title = '${tag}';`;
     let tagId = await this.getQuery(query);
     if (!tagId) {
-      tagId = { id: 't' + `${++this.tagsId}`.padStart(FIVE, ZERO) };
+      let id = await this.fetchIds('tags');
+      tagId = { id: 't' + `${++id}`.padStart(FIVE, ZERO) };
       const insertTag = `insert into tags values ('${tagId.id}', '${tag}')`;
       await this.executeQuery(insertTag);
     }
@@ -131,17 +127,17 @@ class DataStore {
   }
 
   async insertTags(questionId, tags) {
-    tags.forEach(async (tag) => {
-      const id = await this.getTagId(tag);
+    for(let index = 0; index < tags.length; index++){
+      const id = await this.getTagId(tags[index]);
       const insertQuestionTag = `insert into questionTags 
                                   values ('${questionId}', '${id}')`;
       await this.executeQuery(insertQuestionTag);
-      return id;
-    });
+    }
   }
 
   async insertQuestion(owner, title, body) {
-    const currentId = `${++this.questionsId}`.padStart(FIVE, ZERO);
+    let id = await this.fetchIds('questions');
+    const currentId = `${++id}`.padStart(FIVE, ZERO);
     const insertQuery = `INSERT INTO questions(id, ownerId, title, body)
                   VALUES ('q${currentId}', 'u${owner}', '${title}', '${body}')`;
     await this.executeQuery(insertQuery);

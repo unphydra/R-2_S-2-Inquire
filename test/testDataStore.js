@@ -185,7 +185,7 @@ describe('fetching the last used ids of the tables', function () {
     it('should give the last id after fetching', async function () {
       await insertIntoTables(dataStore.db);
       const actual = await dataStore.fetchIds('questions');
-      assert.equal(actual, 3);
+      assert.equal(actual, 2);
     });
 
     it('should return zero if no data is present on the table', async () => {
