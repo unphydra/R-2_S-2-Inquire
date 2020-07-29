@@ -183,7 +183,7 @@ describe('fetching the last used ids of the tables', function () {
 
   context('fetchIds', async () => {
     it('should give the last id after fetching', async function () {
-      insertIntoTables(dataStore.db);
+      await insertIntoTables(dataStore.db);
       const actual = await dataStore.fetchIds('questions');
       assert.equal(actual, 3);
     });

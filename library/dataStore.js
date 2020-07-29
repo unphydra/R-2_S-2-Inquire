@@ -136,13 +136,11 @@ class DataStore {
                   VALUES ('q${currentId}', 'u${owner}', '${title}', '${body}')`;
     const tagIds = tags.map((tag) => this.getTagId(tag));
     
-    Promise.all(tagIds).then((tags) => tags.forEach(async (id) => {
+    return Promise.all(tagIds).then((tags) => tags.forEach(async (id) => {
       const insertQuestionTag = `insert into questionTags 
                                  values ('q${currentId}', '${id}')`;
       await this.executeQuery(insertQuestionTag);
-    })); 
-    await this.executeQuery(insertQuery);
-    return `q${currentId}`;
+    })).then(() => this.executeQuery(insertQuery)).then(() => `q${currentId}`);
   }
 }
 

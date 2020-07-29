@@ -81,8 +81,8 @@ const createTables = function(db) {
   });
 };
 
-const insertIntoTables = function(db) {
-  db.serialize(() => {
+const insertIntoTables = async function(db) {
+  await db.serialize(() => {
     db.run(`INSERT INTO users
       VALUES
         (
