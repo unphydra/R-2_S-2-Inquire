@@ -51,6 +51,7 @@ body {
   color: rgb(41, 41, 41);
   background-color: rgba(245, 245, 245, 0.9);
   border: none;
+  outline: none;
 }
 
 
@@ -136,6 +137,7 @@ body {
   color: #ffffff;
   border: none;
   transition: border .3s ease-in;
+  outline: none;
 }
 
 .askBtn:hover {

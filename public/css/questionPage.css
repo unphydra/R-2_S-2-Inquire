@@ -60,6 +60,10 @@ width: 80%;
   border-top: 1.7vh solid transparent;
 }
 
+.answers {
+  margin-top: 2vh;
+}
+
 .answers > span{
   font-size: 20px;
   color: #f48024;

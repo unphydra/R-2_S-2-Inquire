@@ -1,8 +1,10 @@
 style
   include ../public/css/postAnswer.css
+script(src="/js/checkForm.js")
 div(class="post-answer")
   span Post Your Answer
-  form(action=`/postAnswer/${questionDetails.id}` method="POST")
-    textarea(name="answer", cols="30", rows="10" placeholder="Enter answer...")
+  form(action=`/postAnswer/${questionDetails.id}` method="POST" onSubmit=`return checkForm(${userId})`)
+    textarea(name="answer", cols="30", rows="10" placeholder="Enter answer..." minlength='20' required)
     div(id="formFooter")
       button Post Answer
+      div(class="popUp hide") *please Login before submit
