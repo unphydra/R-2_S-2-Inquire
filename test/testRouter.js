@@ -25,6 +25,10 @@ describe('get', function () {
             { name: 'test', username: 'test', avatar: 'test', id: '12345'}
           )
         ),
+      getQuestion: async () => true,
+      insertAnswer: async () => 'a00001',
+      insertQuestion: async () => 'q00001',
+      insertTags: async () => undefined,
       getQuestionDetails: sinon
         .mock()
         .returns(Promise.resolve({
@@ -250,6 +254,88 @@ describe('get', function () {
       request(app)
         .get('/user/auth')
         .expect('content-type', /text\/html/)
+        .expect(400, done);
+    });
+  });
+
+  context('postQuestion', function () {
+    it('should give unauthorized error if session id is absent', (done) => {
+      const body = { title: 'title', body: 'body', tags: 'js java' };
+      request(app)
+        .post('/postQuestion')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(401, done);
+    });
+
+    it('should redirect to question page after insertion', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      const body = { title: 'title', body: 'body', tags: 'js java' };
+      request(app)
+        .post('/postQuestion')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(302, done);
+    });
+  });
+
+  context('servePostQuestionPage', function () {
+    it('should give the postQuestion Page', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      request(app).get('/askQuestion').expect(200, done);
+    });
+  });
+
+  context('serveLoginPage', function () {
+    it('should give the login page', (done) => {
+      request(app).get('/loginPage').expect(200, done);
+    });
+  });
+
+  context('postAnswer', function () {
+    it('should give unauthorized error if session id is absent', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = {};
+        next();
+      });
+      const body = { title: 'title', body: 'body', tags: 'js java' };
+      request(app)
+        .post('/postAnswer/q00001')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(401, done);
+    });
+
+    it('should redirect to question page after insertion', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      const body = { title: 'title', body: 'body', tags: 'js java' };
+      request(app)
+        .post('/postAnswer/q00001')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(302, done);
+    });
+
+    it('should give badRequest error if the question is absent', (done) => {
+      app.locals.dataStore.getQuestion = sinon.mock().returns(false);
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      const body = { title: 'title', body: 'body', tags: 'js java' };
+      request(app)
+        .post('/postAnswer/q00001')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
         .expect(400, done);
     });
   });

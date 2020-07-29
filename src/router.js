@@ -17,7 +17,8 @@ const {
   cancelRegistration,
   saveQuestion,
   servePostQuestionPage,
-  serveLoginPage
+  serveLoginPage,
+  postAnswer
 } = require('./handlers');
 
 const { env } = process;
@@ -33,6 +34,8 @@ app.set('view engine', 'pug');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public', { index: '/html/home.html' }));
+app.set('sessionMiddleware', cookeSession({secret: CookieSecret }));
+app.use((...args) => app.get('sessionMiddleware')(...args));
 
 app.get('/login', reqLogin);
 app.get('/loginPage', serveLoginPage);
@@ -44,5 +47,6 @@ app.get('/viewProfile', serveProfilePage);
 app.get('/cancel', cancelRegistration);
 app.post('/postQuestion', saveQuestion);
 app.get('/askQuestion', servePostQuestionPage);
+app.post('/postAnswer/:questionId', postAnswer);
 
 module.exports = { app };

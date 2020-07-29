@@ -90,6 +90,11 @@ class DataStore {
     return answers;
   }
 
+  async getQuestion(id) {
+    const query = `select * from questions where id="${id}"`;
+    return await this.executeQuery(query);
+  }
+
   async getQuestionDetails(id) {
     const query1 = `select * from questions where id="${id}"`;
     const query2 = `select t2.title
@@ -127,11 +132,13 @@ class DataStore {
   }
 
   async insertTags(questionId, tags) {
+    const tagIds = [];
     for(let index = 0; index < tags.length; index++){
       const id = await this.getTagId(tags[index]);
       const insertQuestionTag = `insert into questionTags 
                                   values ('${questionId}', '${id}')`;
       await this.executeQuery(insertQuestionTag);
+      tagIds.push(id);
     }
   }
 
