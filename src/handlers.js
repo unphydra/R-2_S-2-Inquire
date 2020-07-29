@@ -1,5 +1,4 @@
 const request = require('superagent');
-const path = require('path');
 
 const checkOptions = function (...args) {
   return function (req, res, next) {
@@ -107,25 +106,16 @@ const registerNewUser = async function (req, res) {
   res.redirect('/');
 };
 
-const serveProfilePage = function (req, res) {
-  const { id } = req.query;
-  if (!id) {
-    return res.status('400').send('bad request');
-  }
-  res.sendFile(path.resolve(`${__dirname}/../private/profilePage.html`));
-};
-
-const serveProfileDetails = async function (req, res) {
+const serveProfilePage = async function (req, res) {
   const { id } = req.query;
   if (!id) {
     return res.status('400').send('bad request');
   }
   const { dataStore } = req.app.locals;
+  const userId = req.session.id;
+  const userInfo = await dataStore.findUser(userId);
   const details = await dataStore.findUser(id);
-  if (!details) {
-    return res.status('404').send('not found');
-  }
-  res.json(details);
+  res.render('profilePage', {details, userId, userInfo});
 };
 
 const cancelRegistration = function (req, res) {
@@ -166,7 +156,6 @@ module.exports = {
   serveQuestionPage,
   registerNewUser,
   serveProfilePage,
-  serveProfileDetails,
   cancelRegistration,
   saveQuestion,
   servePostQuestionPage,

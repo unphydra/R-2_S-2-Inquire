@@ -14,7 +14,6 @@ const {
   serveQuestionPage,
   registerNewUser,
   serveProfilePage,
-  serveProfileDetails,
   cancelRegistration,
   saveQuestion,
   servePostQuestionPage,
@@ -42,7 +41,6 @@ app.get(['/', '/home'], serveHomepage);
 app.get('/question/:id', serveQuestionPage);
 app.post('/newProfile', checkOptions('name', 'username'), registerNewUser);
 app.get('/viewProfile', serveProfilePage);
-app.get('/getProfile', serveProfileDetails);
 app.get('/cancel', cancelRegistration);
 app.post('/postQuestion', saveQuestion);
 app.get('/askQuestion', servePostQuestionPage);

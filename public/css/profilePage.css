@@ -16,7 +16,7 @@
 }
 
 .bigAvatar > img {
-  width: 18vw;
+  width: 17vw;
   height: 30vh;
 }
 
@@ -25,22 +25,20 @@
 }
 
 .username {
-  font-size: 30px;
-  font-weight: 500;
+  font-size: xxx-large;
+  font-weight: 600;
   margin-top: 5vh;
   margin-bottom: 3vh;
+  color: rgba(41,41,41,0.9);
 }
 
-.name, .sideInfo {
+.label {
+  font-size: larger;
   margin: 1vh 0;
 }
 
 .bio {
-  margin: 1vh 3vw;
+  margin: 1vh 0vw;
   width: 40vw;
   word-break: break-word;
-}
-
-#sideContainer > h3 {
-  margin-left: 3vw;
 }

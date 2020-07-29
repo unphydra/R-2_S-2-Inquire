@@ -1,0 +1,31 @@
+doctype
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    title home page
+    style
+      include ../public/css/home.css
+      include ../public/css/profilePage.css
+    script(src="../js/toggleHighlight.js")
+    -const id=`u${userId}`
+    -const curId = details ? details.id: '' 
+  body( onload=`highlighter('${id==curId?'Your Profile':'hello'}')`)
+    include titleBar
+    include menuBar
+    div(class="container")
+      if(!details) 
+        div no user found
+      else  
+        div(class="topBox")
+          div(class="bigAvatar")
+            img(src=`${details.avatar}`, alt="alt")
+          div(class="details")
+            div(class="username")=details.username
+            div(class="label") Name: 
+              span=details.name
+            div(class="label") Email: 
+              span=details.email
+            div(class="label") Company: 
+              span=details.company
+            h2 Bio
+            div(class="bio")=details.bio

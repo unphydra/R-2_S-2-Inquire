@@ -5,7 +5,8 @@ html(lang='en')
     title home page
     style
       include ../public/css/home.css
-  body
+    script(src="../js/toggleHighlight.js")
+  body(onload="highlighter('Home')")
     include titleBar
     include menuBar
     include questions
