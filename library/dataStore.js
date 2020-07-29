@@ -143,6 +143,15 @@ class DataStore {
     await this.executeQuery(insertQuery);
     return `q${currentId}`;
   }
+
+  async insertAnswer(questionId, ownerId, answer) {
+    let id = await this.fetchIds('answers');
+    const currentId = `${++id}`.padStart(FIVE, ZERO);
+    const insertQuery = `INSERT INTO  answers(id,questionId,ownerId,answer)
+            VALUES ('a${currentId}','${questionId}','${ownerId}','${answer}')`;
+    await this.executeQuery(insertQuery);
+    return `a${currentId}`;
+  }
 }
 
 module.exports = DataStore;

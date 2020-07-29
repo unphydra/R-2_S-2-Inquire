@@ -148,6 +148,13 @@ describe('DataStore', function () {
       assert.equal(actual, 2);
     });
   });
+
+  context('insertAnswer', () => {
+    it('should give the answer id after insertion', async function () {
+      const actual = await dataStore.insertAnswer('q00001', 'u123', 'testing');
+      assert.deepStrictEqual(actual, 'a00003');
+    });
+  });
 });
 
 describe('DataStore rejection', function () {
