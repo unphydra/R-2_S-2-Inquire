@@ -1,0 +1,46 @@
+.post-answer {
+  margin-right: 4vw;
+  border-bottom: solid 2px rgba(41,41,41,0.5);
+}
+.post-answer > span {
+  font-size: 20px;
+  color: #f48024;
+}
+form {
+  align-self: center;
+  width: 60%;
+  text-align: left;
+  margin-left: 2vw;
+}
+textarea::placeholder {
+  opacity: 0.7;
+  font-size: medium;
+  font-family: Helvetica, sans-serif;
+}
+textarea {
+  margin-bottom: 3%;
+  margin-top: 1%;
+  width: 100%;
+  font-size: medium;
+  outline: none;
+  padding:1%;
+  padding-left:1%;
+}
+#formFooter {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+}
+#formFooter > button {
+  margin-right:5%;
+  width: 25%;
+  height: 5vh;
+  font-size: larger;
+  background-color: #00a8cc;
+  color: #ffffff;
+  border: none;
+  transition: border .3s ease-in;
+}
+#formFooter > a:hover, #formFooter > button:hover {
+   box-shadow: 0px 0px 3px 0px rgb(66, 66, 66);
+}

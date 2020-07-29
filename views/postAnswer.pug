@@ -1,0 +1,8 @@
+style
+  include ../public/css/postAnswer.css
+div(class="post-answer")
+  span Post Your Answer
+  form(action=`/postAnswer/${questionDetails.id}` method="POST")
+    textarea(name="answer", cols="30", rows="10" placeholder="Enter answer...")
+    div(id="formFooter")
+      button Post Answer
