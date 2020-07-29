@@ -67,7 +67,7 @@ const handleLogin = async function (req, res) {
   if (isRegisteredUser) {
     return res.redirect('/');
   }
-  res.sendFile(path.resolve(`${__dirname}/../private/newProfile.html`));
+  res.render('newProfile');
 };
 
 const serveHomepage = async (req, res) => {

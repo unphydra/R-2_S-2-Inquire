@@ -1,0 +1,27 @@
+doctype
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    title New Profile
+    style
+      include ../public/css/home.css
+      include ../public/css/newProfile.css
+  body
+    div(class="titleBar")
+      div(class="logo" onClick="window.location.href='/'") Inquire
+    div(id="container")
+      form(action="/newProfile", method="post")
+        legend Welcome to Inquire! Fill the Form to continue
+        label Name
+          input(type="text" name="name" required autofocus)
+        label Username
+          input(type="text" name="username" required autofocus)
+        label Email
+          input(type="text" name="email")
+        label Company
+          input(type="text" name="company")
+        label Bio
+        textarea(name="bio" id="bio")
+        div(id="formFooter")
+          button Submit
+          a(href="/cancel" id="cancelButton") Cancel
