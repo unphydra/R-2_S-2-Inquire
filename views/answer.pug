@@ -10,8 +10,10 @@ div(class="answers")
                 div(class="ansCount") votes
             div(class="down-arrow")
         div(class="comments a-comments") 
-          if(comments.length > 0)
-            span Comments 
-          each comment in answer.comments
-            div(class="comment")=comment.comment
-            div(class="c-author")=`${comment.username}, ${comment.receivedAt}`
+              if(comments.length > 0)
+                span Comments 
+              each comment in answer.comments
+                div(class="comment")=comment.comment
+                div(class="c-author")=`${comment.username}, ${comment.receivedAt}`
+              include postComment
+              +getId(answer.id)

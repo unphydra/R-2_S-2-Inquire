@@ -1,9 +1,8 @@
 style
   include ../public/css/postAnswer.css
   include ../public/css/postComment.css
-script(src="/js/showCommentBox.js")
 mixin getId(resId)
-  p(class="add-comment" onclick=`showCommentBox('.form-${resId}')`) add comment
+  p(class="add-comment" onclick=`toggleCommentBox('.form-${resId}')`) add comment
   form(class=`form-${resId} hide` action=`/postComment/${questionDetails.id}/${resId}` method="POST" onSubmit=`return checkForm(${userId})`)
     input(name="comment", type="text",placeholder="Enter comment..." minlength='10' maxlength='180' required)
     div(id="formFooter")
