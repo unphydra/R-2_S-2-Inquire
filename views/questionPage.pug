@@ -37,6 +37,8 @@ html(lang='en')
           each comment in comments
             div(class="comment")=comment.comment
             div(class="c-author")=`${comment.username}, ${comment.receivedAt}`
+          include postComment
+          +getId(questionDetails.id)
         include postAnswer
         div(class="answers")
           span=`${answers.length} Answers`
@@ -52,3 +54,5 @@ html(lang='en')
               each comment in answer.comments
                 div(class="comment")=comment.comment
                 div(class="c-author")=`${comment.username}, ${comment.receivedAt}`
+              include postComment
+              +getId(answer.id)

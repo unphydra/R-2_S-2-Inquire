@@ -165,7 +165,7 @@ class DataStore {
     let id = await this.fetchIds('comments');
     const currentId = `${++id}`.padStart(FIVE, ZERO);
     const insertQuery = `INSERT INTO comments(id,responseId,ownerId,comment)
-            VALUES('c${currentId}','${responseId}','${ownerId}','${comment}')`;
+            VALUES('c${currentId}','${responseId}','u${ownerId}','${comment}')`;
     await this.executeQuery(insertQuery);
     return `c${currentId}`;
   }
