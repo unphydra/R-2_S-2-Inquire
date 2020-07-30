@@ -21,7 +21,11 @@ const {
   postAnswer,
   postComment,
   isLoggedIn,
+<<<<<<< HEAD
   updateVote
+=======
+  acceptAnswer
+>>>>>>> |#15|Santhosh/Satheesh| added acceptAnswer route and its handler and
 } = require('./handlers');
 
 const { env } = process;
@@ -53,5 +57,6 @@ app.get('/askQuestion', servePostQuestionPage);
 app.post('/postAnswer/:questionId', isLoggedIn, postAnswer);
 app.post('/postComment/:questionId/:resId', isLoggedIn, postComment);
 app.get(['/upVote/:type/:resId', '/downVote/:type/:resId'], updateVote);
+app.post('/acceptAnswer/:questionId/:answerId', isLoggedIn, acceptAnswer);
 
 module.exports = { app };

@@ -30,6 +30,7 @@ describe('get', function () {
       insertAnswer: async () => 'a00001',
       insertQuestion: async () => 'q00001',
       insertTags: async () => undefined,
+      acceptAnswer: async () => 1,
       getQuestionDetails: sinon
         .mock()
         .returns(Promise.resolve({
@@ -377,6 +378,41 @@ describe('get', function () {
         .set('content-type', 'application/json')
         .send(JSON.stringify({ comment: 'test comment' }))
         .expect(400, done);
+    });
+  });
+
+  context('acceptAnswer', function () {
+    it('should accept the answer for given answerId and questionId', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      request(app)
+        .post('/acceptAnswer/q00001/a00001')
+        .expect(302, done);
+    });
+
+    it('should give bad request error for wrong questionId', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns(undefined);
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      request(app)
+        .post('/acceptAnswer/q00001/a00001')
+        .expect(400, done);
+    });
+
+    it('should give method not allowed error for wrong userId', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '103' };
+        next();
+      });
+      request(app)
+        .post('/acceptAnswer/q00001/a00001')
+        .expect(405, done);
     });
   });
 });

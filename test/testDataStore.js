@@ -184,6 +184,14 @@ describe('DataStore', function () {
       assert.isUndefined(actual);
     });
   });
+
+  context('acceptAnswer', () => {
+    it('should give isAccepted 1 questionId and answerId', async function () {
+      const actual = await dataStore.acceptAnswer('q00001', 'a00001');
+      assert.deepStrictEqual(actual, {isAccepted: 1});
+    });
+  });
+
 });
 
 describe('DataStore rejection', function () {

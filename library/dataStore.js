@@ -169,6 +169,14 @@ class DataStore {
     await this.executeQuery(insertQuery);
     return `c${currentId}`;
   }
+
+  async acceptAnswer(questionId, answerId) {
+    const updateQuery = `UPDATE answers SET isAccepted=TRUE 
+            WHERE id='${answerId}' AND questionId='${questionId}'`;
+    await this.executeQuery(updateQuery);
+    const query = `SELECT isAccepted FROM answers WHERE id='${answerId}'`;
+    return await this.getQuery(query);
+  }
 }
 
 module.exports = DataStore;
