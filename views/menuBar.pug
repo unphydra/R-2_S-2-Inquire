@@ -1,4 +1,5 @@
 div(class="menubar")
   -let list = [{tag:"Home",url:'/home'},{tag:"Your Questions",url:''},{tag:"Your Answers",url:''},{tag:"Your Tags",url:''},{tag:"Your Profile",url:`/viewProfile?id=${userId}`}]
   each item in list
-    div(class="menu-item" id=`${item.tag}` item.url ? onclick=`window.location.href='${item.url}'` )=item.tag
+    -const className = (!userId && item.tag !== 'Home') ? 'hide' : ''
+    div(class=`menu-item ${className}` id=`${item.tag}` item.url ? onclick=`window.location.href='${item.url}'` )=item.tag
