@@ -215,9 +215,6 @@ module.exports = {
   postAnswer,
   postComment,
   isLoggedIn,
-<<<<<<< HEAD
-  updateVote
-=======
+  updateVote,
   acceptAnswer
->>>>>>> |#15|Santhosh/Satheesh| added acceptAnswer route and its handler and
 };
