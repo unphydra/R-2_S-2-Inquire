@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS questions
   votes NUMERIC(5) DEFAULT 0,
   receivedAt Date DEFAULT (datetime('now','localtime')),
   modifiedAt Date DEFAULT (datetime('now','localtime')),
+  anyAnswerAccepted BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (ownerId)
   REFERENCES users(id)
 );

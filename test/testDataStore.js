@@ -27,6 +27,7 @@ describe('DataStore', function () {
           tags: ['java', 'javaScript'],
           title: 'what is sqlite?',
           votes: -1,
+          anyAnswerAccepted: 0,
         },
         {
           answers: 1,
@@ -34,6 +35,7 @@ describe('DataStore', function () {
           tags: ['node'],
           title: 'what is the most powerful thing in database?',
           votes: 0,
+          anyAnswerAccepted: 0,
         },
       ];
       assert.deepStrictEqual(actual, expected);
@@ -95,6 +97,7 @@ describe('DataStore', function () {
         votes: -1,
         receivedAt: '2020-07-25 15:14:36',
         modifiedAt: '2020-07-25 15:14:36',
+        anyAnswerAccepted: 0,
         ownerId: 'u58026024',
         tags: [{ title: 'java' }, { title: 'javaScript' }],
         comments: [

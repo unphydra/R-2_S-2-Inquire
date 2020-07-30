@@ -5,7 +5,21 @@
 .votes {
   margin-left: 0;
 }
-
+.sidebar {
+  margin: 1vh 5vw 1vh 1vw;
+}
+.vote-box {
+  margin-left: 1vw;
+}
+.tickmark {
+  margin-bottom: 2vh;
+  margin-left: 1vw;
+}
+.tickmark > img {
+  cursor: pointer;
+  height: 50%;
+  color: red;
+}
 .vote-container{
   margin: 3vh 6vw 3vh 1vw;
 }

@@ -385,12 +385,14 @@ describe('get', function () {
     it('should accept the answer for given answerId and questionId', (done) => {
       app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
+        req.session = { id: 123 };
         next();
       });
       request(app)
         .post('/acceptAnswer/q00001/a00001')
-        .expect(302, done);
+        .expect(200)
+        .expect('content-type', /application\/json/, done)
+        .expect(/1/);
     });
 
     it('should give bad request error for wrong questionId', (done) => {
