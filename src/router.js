@@ -18,7 +18,9 @@ const {
   saveQuestion,
   servePostQuestionPage,
   serveLoginPage,
-  postAnswer
+  postAnswer,
+  postComment,
+  isLoggedIn
 } = require('./handlers');
 
 const { env } = process;
@@ -45,8 +47,9 @@ app.get('/question/:id', serveQuestionPage);
 app.post('/newProfile', checkOptions('name', 'username'), registerNewUser);
 app.get('/viewProfile', serveProfilePage);
 app.get('/cancel', cancelRegistration);
-app.post('/postQuestion', saveQuestion);
+app.post('/postQuestion', isLoggedIn, saveQuestion);
 app.get('/askQuestion', servePostQuestionPage);
-app.post('/postAnswer/:questionId', postAnswer);
+app.post('/postAnswer/:questionId', isLoggedIn, postAnswer);
+app.post('/postComment/:questionId/:resId', isLoggedIn, postComment);
 
 module.exports = { app };

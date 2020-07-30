@@ -25,7 +25,8 @@ describe('get', function () {
             { name: 'test', username: 'test', avatar: 'test', id: '12345'}
           )
         ),
-      getQuestion: async () => true,
+      saveComment: async () => 'c00001',
+      getRow: async () => true,
       insertAnswer: async () => 'a00001',
       insertQuestion: async () => 'q00001',
       insertTags: async () => undefined,
@@ -326,7 +327,7 @@ describe('get', function () {
     });
 
     it('should give badRequest error if the question is absent', (done) => {
-      app.locals.dataStore.getQuestion = sinon.mock().returns(false);
+      app.locals.dataStore.getRow = sinon.mock().returns(false);
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: '123' };
         next();
@@ -336,6 +337,45 @@ describe('get', function () {
         .post('/postAnswer/q00001')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
+        .expect(400, done);
+    });
+  });
+
+  context('postComment', function () {
+    it('should redirect to the question page after insertion', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      request(app)
+        .post('/postComment/q00001/q00001')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ comment: 'test comment' }))
+        .expect(302, done);
+    });
+
+    it('should give the unauthorized error if id is absent', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = {};
+        next();
+      });
+      request(app)
+        .post('/postComment/q00001/q00001')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ comment: 'test comment' }))
+        .expect(401, done);
+    });
+
+    it('should give the unauthorized error if id is absent', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns(false);
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123'};
+        next();
+      });
+      request(app)
+        .post('/postComment/q00001/q00001')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ comment: 'test comment' }))
         .expect(400, done);
     });
   });

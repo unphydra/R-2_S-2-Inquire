@@ -90,8 +90,8 @@ class DataStore {
     return answers;
   }
 
-  async getQuestion(id) {
-    const query = `select * from questions where id="${id}"`;
+  async getRow(table, id) {
+    const query = `select * from ${table} where id="${id}"`;
     return await this.executeQuery(query);
   }
 
@@ -158,6 +158,15 @@ class DataStore {
             VALUES ('a${currentId}','${questionId}','${ownerId}','${answer}')`;
     await this.executeQuery(insertQuery);
     return `a${currentId}`;
+  }
+
+  async saveComment(ownerId, responseId, comment) {
+    let id = await this.fetchIds('comments');
+    const currentId = `${++id}`.padStart(FIVE, ZERO);
+    const insertQuery = `INSERT INTO comments(id,responseId,ownerId,comment)
+            VALUES('c${currentId}','${responseId}','${ownerId}','${comment}')`;
+    await this.executeQuery(insertQuery);
+    return `c${currentId}`;
   }
 }
 

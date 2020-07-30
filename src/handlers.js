@@ -10,6 +10,14 @@ const checkOptions = function (...args) {
   };
 };
 
+const isLoggedIn = function (req, res, next) {
+  const { id } = req.session;
+  if (!id) {
+    return res.status('401').send('unauthorized');
+  }
+  next();
+};
+
 const reqLogin = function (req, res) {
   const { ClientID } = req.app.locals;
   const redirectUri = 'http://localhost:8000/user/auth';
@@ -126,9 +134,6 @@ const cancelRegistration = function (req, res) {
 const saveQuestion = async function(req, res){
   const {dataStore} = req.app.locals;
   const { id } = req.session;
-  if(!id) {
-    return res.status('401').send('unauthorized');
-  }
   const { title, body } = req.body;
   const tags = req.body.tags.split(' ');
   const questionId = await dataStore.insertQuestion(id, title, body);
@@ -151,14 +156,24 @@ const postAnswer = async function (req, res) {
   const { questionId } = req.params;
   const { dataStore } = req.app.locals;
   const { id } = req.session;
-  if (!id) {
-    return res.status('401').send('unauthorized');
-  }
-  const questionDetails = dataStore.getQuestion(questionId);
+  const questionDetails = await dataStore.getRow('questions', questionId);
   if (!questionDetails) {
     return res.status('400').send('bad request');
   }
   await dataStore.insertAnswer(questionId, id, req.body.answer);
+  res.redirect(`/question/${questionId}`);
+};
+
+const postComment = async function (req, res) {
+  const { id } = req.session;
+  const { dataStore } = req.app.locals;
+  const { questionId, resId } = req.params;
+  const tables = { 'q': 'questions', 'a': 'answers' };
+  const row = await dataStore.getRow(tables[resId.slice('0', '1')], resId);
+  if (!row) {
+    return res.status('400').send('bad request');
+  }
+  await dataStore.saveComment(id, resId, req.body.comment);
   res.redirect(`/question/${questionId}`);
 };
 
@@ -175,5 +190,7 @@ module.exports = {
   saveQuestion,
   servePostQuestionPage,
   serveLoginPage,
-  postAnswer
+  postAnswer,
+  postComment,
+  isLoggedIn
 };

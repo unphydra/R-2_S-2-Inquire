@@ -155,6 +155,13 @@ describe('DataStore', function () {
       assert.deepStrictEqual(actual, 'a00003');
     });
   });
+
+  context('saveComment', function () {
+    it('should give the latest comment id after insertion', async function () {
+      const actual = await dataStore.saveComment('u58026024', 'q00002', 'test');
+      assert.deepStrictEqual(actual, 'c00005');
+    });
+  });
 });
 
 describe('DataStore rejection', function () {
