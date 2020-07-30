@@ -20,7 +20,8 @@ const {
   serveLoginPage,
   postAnswer,
   postComment,
-  isLoggedIn
+  isLoggedIn,
+  updateVote
 } = require('./handlers');
 
 const { env } = process;
@@ -51,5 +52,6 @@ app.post('/postQuestion', isLoggedIn, saveQuestion);
 app.get('/askQuestion', servePostQuestionPage);
 app.post('/postAnswer/:questionId', isLoggedIn, postAnswer);
 app.post('/postComment/:questionId/:resId', isLoggedIn, postComment);
+app.get(['/upVote/:type/:resId', '/downVote/:type/:resId'], updateVote);
 
 module.exports = { app };

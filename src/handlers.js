@@ -177,6 +177,13 @@ const postComment = async function (req, res) {
   res.redirect(`/question/${questionId}`);
 };
 
+const updateVote = async function(req, res){
+  const {id} = req.session;
+  if(!id){
+    return res.status('401').send('unauthorized');
+  }
+};
+
 module.exports = {
   checkOptions,
   reqLogin,
@@ -192,5 +199,6 @@ module.exports = {
   serveLoginPage,
   postAnswer,
   postComment,
-  isLoggedIn
+  isLoggedIn,
+  updateVote
 };

@@ -2,6 +2,7 @@ html(lang='en')
   head
     meta(charset='utf-8')
     title QuestionPage
+    script(src="/js/questionPage.js")
     style
       include ../public/css/home.css
       include ../public/css/questionPage.css
@@ -28,9 +29,13 @@ html(lang='en')
             div(class="tags" style="margin-left:0")
               each tag in tags
                 div(class="tag q-tag")=tag.title
-          div(class="countName votes")
-            div(class="count")=votes
-              div(class="ansCount") votes
+          div(class="vote-container")
+            div(class="up-arrow" onclick=`updateVote('/upVote/questions/${questionDetails.id}',this)`)
+            div(class="countName votes")
+              div(class="count")
+                span=votes
+                div(class="ansCount") votes
+            div(class="down-arrow" onclick=`updateVote('/downVote/questions/${questionDetails.id}',this)`)
         div(class="comments") 
           if(comments.length > 0)
             span Comments 
@@ -40,19 +45,4 @@ html(lang='en')
           include postComment
           +getId(questionDetails.id)
         include postAnswer
-        div(class="answers")
-          span=`${answers.length} Answers`
-          each answer in answers
-            div(class="question-body")
-              div(class="question-body-c")=answer.answer
-              div(class="countName votes")
-                div(class="count")=answer.votes
-                  div(class="ansCount") votes
-            div(class="comments a-comments") 
-              if(comments.length > 0)
-                span Comments 
-              each comment in answer.comments
-                div(class="comment")=comment.comment
-                div(class="c-author")=`${comment.username}, ${comment.receivedAt}`
-              include postComment
-              +getId(answer.id)
+        include answer

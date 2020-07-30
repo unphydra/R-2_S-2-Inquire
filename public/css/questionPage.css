@@ -3,7 +3,24 @@
 }
 
 .votes {
-  margin-right: 6vw;
+  margin-left: 0;
+}
+
+.vote-container{
+  margin: 3vh 6vw 3vh 1vw;
+}
+
+.up-arrow{
+  border-left: 2vw solid transparent;
+  border-bottom: 2.5vh solid rgba(41,41,41,0.6);
+  border-right: 2vw solid transparent;
+  margin-bottom: 0.3vh
+}
+.down-arrow{
+  border-left: 2vw solid transparent;
+  border-top: 2.5vh solid rgba(41,41,41,0.6);
+  border-right: 2vw solid transparent;
+  margin-top: 0.3vh;
 }
 
 .question-title-h {

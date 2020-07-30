@@ -1,6 +1,5 @@
 style
   include ../public/css/postAnswer.css
-script(src="/js/checkForm.js")
 div(class="post-answer")
   span Post Your Answer
   form(action=`/postAnswer/${questionDetails.id}` method="POST" onSubmit=`return checkForm(${userId})`)

@@ -1,0 +1,17 @@
+div(class="answers")
+      span=`${answers.length} Answers`
+      each answer in answers
+        div(class="question-body")
+          div(class="question-body-c")=answer.answer
+          div(class="vote-container")
+            div(class="up-arrow")
+            div(class="countName votes")
+              div(class="count")=answer.votes
+                div(class="ansCount") votes
+            div(class="down-arrow")
+        div(class="comments a-comments") 
+          if(comments.length > 0)
+            span Comments 
+          each comment in answer.comments
+            div(class="comment")=comment.comment
+            div(class="c-author")=`${comment.username}, ${comment.receivedAt}`
