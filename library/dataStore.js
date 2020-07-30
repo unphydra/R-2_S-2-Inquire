@@ -177,6 +177,36 @@ class DataStore {
     const query = `SELECT isAccepted FROM answers WHERE id='${answerId}'`;
     return await this.getQuery(query);
   }
+  
+  async updateResponseVote(table, responseId, delta) {
+    const query = `UPDATE ${table} 
+                   SET votes=votes+${delta}
+                    where id="${responseId}"`;
+    return await this.getQuery(query);
+  }
+
+  async deleteVoteLog(ownerId, responseId) {
+    const query = `DELETE From voteLog 
+    where ownerId="u${ownerId}" AND responseId="${responseId}"`;
+    return await this.getQuery(query);
+  }
+
+  async insertToVoteLog(ownerId, responseId, delta) {
+    const query = `INSERT INTO voteLog 
+    values('u${ownerId}','${responseId}',${delta})`;
+    return this.getQuery(query);
+  }
+
+  async getVoteLog(ownerId, responseId) {
+    const query = `SELECT * FROM voteLog
+                   WHERE ownerId="u${ownerId}" AND responseId="${responseId}"`;
+    return await this.getQuery(query);
+  }
+
+  async getVoteCount(type, responseId) {
+    const query = `SELECT votes from ${type} where id="${responseId}"`;
+    return await this.getQuery(query);
+  }
 }
 
 module.exports = DataStore;

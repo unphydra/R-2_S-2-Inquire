@@ -177,10 +177,42 @@ const postComment = async function (req, res) {
   res.redirect(`/question/${questionId}`);
 };
 
-const updateVote = async function(req, res){
+const getCredential = function(url) {
+  const [, action] = url.split('/');
+  const zero = 0, one = 1, negativeOne = -1;
+  const isUpVote = action === 'upVote' ? one : zero;
+  const delta = isUpVote ? one : negativeOne;
+  return {delta, isUpVote};
+};
+
+const getUpdateVoteDetails = async function(req, res, next) {
   const {id} = req.session;
-  if(!id){
-    return res.status('401').send('unauthorized');
+  const {dataStore} = req.app.locals;
+  const {type, resId} = req.params;
+  const {delta, isUpVote} = getCredential(req.url);
+  const log = await dataStore.getVoteLog(id, resId);
+  const isInValid = log && log.vote === isUpVote;
+  req.details = {id, dataStore, type, resId, delta, isUpVote, log, isInValid};
+  next();
+};
+
+const updateVote = async function(req, res){
+  const {
+    id, dataStore, type, resId, delta, isUpVote, log, isInValid
+  } = req.details;
+  try {
+    if (isInValid) {
+      return res.json({});
+    }
+    await dataStore.updateResponseVote(type, resId, delta);
+    if(!log){
+      await dataStore.insertToVoteLog(id, resId, isUpVote);
+    } else {
+      await dataStore.deleteVoteLog(id, resId);
+    }
+    return res.json(await dataStore.getVoteCount(type, resId));
+  } catch (error) {
+    return res.status('400').send('bad request');
   }
 };
 
@@ -216,5 +248,6 @@ module.exports = {
   postComment,
   isLoggedIn,
   updateVote,
-  acceptAnswer
+  acceptAnswer,
+  getUpdateVoteDetails
 };

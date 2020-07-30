@@ -239,8 +239,9 @@ describe('DataStore rejection', function () {
 
 describe('New Insertion in Database', function () {
   let dataStore;
+  let db;
   beforeEach(() => {
-    const db = new sqlite.Database(env.DatabaseUrl);
+    db = new sqlite.Database(env.DatabaseUrl);
     dataStore = new DataStore(db);
     dropTables(db);
     createTables(db);
@@ -265,6 +266,13 @@ describe('New Insertion in Database', function () {
 
   context('getTagId', async () => {
     it('should give the new tag-id by inserting if not exists', async () => {
+      const actual = await dataStore
+        .getTagId('java');
+      assert.deepStrictEqual(actual, 't00001');
+    });
+
+    it('should give the tagIds of tags which are present', async () => {
+      insertIntoTables(db);
       const actual = await dataStore
         .getTagId('java');
       assert.deepStrictEqual(actual, 't00001');

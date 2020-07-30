@@ -12,13 +12,13 @@ const checkForm = (id) => {
 const updateVote = (url, container) => {
   fetch(url).then((res) => res.json()).then(data => {
     const ONE = 1;
-    if(data && data.count){
+    if(data && data.votes){
       container
         .parentElement
         .children[ONE]
         .firstChild
         .firstChild
-        .innerText = data.count;
+        .innerText = data.votes;
     }
   });
 };
