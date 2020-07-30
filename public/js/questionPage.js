@@ -1,6 +1,6 @@
-const checkForm = (id) => {
+const checkForm = (id, form) => {
   if (!id) {
-    const popUp = document.querySelector('.popUp');
+    const popUp = form.lastChild.lastChild;
     popUp.classList.remove('hide');
     const second = 5000;
     setTimeout(() => popUp.classList.add('hide'), second);
@@ -23,7 +23,7 @@ const updateVote = (url, container) => {
   });
 };
 
-const updateAcceptAnswer = (questionId, answerId) => {
+const updateAcceptAnswer = (questionId, answerId, tickmark) => {
   const ONE = 1;
   const url = `/acceptAnswer/${questionId}/${answerId}`;
   const options = {
@@ -31,11 +31,11 @@ const updateAcceptAnswer = (questionId, answerId) => {
   };
   fetch(url, options).then((res) => res.json()).then(data => {
     if(data && data.isAccepted === ONE) {
-      const tickmark = document.querySelector('.tickmark img');
       tickmark.setAttribute('src', '/images/greentickmark.png');
     }
   });
 };
+
 const toggleCommentBox = (className) => {
   const commentBox = document.querySelector(className);
   if(commentBox.classList.contains('hide')) {

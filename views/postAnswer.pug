@@ -2,7 +2,7 @@ style
   include ../public/css/postAnswer.css
 div(class="post-answer")
   span Post Your Answer
-  form(action=`/postAnswer/${questionDetails.id}` method="POST" onSubmit=`return checkForm(${userId})`)
+  form(action=`/postAnswer/${questionDetails.id}` method="POST" onSubmit=`return checkForm(${userId}, this)`)
     textarea(name="answer", cols="30", rows="10" placeholder="Enter answer..." minlength='20' required)
     div(id="formFooter")
       button Post Answer

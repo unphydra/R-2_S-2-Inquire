@@ -6,7 +6,7 @@ div(class="answers")
           div(class="sidebar") 
             div(class="tickmark")
               -const url=answer.isAccepted ? "greentickmark.png" : "tickmark.png"
-              img(src=`/images/${url}`, alt="not found", onclick=`updateAcceptAnswer('${questionDetails.id}','${answer.id}')`) 
+              img(src=`/images/${url}`, alt="not found", onclick=`updateAcceptAnswer('${questionDetails.id}','${answer.id}', this)`) 
             div(class="vote-box")
               div(class="up-arrow")
               div(class="countName votes")
