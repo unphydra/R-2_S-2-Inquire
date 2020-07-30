@@ -92,7 +92,7 @@ class DataStore {
 
   async getRow(table, id) {
     const query = `select * from ${table} where id="${id}"`;
-    return await this.executeQuery(query);
+    return await this.getQuery(query);
   }
 
   async getQuestionDetails(id) {
@@ -140,6 +140,7 @@ class DataStore {
       await this.executeQuery(insertQuestionTag);
       tagIds.push(id);
     }
+    return tagIds;
   }
 
   async insertQuestion(owner, title, body) {

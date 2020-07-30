@@ -162,6 +162,28 @@ describe('DataStore', function () {
       assert.deepStrictEqual(actual, 'c00005');
     });
   });
+
+  context('getRow', function () {
+    it('should give specific row for the given id', async function () {
+      const expected = {
+        id: 'a00002',
+        questionId: 'q00002',
+        ownerId: 'u58026024',
+        answer: 'database itself',
+        receivedAt: '2020-07-25 15:14:36',
+        modifiedAt: '2020-07-25 15:14:36',
+        isAccepted: 0,
+        votes: 1
+      };
+      const actual = await dataStore.getRow('answers', 'a00002');
+      assert.deepStrictEqual(actual, expected);
+    });
+
+    it('should give undefined for wrong id', async function () {
+      const actual = await dataStore.getRow('answers', 'a00006');
+      assert.isUndefined(actual);
+    });
+  });
 });
 
 describe('DataStore rejection', function () {
@@ -187,6 +209,17 @@ describe('DataStore rejection', function () {
       const message = 'SQLITE_ERROR: no such table: users';
       const actual = await dataStore
         .findUser('123')
+        .catch((err) => assert.deepStrictEqual(err.message, message));
+      assert.isUndefined(actual);
+    });
+  });
+
+  context('getQuery', () => {
+    it('should name something', async () => {
+      const query = 'select * from something';
+      const message = 'SQLITE_ERROR: no such table: something';
+      const actual = await dataStore
+        .getQuery(query)
         .catch((err) => assert.deepStrictEqual(err.message, message));
       assert.isUndefined(actual);
     });
@@ -224,6 +257,14 @@ describe('New Insertion in Database', function () {
       const actual = await dataStore
         .getTagId('java');
       assert.deepStrictEqual(actual, 't00001');
+    });
+  });
+
+  context('insertTags', async () => {
+    it('should give the new tagIds after insertion', async () => {
+      const actual = await dataStore
+        .insertTags('q00001', ['java', 'node']);
+      assert.deepStrictEqual(actual, ['t00001', 't00002']);
     });
   });
 });
