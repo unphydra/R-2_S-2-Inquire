@@ -7,7 +7,7 @@ div(class="container")
     if(questions.length > 0)
       each question in questions
         div(class="question")
-          div(class=question.answers > 0? "countName-a":"countName")
+          div(class=question.anyAnswerAccepted ? "countName-ac" : question.answers > 0? "countName-a":"countName")
             div(class="count")=`${question.answers}`
               div(class="ansCount") answers
           div

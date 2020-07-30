@@ -146,8 +146,8 @@ class DataStore {
   async insertQuestion(owner, title, body) {
     let id = await this.fetchIds('questions');
     const currentId = `${++id}`.padStart(FIVE, ZERO);
-    const insertQuery = `INSERT INTO questions(id, ownerId, title, body)
-                  VALUES ('q${currentId}', 'u${owner}', '${title}', '${body}')`;
+    const insertQuery = `INSERT INTO questions(id, ownerId, title, body) 
+    VALUES ('q${currentId}', 'u${owner}', '${title}', '${body}')`;
     await this.executeQuery(insertQuery);
     return `q${currentId}`;
   }
@@ -155,8 +155,8 @@ class DataStore {
   async insertAnswer(questionId, ownerId, answer) {
     let id = await this.fetchIds('answers');
     const currentId = `${++id}`.padStart(FIVE, ZERO);
-    const insertQuery = `INSERT INTO  answers(id,questionId,ownerId,answer)
-            VALUES ('a${currentId}','${questionId}','${ownerId}','${answer}')`;
+    const insertQuery = `INSERT INTO answers(id,questionId,ownerId,answer)
+    VALUES ('a${currentId}','${questionId}','u${ownerId}','${answer}')`;
     await this.executeQuery(insertQuery);
     return `a${currentId}`;
   }
@@ -171,9 +171,12 @@ class DataStore {
   }
 
   async acceptAnswer(questionId, answerId) {
-    const updateQuery = `UPDATE answers SET isAccepted=TRUE 
+    const updateQuery1 = `UPDATE answers SET isAccepted=TRUE 
             WHERE id='${answerId}' AND questionId='${questionId}'`;
-    await this.executeQuery(updateQuery);
+    const updateQuery2 = `UPDATE questions SET anyAnswerAccepted=TRUE
+            WHERE id='${questionId}'`;
+    await this.executeQuery(updateQuery1);
+    await this.executeQuery(updateQuery2);
     const query = `SELECT isAccepted FROM answers WHERE id='${answerId}'`;
     return await this.getQuery(query);
   }
