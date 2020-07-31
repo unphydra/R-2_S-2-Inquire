@@ -53,10 +53,10 @@ class DataStore {
   }
 
   async attachTags(questions) {
-    const query2 = `SELECT t1.questionId, GROUP_CONCAT(t2.title) as tags
+    const query = `SELECT t1.questionId, GROUP_CONCAT(t2.title) as tags
                     FROM questionTags t1 LEFT JOIN tags t2
                     ON t1.tagId = t2.id GROUP BY t1.questionId`;
-    const tags = await this.executeQuery(query2);
+    const tags = await this.executeQuery(query);
     tags.forEach((tag) => {
       questions.forEach((question) => {
         if (tag.questionId === question.id) {
@@ -67,21 +67,33 @@ class DataStore {
     return questions;
   }
 
+  async attachUsernames(questions) {
+    for (let index = 0; index < questions.length; index++) {
+      const query = `SELECT username FROM users 
+                    WHERE id='${questions[index]['ownerId']}'`;
+      questions[index]['ownerName'] = (await this.getQuery(query))['username'];
+    }
+    return questions;
+  }
+
   async getAllQuestions(userId) {
     const whereClause = userId ? `where t1.ownerId='u${userId}'` : '';
-    const query = `SELECT t1.id, t1.title, t1.votes, t1.anyAnswerAccepted, 
-                    count(t2.id) as answers FROM questions t1 LEFT JOIN 
-                    answers t2 ON t1.id = t2.questionId
-                    ${whereClause} GROUP BY(t1.id)`;
+    const query = `SELECT t1.id, t1.title, t1.votes, t1.anyAnswerAccepted,
+                  t1.ownerId, t1.receivedAt, count(t2.id) as answers FROM 
+                  questions t1 LEFT JOIN answers t2 ON t1.id = t2.questionId
+                  ${whereClause} GROUP BY(t1.id)`;
     const questions = await this.executeQuery(query);
+    await this.attachUsernames(questions);
     return await this.attachTags(questions);
   }
 
   async getAllAnsweredQuestions(userId) {
-    const query = `SELECT t1.id, t1.title,t2.id as answerId,t2.isAccepted 
-                  FROM questions t1 LEFT JOIN answers t2 ON t1.id=t2.questionId 
+    const query = `SELECT t1.id, t1.title,t2.id as answerId,t2.isAccepted,
+                  t1.ownerId, t1.receivedAt FROM questions t1 LEFT JOIN 
+                  answers t2 ON t1.id=t2.questionId 
                   WHERE t2.ownerId='u${userId}' GROUP BY(t1.id)`;
     const questions = await this.executeQuery(query);
+    await this.attachUsernames(questions);
     return await this.attachTags(questions);
   }
 
