@@ -23,7 +23,8 @@ const {
   isLoggedIn,
   updateVote,
   acceptAnswer,
-  getUpdateVoteDetails
+  getUpdateVoteDetails,
+  serveYourQuestionsPage
 } = require('./handlers');
 
 const { env } = process;
@@ -46,6 +47,7 @@ app.get('/login', reqLogin);
 app.get('/loginPage', serveLoginPage);
 app.get('/user/auth', fetchUserDetails, handleLogin);
 app.get(['/', '/home'], serveHomepage);
+app.get('/yourQuestions', isLoggedIn, serveYourQuestionsPage, serveHomepage);
 app.get('/question/:id', serveQuestionPage);
 app.post('/newProfile', checkOptions('name', 'username'), registerNewUser);
 app.get('/viewProfile', serveProfilePage);

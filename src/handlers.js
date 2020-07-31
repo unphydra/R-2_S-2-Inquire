@@ -79,10 +79,16 @@ const handleLogin = async function (req, res) {
 
 const serveHomepage = async (req, res) => {
   const { dataStore } = req.app.locals;
-  const questions = await dataStore.getAllQuestions();
   const { id } = req.session;
+  const { userId } = req.params;
+  const questions = await dataStore.getAllQuestions(userId);
   const userInfo = await dataStore.findUser(id);
   res.render('home', {userInfo, userId: id, questions});
+};
+
+const serveYourQuestionsPage = async function (req, res, next) {
+  req.params.userId = req.session.id;
+  next();
 };
 
 const serveQuestionPage = async (req, res) => {
@@ -249,5 +255,6 @@ module.exports = {
   isLoggedIn,
   updateVote,
   acceptAnswer,
-  getUpdateVoteDetails
+  getUpdateVoteDetails,
+  serveYourQuestionsPage
 };

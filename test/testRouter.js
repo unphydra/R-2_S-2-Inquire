@@ -417,4 +417,20 @@ describe('get', function () {
         .expect(405, done);
     });
   });
+
+  context('serveYourQuestionPage', function () {
+    it('should give the yourQuestion page ', function (done) {
+      this.timeout(5000);
+      app.locals.dataStore.getRow = sinon.mock().returns({ ownerId: 'u123' });
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123 };
+        next();
+      });
+      request(app)
+        .get('/yourQuestions')
+        .expect(statusCodes.ok)
+        .expect('Content-Type', /text\/html/)
+        .expect(/Your Questions/, done);
+    });
+  });
 });
