@@ -6,10 +6,9 @@ html(lang='en')
     style
       include ../public/css/home.css
       include ../public/css/profilePage.css
-    script(src="../js/home.js")
-    -const id=`u${userId}`
-    -const curId = details ? details.id: '' 
-  body(onload=`highlightMenuItem('${id==curId?'Your Profile':''}')`)
+    script(src="/js/home.js")
+    -const detailsId = details && details.id.slice(1);
+  body( onload=`highlightMenuItem('/viewProfile?id=${detailsId}')`)
     include titleBar
     include menuBar
     div(class="container")

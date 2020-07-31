@@ -7,11 +7,8 @@ const toggleTickMark = () => {
 };
 
 const highlightMenuItem = (id) => {
-  if(!id) {
-    return '0';
-  }
   const menuItem = document.getElementById(id);
-  menuItem.classList.add('highlight');
+  menuItem && menuItem.classList.add('highlight');
 };
 
 const renderHeader = (questionsCount, id) => {
@@ -40,13 +37,8 @@ const main = (questionsCount) => {
   if (path === '/') {
     path = '/home';
   }
-  const ids = {
-    '/home': 'Home',
-    '/yourQuestions': 'Your Questions',
-    '/yourAnswers': 'Your Answers'
-  }; 
   renderHeader(questionsCount, path);
-  highlightMenuItem(ids[path]);
+  highlightMenuItem(path);
   const seconds = 60000;
   setInterval(() => {
     renderDates();
