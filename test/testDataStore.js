@@ -40,6 +40,20 @@ describe('DataStore', function () {
       ];
       assert.deepStrictEqual(actual, expected);
     });
+    it('should give all questions of a particular user', async function () {
+      const actual = await dataStore.getAllQuestions(58026024);
+      const expected = [
+        {
+          answers: 1,
+          id: 'q00001',
+          tags: ['java', 'javaScript'],
+          title: 'what is sqlite?',
+          votes: -1,
+          anyAnswerAccepted: 0,
+        }
+      ];
+      assert.deepStrictEqual(actual, expected);
+    });
   });
 
   context('AddNewUser', function () {
