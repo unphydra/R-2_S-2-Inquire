@@ -317,7 +317,7 @@ describe('get', function () {
         req.session = {};
         next();
       });
-      const body = { title: 'title', body: 'body', tags: 'js java' };
+      const body = {};
       request(app)
         .post('/postAnswer/q00001')
         .set('content-type', 'application/json')
@@ -330,7 +330,7 @@ describe('get', function () {
         req.session = { id: '123' };
         next();
       });
-      const body = { title: 'title', body: 'body', tags: 'js java' };
+      const body = {answer: 'test'};
       request(app)
         .post('/postAnswer/q00001')
         .set('content-type', 'application/json')

@@ -166,6 +166,13 @@ const serveLoginPage = function(req, res) {
   res.render('loginPage');
 };
 
+const getFormattedAnswer = function(body) {
+  let {answer} = body;
+  answer = answer.replace(/\n/g, '<br/>');
+  answer = answer.replace(/"/g, '\'');
+  return answer;
+};
+
 const postAnswer = async function (req, res) {
   const { questionId } = req.params;
   const { dataStore } = req.app.locals;
@@ -174,7 +181,7 @@ const postAnswer = async function (req, res) {
   if (!questionDetails) {
     return res.status('400').send('bad request');
   }
-  await dataStore.insertAnswer(questionId, id, req.body.answer);
+  await dataStore.insertAnswer(questionId, id, getFormattedAnswer(req.body));
   res.redirect(`/question/${questionId}`);
 };
 

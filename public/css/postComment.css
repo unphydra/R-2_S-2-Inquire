@@ -1,3 +1,10 @@
+form {
+  align-self: center;
+  width: 80%;
+  text-align: left;
+  margin-left: 2vw;
+}
+
 input::placeholder {
   opacity: 0.7;
   font-size: medium;

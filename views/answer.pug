@@ -2,7 +2,7 @@ div(class="answers")
       span=`${answers.length} Answers`
       each answer in answers
         div(class="question-body")
-          div(class="question-body-c")=answer.answer
+          div(class="question-body-c")!=answer.answer
           div(class="sidebar") 
             div(class="tickmark")
               -const url=answer.isAccepted ? "greentickmark.png" : "tickmark.png"

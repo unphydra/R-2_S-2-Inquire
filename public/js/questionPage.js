@@ -4,13 +4,18 @@ const toggleClass = (element, className) => {
   setTimeout(() => element.classList.add(className), seconds);
 };
 
-const checkForm = (id, form) => {
+const postAnswer = (id, qId) => {
   if (!id) {
     const popUp = form.lastChild.lastChild;
     toggleClass(popUp, 'hide');
-    return false;
+    return;
   }
-  return true;
+  const answer = quill.root.innerHTML;
+  fetch(`/postAnswer/${qId}`, {method: 'POST', headers: {
+    'Content-Type': 'application/json'},
+  body: JSON.stringify({answer})}).then(res => {
+    window.location.href = res.url;
+  });
 };
 
 const updateVote = (url, container) => {

@@ -6,12 +6,40 @@
   font-size: 20px;
   color: #f48024;
 }
-form {
+
+.editor-box {
   align-self: center;
-  width: 60%;
+  width: 80%;
   text-align: left;
-  margin-left: 2vw;
+  margin:1% 0vw 1.5% 2vw;
 }
+
+#editor {
+  height: 25vh;
+  margin-bottom: 2%;
+}
+
+.ql-editor {
+  font-size: large !important;
+}
+
+.ql-syntax {
+  background-color: whitesmoke !important;
+  color: black !important ;
+  overflow: visible;
+}
+
+.ql-tooltip {
+  left:0 !important
+}
+
+pre {
+  white-space: pre-wrap;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding: 5px 10px;
+}
+
 textarea::placeholder {
   opacity: 0.7;
   font-size: medium;
