@@ -12,7 +12,7 @@ const checkForm = (id, form) => {
 const updateVote = (url, container) => {
   fetch(url).then((res) => res.json()).then(data => {
     const ONE = 1;
-    if(data && data.votes){
+    if(data && 'votes' in data){
       container
         .parentElement
         .children[ONE]

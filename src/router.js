@@ -54,13 +54,10 @@ app.post('/postQuestion', isLoggedIn, saveQuestion);
 app.get('/askQuestion', servePostQuestionPage);
 app.post('/postAnswer/:questionId', isLoggedIn, postAnswer);
 app.post('/postComment/:questionId/:resId', isLoggedIn, postComment);
-app.get(['/upVote/:type/:resId', '/downVote/:type/:resId'], updateVote);
 app.post('/acceptAnswer/:questionId/:answerId', isLoggedIn, acceptAnswer);
 app.get(
   ['/upVote/:type/:resId', '/downVote/:type/:resId'],
-  isLoggedIn,
-  getUpdateVoteDetails,
-  updateVote
+  [isLoggedIn, getUpdateVoteDetails, updateVote]
 );
 
 module.exports = { app };
