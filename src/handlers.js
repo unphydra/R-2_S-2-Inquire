@@ -13,7 +13,7 @@ const checkOptions = function (...args) {
 const isLoggedIn = function (req, res, next) {
   const { id } = req.session;
   if (!id) {
-    return res.status('401').send('unauthorized');
+    return res.status('401').json({error: 'Your are not logged in'});
   }
   next();
 };
@@ -225,7 +225,7 @@ const acceptAnswer = async function(req, res) {
     return res.status('400').send('bad request');
   }
   if(id !== +row.ownerId.slice('1')) {
-    return res.status('405').send('Your are not question owner');
+    return res.status('405').json({error: 'Your are not question owner'});
   }
   const status = await dataStore.acceptAnswer(questionId, answerId);
   res.json(status);

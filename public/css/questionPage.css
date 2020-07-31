@@ -141,3 +141,17 @@ width: 80%;
   flex-direction: row;
   justify-content: space-between;
 }
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.error {
+  color: red;
+  font-size: small;
+  align-self: center;
+}
+
+.invisible {
+  visibility: hidden;
+}
