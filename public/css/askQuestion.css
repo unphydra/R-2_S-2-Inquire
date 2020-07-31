@@ -8,16 +8,43 @@
   text-align: center;
 }
 
-p {
+.pageHeading{
   font-size :xx-large;
   font-family:Helvetica, sans-serif;
   color: rgba(41,41,41,0.8)
 }
 
-form {
+#error {
+  color: red;
+  text-align: center;
+}
+
+.ql-editor {
+  font-size: large !important;
+}
+
+.ql-syntax {
+  background-color: whitesmoke !important;
+  color: black !important ;
+  overflow: visible;
+}
+
+.ql-tooltip {
+  left:0 !important
+}
+
+.editor-box {
   align-self: center;
   width: 60%;
   text-align: left;
+}
+#toolbar {
+  margin-top: 1%;
+}
+
+#editor {
+  height: 60%;
+  margin-bottom: 2%;
 }
 
 label {
@@ -30,28 +57,20 @@ input {
   width: 100%;
   height: 6vh;
   font-size: medium;
-  margin-bottom: 3%;
+  margin-bottom: 2%;
   margin-top: 1%;
   outline: none;
   padding-left:1%;
+  border: 1px solid #ccc;
 }
 
-input::placeholder, textarea::placeholder {
+input::placeholder{
   opacity: 0.7;
   font-size: medium;
   font-family: Helvetica, sans-serif;
 }
 
-textarea {
-  margin-bottom: 3%;
-  margin-top: 1%;
-  width: 100%;
-  font-size: medium;
-  outline: none;
-  padding:1%;
-  padding-left:1%;
-  font-family: Helvetica, sans-serif;
-}
+
 
 #formFooter {
   display: flex;
@@ -76,8 +95,13 @@ textarea {
   color: #ffffff;
   border: none;
   transition: border .3s ease-in;
+  outline: none;
 }
 
 #formFooter > a:hover, #formFooter > button:hover {
    box-shadow: 0px 0px 3px 0px rgb(66, 66, 66);
+}
+
+.blind {
+  opacity: 0;
 }

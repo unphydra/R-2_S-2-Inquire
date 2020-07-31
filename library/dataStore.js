@@ -172,7 +172,7 @@ class DataStore {
     let id = await this.fetchIds('questions');
     const currentId = `${++id}`.padStart(FIVE, ZERO);
     const insertQuery = `INSERT INTO questions(id, ownerId, title, body) 
-    VALUES ('q${currentId}', 'u${owner}', '${title}', '${body}')`;
+    VALUES ('q${currentId}', 'u${owner}', '${title}', "${body}")`;
     await this.executeQuery(insertQuery);
     return `q${currentId}`;
   }

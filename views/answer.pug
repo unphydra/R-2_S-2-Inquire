@@ -8,11 +8,12 @@ div(class="answers")
               -const url=answer.isAccepted ? "greentickmark.png" : "tickmark.png"
               img(src=`/images/${url}`, alt="not found", onclick=`updateAcceptAnswer('${questionDetails.id}','${answer.id}', this)`) 
             div(class="vote-box")
-              div(class="up-arrow")
+              div(class="up-arrow" onclick=`updateVote('/upVote/answers/${answer.id}',this)`)
               div(class="countName votes")
-                div(class="count")=answer.votes
+                div(class="count")
+                  span=answer.votes
                   div(class="ansCount") votes
-              div(class="down-arrow")
+              div(class="down-arrow" onclick=`updateVote('/downVote/answers/${answer.id}',this)`)
         div(class="comments a-comments") 
               if(comments.length > 0)
                 span Comments 

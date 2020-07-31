@@ -145,13 +145,24 @@ const cancelRegistration = function (req, res) {
   res.redirect('/');
 };
 
+const formatBody = function(response) {
+  let text = response;
+  text = text.replace(/\n/g, '<br/>');
+  text = text.replace(/"/g, '\'');
+  return text;
+};
+
 const saveQuestion = async function(req, res){
   const {dataStore} = req.app.locals;
   const { id } = req.session;
-  const { title, body } = req.body;
-  const tags = req.body.tags.split(' ');
-  const questionId = await dataStore.insertQuestion(id, title, body);
-  await dataStore.insertTags(questionId, tags);
+  const { title, body, tags } = req.body;
+  const tagList = tags.split(' ');
+  const questionId = await dataStore.insertQuestion(
+    id, 
+    title, 
+    formatBody(body)
+  );
+  await dataStore.insertTags(questionId, tagList);
   res.redirect(`/question/${questionId}`);
 };
 
@@ -166,13 +177,6 @@ const serveLoginPage = function(req, res) {
   res.render('loginPage');
 };
 
-const getFormattedAnswer = function(body) {
-  let {answer} = body;
-  answer = answer.replace(/\n/g, '<br/>');
-  answer = answer.replace(/"/g, '\'');
-  return answer;
-};
-
 const postAnswer = async function (req, res) {
   const { questionId } = req.params;
   const { dataStore } = req.app.locals;
@@ -181,7 +185,7 @@ const postAnswer = async function (req, res) {
   if (!questionDetails) {
     return res.status('400').send('bad request');
   }
-  await dataStore.insertAnswer(questionId, id, getFormattedAnswer(req.body));
+  await dataStore.insertAnswer(questionId, id, formatBody(req.body.answer));
   res.redirect(`/question/${questionId}`);
 };
 

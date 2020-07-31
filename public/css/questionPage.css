@@ -18,6 +18,9 @@
 }
 .vote-container{
   margin: 3vh 6vw 3vh 1vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .up-arrow{

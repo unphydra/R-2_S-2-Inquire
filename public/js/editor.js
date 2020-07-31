@@ -4,11 +4,8 @@ const main = function() {
     ['bold', 'italic', 'underline'], 
     ['code-block', 'link'],
     [{ list: 'ordered' }, { list: 'bullet' }],
-
     [{ color: [] }], 
     [{ align: [] }],
-
-    ['clean'],
   ];
   quill = new Quill('#editor', {
     modules: {

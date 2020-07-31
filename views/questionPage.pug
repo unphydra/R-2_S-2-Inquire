@@ -30,7 +30,7 @@ html(lang='en')
                 div(class="author")=username
                 div(class="time") one minute ago
         div(class="question-body")
-          div(class="question-body-c")=body
+          div(class="question-body-c")!=body
             div(class="tags" style="margin-left:0")
               each tag in tags
                 div(class="tag q-tag")=tag.title

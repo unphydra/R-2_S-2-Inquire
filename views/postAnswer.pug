@@ -7,5 +7,5 @@ div(class="post-answer")
     div(id='toolbar')
     div(id='editor')
     div(id="formFooter")
-      button(onclick=`postAnswer(${userId},'${questionDetails.id}')`) Post Answer
-      div(class="popUp hide") *please Login before submit
+      button(onclick=`postAnswer(${userId},'${questionDetails.id}',this)`) Post Answer
+      div(class="popUp hide")

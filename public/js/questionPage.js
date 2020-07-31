@@ -1,19 +1,25 @@
-const toggleClass = (element, className) => {
-  element.classList.remove(className);
+const toggleClass = (element, message) => {
+  element.innerText = message;
+  element.classList.remove('hide');
   const seconds = 5000;
-  setTimeout(() => element.classList.add(className), seconds);
+  setTimeout(() => element.classList.add('hide'), seconds);
 };
 
-const postAnswer = (id, qId) => {
+const postAnswer = (id, qId, button) => {
+  const answerLength = quill.getLength();
+  const BL = 30;
+  const popUp = button.nextElementSibling;
   if (!id) {
-    const popUp = form.lastChild.lastChild;
-    toggleClass(popUp, 'hide');
-    return;
+    const message = '* please login before continue';
+    return toggleClass(popUp, message);
   }
-  const answer = quill.root.innerHTML;
+  if (answerLength < BL) {
+    const message = '* please explain in brief';
+    return toggleClass(popUp, message);
+  }
   fetch(`/postAnswer/${qId}`, {method: 'POST', headers: {
     'Content-Type': 'application/json'},
-  body: JSON.stringify({answer})}).then(res => {
+  body: JSON.stringify({answer: quill.root.innerHTML})}).then(res => {
     window.location.href = res.url;
   });
 };
