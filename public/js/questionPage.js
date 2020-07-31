@@ -27,12 +27,6 @@ const updateVote = (url, container) => {
   });
 };
 
-const displayError = (error, tickmark) => {
-  const errorBox = tickmark.parentElement.parentElement.previousElementSibling;
-  errorBox.innerText = error;
-  toggleClass(errorBox, 'invisible');
-};
-
 const updateAcceptAnswer = (questionId, answerId, tickmark) => {
   const ONE = 1;
   const url = `/acceptAnswer/${questionId}/${answerId}`;
@@ -40,9 +34,6 @@ const updateAcceptAnswer = (questionId, answerId, tickmark) => {
     method: 'POST'
   };
   fetch(url, options).then((res) => res.json()).then(data => {
-    if(data.error) {
-      displayError(data.error, tickmark);
-    }
     if(data && data.isAccepted === ONE) {
       tickmark.setAttribute('src', '/images/greentickmark.png');
     }
