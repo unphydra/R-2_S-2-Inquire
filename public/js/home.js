@@ -7,11 +7,14 @@ const toggleTickMark = () => {
 };
 
 const highlightMenuItem = (id) => {
+  if(!id) {
+    return '0';
+  }
   const menuItem = document.getElementById(id);
   menuItem.classList.add('highlight');
 };
 
-const renderHeader = function (questionsCount, id) {
+const renderHeader = (questionsCount, id) => {
   const headers = {
     '/home': 'All Questions',
     '/yourQuestions': `You Have ${questionsCount} Questions`,
@@ -19,16 +22,34 @@ const renderHeader = function (questionsCount, id) {
   };
   const header = document.querySelector('.con-header-title');
   header.innerText = headers[id];  
-};
-
-const main = function(questionsCount) {
-  let id = document.location.pathname;
-  if (id === '/') {
-    id = '/home';
-  }
-  renderHeader(questionsCount, id);
-  highlightMenuItem(id);
   if(id === '/yourAnswers') {
     toggleTickMark();  
   }
+};
+
+const renderDates = () => {
+  const spans = Array.from(document.querySelectorAll('.date-time'));
+  spans.forEach((span) => {
+    const date = moment(span.getAttribute('time'));
+    span.innerText = date.startOf('min').fromNow();
+  });
+};
+
+const main = (questionsCount) => {
+  let path = document.location.pathname;
+  if (path === '/') {
+    path = '/home';
+  }
+  const ids = {
+    '/home': 'Home',
+    '/yourQuestions': 'Your Questions',
+    '/yourAnswers': 'Your Answers'
+  }; 
+  renderHeader(questionsCount, path);
+  highlightMenuItem(ids[path]);
+  const seconds = 60000;
+  setInterval(() => {
+    renderDates();
+  }, seconds);
+  renderDates();
 };

@@ -6,10 +6,10 @@ html(lang='en')
     style
       include ../public/css/home.css
       include ../public/css/profilePage.css
-    script(src="../js/toggleHighlight.js")
+    script(src="../js/home.js")
     -const id=`u${userId}`
     -const curId = details ? details.id: '' 
-  body( onload=`highlighter('${id==curId?'Your Profile':'hello'}')`)
+  body(onload=`highlightMenuItem('${id==curId?'Your Profile':''}')`)
     include titleBar
     include menuBar
     div(class="container")

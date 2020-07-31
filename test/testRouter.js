@@ -16,6 +16,9 @@ describe('get', function () {
           tags: ['java', 'javaScript'],
           title: 'what is sqlite?',
           votes: -1,
+          ownerId: 'u58026024',
+          ownerName: 'unphydra',
+          receivedAt: '2020-07-25 15:14:36',
         },
       ]),
       getAllAnsweredQuestions: sinon.mock().returns([
@@ -24,7 +27,10 @@ describe('get', function () {
           answerId: 'a00002',
           tags: ['node'],
           title: 'what is the most powerful thing in database?',
-          isAccepted: 0
+          isAccepted: 0,
+          ownerId: 'u58027206',
+          ownerName: 'satheesh-chandran',
+          receivedAt: '2020-07-25 15:14:36',
         },
       ]),
       addNewUser: sinon.mock().returns(),
@@ -41,7 +47,6 @@ describe('get', function () {
       insertQuestion: async () => 'q00001',
       insertTags: async () => undefined,
       acceptAnswer: async () => 1,
-
       getQuestionDetails: sinon
         .mock()
         .returns(Promise.resolve({

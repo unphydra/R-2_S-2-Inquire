@@ -1,3 +1,4 @@
+script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript")
 div(class="container")
   div(class="container-h")
     div(class="con-header-title") All Questions
@@ -19,5 +20,8 @@ div(class="container")
             div(class="tags")
               each tag in question.tags
                 div(class="tag")=tag
+            div(class='q-author')
+              span(class="q-author-name" onclick=`window.location.href='/viewProfile?id=${question.ownerId.slice('1')}'`)=`${question.ownerName}, `
+              span(class="date-time" time=`${question.receivedAt}`)
     else 
       p No questions

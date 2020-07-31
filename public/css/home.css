@@ -260,6 +260,17 @@ body {
   border-left-color: #00a8cc;
 }
 
+.q-author {
+  font-weight: 400;
+  padding-bottom: 1vh;
+  text-align: right;
+  color: #f48024;
+}
+
+.q-author-name:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 .ansCount {
   font-size: small;
 }
