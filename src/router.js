@@ -24,7 +24,8 @@ const {
   updateVote,
   acceptAnswer,
   getUpdateVoteDetails,
-  serveYourQuestionsPage
+  serveYourQuestionsPage,
+  serveYourAnswersPage
 } = require('./handlers');
 
 const { env } = process;
@@ -48,6 +49,7 @@ app.get('/loginPage', serveLoginPage);
 app.get('/user/auth', fetchUserDetails, handleLogin);
 app.get(['/', '/home'], serveHomepage);
 app.get('/yourQuestions', isLoggedIn, serveYourQuestionsPage, serveHomepage);
+app.get('/yourAnswers', isLoggedIn, serveYourAnswersPage);
 app.get('/question/:id', serveQuestionPage);
 app.post('/newProfile', checkOptions('name', 'username'), registerNewUser);
 app.get('/viewProfile', serveProfilePage);

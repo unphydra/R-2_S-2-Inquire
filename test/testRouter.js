@@ -18,6 +18,15 @@ describe('get', function () {
           votes: -1,
         },
       ]),
+      getAllAnsweredQuestions: sinon.mock().returns([
+        {
+          id: 'q00002',
+          answerId: 'a00002',
+          tags: ['node'],
+          title: 'what is the most powerful thing in database?',
+          isAccepted: 0
+        },
+      ]),
       addNewUser: sinon.mock().returns(),
       findUser: sinon
         .fake
@@ -435,7 +444,22 @@ describe('get', function () {
         .expect(/Your Questions/, done);
     });
   });
-    
+  
+  context('yourAnswers', function () {
+    it('should give the your answers page ', function (done) {
+      this.timeout(5000);
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123 };
+        next();
+      });
+      request(app)
+        .get('/yourAnswers')
+        .expect(statusCodes.ok)
+        .expect('Content-Type', /text\/html/)
+        .expect(/Your Answers/, done);
+    });
+  });
+
   context('Voting', () => {
     it('should upVote a question', (done) => {
       app.set('sessionMiddleware', (req, res, next) => {

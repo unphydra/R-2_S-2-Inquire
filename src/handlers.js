@@ -91,6 +91,14 @@ const serveYourQuestionsPage = async function (req, res, next) {
   next();
 };
 
+const serveYourAnswersPage = async (req, res) => {
+  const { dataStore } = req.app.locals;
+  const { id } = req.session;
+  const questions = await dataStore.getAllAnsweredQuestions(id);
+  const userInfo = await dataStore.findUser(id);
+  res.render('home', {userInfo, userId: id, questions});
+};
+
 const serveQuestionPage = async (req, res) => {
   const { id } = req.params;
   const { dataStore } = req.app.locals;
@@ -256,5 +264,6 @@ module.exports = {
   updateVote,
   acceptAnswer,
   getUpdateVoteDetails,
-  serveYourQuestionsPage
+  serveYourQuestionsPage,
+  serveYourAnswersPage
 };

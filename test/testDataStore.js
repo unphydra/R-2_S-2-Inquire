@@ -56,6 +56,22 @@ describe('DataStore', function () {
     });
   });
 
+  context('getAllAnsweredQuestions', function () {
+    it('should give all answered questions of a particular user', async () => {
+      const actual = await dataStore.getAllAnsweredQuestions(58026024);
+      const expected = [
+        {
+          id: 'q00002',
+          answerId: 'a00002',
+          tags: ['node'],
+          title: 'what is the most powerful thing in database?',
+          isAccepted: 0
+        }
+      ];
+      assert.deepStrictEqual(actual, expected);
+    });
+  });
+
   context('AddNewUser', function () {
     it('should add a new user to database', async function () {
       const actual = await dataStore.addNewUser({

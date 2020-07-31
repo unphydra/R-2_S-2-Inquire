@@ -52,26 +52,37 @@ class DataStore {
     });
   }
 
-  async getAllQuestions(userId) {
-    const whereClause = userId ? `where t1.ownerId='u${userId}'` : '';
-    const query1 = `SELECT t1.id, t1.title, t1.votes, t1.anyAnswerAccepted, 
-                    count(t2.id) as answers FROM questions t1 LEFT JOIN 
-                    answers t2 ON t1.id = t2.questionId
-                    ${whereClause} GROUP BY(t1.id)`;
+  async attachTags(questions) {
     const query2 = `SELECT t1.questionId, GROUP_CONCAT(t2.title) as tags
                     FROM questionTags t1 LEFT JOIN tags t2
                     ON t1.tagId = t2.id GROUP BY t1.questionId`;
-
-    const result = await this.executeQuery(query1);
     const tags = await this.executeQuery(query2);
     tags.forEach((tag) => {
-      result.forEach((question) => {
+      questions.forEach((question) => {
         if (tag.questionId === question.id) {
           question['tags'] = tag['tags'] && tag['tags'].split(',');
         }
       });
     });
-    return result;
+    return questions;
+  }
+
+  async getAllQuestions(userId) {
+    const whereClause = userId ? `where t1.ownerId='u${userId}'` : '';
+    const query = `SELECT t1.id, t1.title, t1.votes, t1.anyAnswerAccepted, 
+                    count(t2.id) as answers FROM questions t1 LEFT JOIN 
+                    answers t2 ON t1.id = t2.questionId
+                    ${whereClause} GROUP BY(t1.id)`;
+    const questions = await this.executeQuery(query);
+    return await this.attachTags(questions);
+  }
+
+  async getAllAnsweredQuestions(userId) {
+    const query = `SELECT t1.id, t1.title,t2.id as answerId,t2.isAccepted 
+                  FROM questions t1 LEFT JOIN answers t2 ON t1.id=t2.questionId 
+                  WHERE t2.ownerId='u${userId}' GROUP BY(t1.id)`;
+    const questions = await this.executeQuery(query);
+    return await this.attachTags(questions);
   }
 
   async getComments(responseId) {
