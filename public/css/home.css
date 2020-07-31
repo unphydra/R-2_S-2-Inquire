@@ -191,6 +191,12 @@ body {
   font-weight: 400;
 }
 
+.ticksymbol > img {
+  cursor: pointer;
+  margin-left: 1vw;
+  width: 4vw;
+}
+
 .title {
   width: 60vw;
   margin: 0 0 1vh 2vw;

@@ -5,8 +5,8 @@ html(lang='en')
     title home page
     style
       include ../public/css/home.css
-    script(src="../js/renderHeader.js")
-  body(onload=`renderHeader(${questions.length})`)
+    script(src="../js/home.js")
+  body(onload=`main(${questions.length})`)
     include titleBar
     include menuBar
     include questions

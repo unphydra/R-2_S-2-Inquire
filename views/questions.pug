@@ -7,9 +7,13 @@ div(class="container")
     if(questions.length > 0)
       each question in questions
         div(class="question")
-          div(class=question.anyAnswerAccepted ? "countName-ac" : question.answers > 0? "countName-a":"countName")
+          -const className=question.anyAnswerAccepted ? "countName-ac" : question.answers > 0? "countName-a":"countName"
+          div(class=`${className}`)
             div(class="count")=`${question.answers}`
               div(class="ansCount") answers
+          div(class="ticksymbol hide")
+              -const url=question.isAccepted ? "greentickmark.png" : "tickmark.png"
+              img(src=`/images/${url}`, alt="not found") 
           div
             div(class="title" onClick=`window.location.href='/question/${question.id}'`)=question.title
             div(class="tags")
