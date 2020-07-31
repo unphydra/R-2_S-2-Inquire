@@ -286,5 +286,67 @@ describe('New Insertion in Database', function () {
       assert.deepStrictEqual(actual, ['t00001', 't00002']);
     });
   });
+
+  context('getVoteCount', async () => {
+    it('should give votes in questions', async () => {
+      await insertIntoTables(db);
+      const actual = await dataStore.getVoteCount('questions', 'q00001');
+      assert.deepStrictEqual(actual, {votes: -1});
+    });
+
+    it('should give empty when no table present', async () => {
+      const message = 'SQLITE_ERROR: no such table: test';
+      await dataStore.getVoteCount('test', 'test').catch(err => {
+        assert.deepStrictEqual(err.message, message);
+      });
+    });
+  });
+
+  context('updateResponseVote', async () => {
+    it('should update votes in questions', async () => {
+      await insertIntoTables(db);
+      await dataStore.updateResponseVote('questions', 'q00001', 3);
+      const actual = await dataStore.getVoteCount('questions', 'q00001');
+      assert.deepStrictEqual(actual, {votes: 2});
+    });
+  });
+
+  context('getVoteLog', async () => {
+    it('should give details of vote log', async () => {
+      await insertIntoTables(db);
+      const actual = await dataStore.getVoteLog('58027206', 'q00001');
+      assert.deepStrictEqual(actual, {
+        'ownerId': 'u58027206',
+        'responseId': 'q00001',
+        'vote': 0
+      });
+    });
+
+    it('should not give details when log is not present', async () => {
+      const actual = await dataStore.getVoteLog('58027206', 'q00001');
+      assert.isUndefined(actual);
+    });
+  });
+
+  context('deleteVoteLog', async () => {
+    it('should delete a log from vote log', async () => {
+      await insertIntoTables(db);
+      await dataStore.deleteVoteLog('58027206', 'q00001');
+      const actual = await dataStore.getVoteLog('58027206', 'q00001');
+      assert.isUndefined(actual);
+    });
+  });
+
+  context('insertToVoteLog', async () => {
+    it('should insert new log in vote log', async () => {
+      await dataStore.insertToVoteLog('58027206', 'q00001', 1);
+      const actual = await dataStore.getVoteLog('58027206', 'q00001');
+      assert.deepStrictEqual(actual, {
+        'ownerId': 'u58027206',
+        'responseId': 'q00001',
+        'vote': 1
+      });
+    });
+  });
 });
 

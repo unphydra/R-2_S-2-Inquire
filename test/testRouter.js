@@ -3,6 +3,7 @@ const nock = require('nock');
 require('dotenv').config({ path: './.env' });
 const sinon = require('sinon');
 const { app } = require('../src/router');
+const { assert } = require('chai');
 const statusCodes = { ok: 200, redirect: 302, badRequest: 400, notFound: 404 };
 
 describe('get', function () {
@@ -31,6 +32,7 @@ describe('get', function () {
       insertQuestion: async () => 'q00001',
       insertTags: async () => undefined,
       acceptAnswer: async () => 1,
+
       getQuestionDetails: sinon
         .mock()
         .returns(Promise.resolve({
@@ -431,6 +433,137 @@ describe('get', function () {
         .expect(statusCodes.ok)
         .expect('Content-Type', /text\/html/)
         .expect(/Your Questions/, done);
+    });
+  });
+    
+  context('Voting', () => {
+    it('should upVote a question', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      app.locals.dataStore = {
+        getVoteLog: sinon.fake.returns(undefined),
+        updateResponseVote: sinon.fake.returns(),
+        insertToVoteLog: sinon.fake.returns(),
+        getVoteCount: sinon.fake.returns({votes: 1})
+      };
+
+      request(app)
+        .post('/upVote/questions/q00001')
+        .end((err, res) => {
+          assert.deepStrictEqual(
+            res.headers['content-type'], 
+            'application/json; charset=utf-8'
+          );
+          assert.deepStrictEqual(res.status, statusCodes.ok);
+          assert.deepStrictEqual(res.body, {votes: 1});
+          assert.ifError(err);
+          const {
+            getVoteLog,
+            updateResponseVote,
+            insertToVoteLog, 
+            getVoteCount
+          } = app.locals.dataStore;
+          sinon.assert.calledWith(getVoteLog, '123', 'q00001');
+          sinon.assert.calledWith(updateResponseVote, 'questions', 'q00001', 1);
+          sinon.assert.calledWith(insertToVoteLog, '123', 'q00001', 1);
+          sinon.assert.calledWith(getVoteCount, 'questions', 'q00001');
+          done();
+        });
+    });
+
+    it('should give empty when question is already upVoted', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      app.locals.dataStore = {
+        getVoteLog: sinon.fake.returns({vote: 1}),
+      };
+
+      request(app)
+        .post('/upVote/questions/q00001')
+        .end((err, res) => {
+          assert.deepStrictEqual(
+            res.headers['content-type'], 
+            'application/json; charset=utf-8'
+          );
+          assert.deepStrictEqual(res.status, statusCodes.ok);
+          assert.deepStrictEqual(res.body, {});
+          assert.ifError(err);
+          const {
+            getVoteLog,
+          } = app.locals.dataStore;
+          sinon.assert.calledWith(getVoteLog, '123', 'q00001');
+          sinon.assert.calledOnce(getVoteLog);
+          done();
+        });
+    });
+
+    it('should upVote a question is already downVoted', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      app.locals.dataStore = {
+        getVoteLog: sinon.fake.returns({vote: 0}),
+        updateResponseVote: sinon.fake.returns(),
+        deleteVoteLog: sinon.fake.returns(),
+        getVoteCount: sinon.fake.returns({votes: 0})
+      };
+
+      request(app)
+        .post('/upVote/questions/q00001')
+        .end((err, res) => {
+          assert.deepStrictEqual(
+            res.headers['content-type'], 
+            'application/json; charset=utf-8'
+          );
+          assert.deepStrictEqual(res.status, statusCodes.ok);
+          assert.deepStrictEqual(res.body, {votes: 0});
+          assert.ifError(err);
+          const {
+            getVoteLog,
+            updateResponseVote,
+            deleteVoteLog, 
+            getVoteCount
+          } = app.locals.dataStore;
+          sinon.assert.calledWith(getVoteLog, '123', 'q00001');
+          sinon.assert.calledWith(updateResponseVote, 'questions', 'q00001', 1);
+          sinon.assert.calledWith(deleteVoteLog, '123', 'q00001');
+          sinon.assert.calledWith(getVoteCount, 'questions', 'q00001');
+          done();
+        });
+    });
+
+    it('should give bad request if type is given wrong', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      app.locals.dataStore = {
+        getVoteLog: sinon.fake.returns({vote: 1}),
+        updateResponseVote: sinon.fake.returns(new Error('no such table')),
+      };
+      request(app)
+        .post('/downVote/test/q00001')
+        .end((err, res) => {
+          assert.deepStrictEqual(
+            res.headers['content-type'], 
+            'text/html; charset=utf-8'
+          );
+          assert.deepStrictEqual(res.text, 'bad request');
+          assert.deepStrictEqual(res.status, statusCodes.badRequest);
+          assert.ifError(err);
+          const {
+            getVoteLog,
+            updateResponseVote,
+          } = app.locals.dataStore;
+          sinon.assert.calledWith(getVoteLog, '123', 'q00001');
+          sinon.assert.calledWith(updateResponseVote, 'test', 'q00001', -1);
+          done();
+        });
     });
   });
 });

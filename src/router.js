@@ -57,7 +57,7 @@ app.get('/askQuestion', servePostQuestionPage);
 app.post('/postAnswer/:questionId', isLoggedIn, postAnswer);
 app.post('/postComment/:questionId/:resId', isLoggedIn, postComment);
 app.post('/acceptAnswer/:questionId/:answerId', isLoggedIn, acceptAnswer);
-app.get(
+app.post(
   ['/upVote/:type/:resId', '/downVote/:type/:resId'],
   [isLoggedIn, getUpdateVoteDetails, updateVote]
 );

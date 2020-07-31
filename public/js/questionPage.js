@@ -14,7 +14,7 @@ const checkForm = (id, form) => {
 };
 
 const updateVote = (url, container) => {
-  fetch(url).then((res) => res.json()).then(data => {
+  fetch(url, {method: 'POST'}).then((res) => res.json()).then(data => {
     const ONE = 1;
     if(data && 'votes' in data){
       container
