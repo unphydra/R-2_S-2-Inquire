@@ -129,7 +129,7 @@ describe('DataStore', function () {
   });
 
   context('GetQuestionDetails', () => {
-    it('should name something', async () => {
+    it('should give question details', async () => {
       sinon.useFakeTimers();
       const actual = await dataStore.getQuestionDetails('q00001');
       const expected = {
@@ -162,6 +162,11 @@ describe('DataStore', function () {
             modifiedAt: '2020-07-25 15:14:36',
             isAccepted: 0,
             votes: 0,
+            ownerInfo: {
+              avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+              id: 'u58027206',
+              username: 'satheesh-chandran'
+            },
             comments: [
               {
                 id: 'c00002',

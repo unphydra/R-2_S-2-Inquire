@@ -1,6 +1,7 @@
 div(class="answers")
       span=`${answers.length} Answers`
       each answer in answers
+        -const {ownerInfo} = answer;
         div(class="question-body")
           div(class="question-body-c")!=answer.answer
           div(class="sidebar") 
@@ -14,6 +15,12 @@ div(class="answers")
                   span=answer.votes
                   div(class="ansCount") votes
               div(class="down-arrow" onclick=`updateVote('/downVote/answers/${answer.id}',this)`)
+        div(class="question-title-b answer-author")
+              div(class="avatar-div")
+                img(class="author-avatar" src=`${ownerInfo.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${ownerInfo.id.slice(1)}'`)
+              div
+                div(class="author")=ownerInfo.username
+                div(class="time") one minute ago
         div(class="comments a-comments") 
               if(comments.length > 0)
                 span Comments 

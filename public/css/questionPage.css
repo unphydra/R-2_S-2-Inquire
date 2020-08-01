@@ -57,6 +57,12 @@
 }
 
 .author-avatar {
+  border-radius: 50%;
+  cursor: pointer;
+  contain: content;
+  max-width: 10%;
+  max-height: 100%;
+  opacity: 0.9;
   max-width: 100%;
 }
 
@@ -100,6 +106,11 @@ width: 80%;
 .answers > span{
   font-size: 20px;
   color: #f48024;
+}
+
+.answer-author {
+  justify-content: flex-end;
+  width:80%;
 }
 
 .a-comments{

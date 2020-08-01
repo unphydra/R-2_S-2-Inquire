@@ -110,7 +110,11 @@ class DataStore {
                     from answers where questionId="${questionId}"`;
     const answers = await this.executeQuery(query);
     for (let index = 0; index < answers.length; index++) {
-      answers[index].comments = await this.getComments(answers[index].id);
+      const answer = answers[index];
+      answer.comments = await this.getComments(answer.id);
+      const ownerQuery = `select avatar,username,id from users 
+                          where id='${answer.ownerId}'`;
+      answer.ownerInfo = await this.getQuery(ownerQuery);
     }
     return answers;
   }
