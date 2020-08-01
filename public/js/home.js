@@ -28,7 +28,7 @@ const renderDates = () => {
   const spans = Array.from(document.querySelectorAll('.date-time'));
   spans.forEach((span) => {
     const date = moment(span.getAttribute('time'));
-    span.innerText = date.startOf('min').fromNow();
+    span.innerText = ', ' + date.startOf('min').fromNow();
   });
 };
 

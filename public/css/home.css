@@ -63,14 +63,75 @@ body {
 .avatar {
   border-radius: 50%;
   cursor: pointer;
-  contain: content;
   max-width: 10%;
-  max-height: 100%;
-  opacity: 0.9;
+  height: 90%;
+  position: relative;
 }
 
-.avatar:hover {
-  opacity: 1;
+.avatar > img {
+  width: 100%;
+  border-radius: 50%;
+  height: 100%;
+}
+
+.popUp-text {
+  visibility: hidden;
+  width: 10vw;
+  background-color: #555555e6;
+  color: #fff;
+  text-align: center;
+  position: absolute;
+  z-index: 1;
+  top: 124%;
+  left: 50%;
+  margin-left: -7vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.popUp-text::after {
+  content: "";
+  position: absolute;
+  top: -15%;
+  left: 65%;
+  border-width: 1vh;
+  border-style: solid;
+  border-color: transparent transparent #626262e6 transparent;
+}
+
+.show {
+  visibility: visible;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+
+.profileBtn {
+  margin: 10%;
+  height: 4vh;
+  outline: none;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  font-size: large;
+  color: rgb(41, 41, 41,0.8);
+  background-color: white
+}
+
+.logoutBtn {
+  margin: 10%;
+  margin-top: 0;
+  height: 4vh;
+  outline: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  font-size: large;
+  color: rgb(41, 41, 41,0.8);
+  background-color: #ff2c2c;
 }
 
 .menubar {

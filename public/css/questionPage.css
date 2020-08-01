@@ -27,13 +27,16 @@
   border-left: 2vw solid transparent;
   border-bottom: 2.5vh solid rgba(41,41,41,0.6);
   border-right: 2vw solid transparent;
-  margin-bottom: 0.3vh
+  margin-bottom: 0.3vh;
+  cursor: pointer;
 }
+
 .down-arrow{
   border-left: 2vw solid transparent;
   border-top: 2.5vh solid rgba(41,41,41,0.6);
   border-right: 2vw solid transparent;
   margin-top: 0.3vh;
+  cursor: pointer;
 }
 
 .question-title-h {
@@ -150,6 +153,11 @@ width: 80%;
   font-weight: 400;
   padding-bottom: 1vh;
   margin-left: 2vw;
+}
+
+.c-author span:first-child:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .comments div:last-child {

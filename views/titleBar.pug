@@ -1,8 +1,17 @@
+script.
+  const toggleShow = function() {
+    const popup = document.querySelector('.popUp-text');
+    popup.classList.toggle('show');
+  }
 div(class="titleBar")
-      div(class="logo" onClick="window.location.href='/'") Inquire
-      div(class="userInfo")
-        if userId
-          div(class="userName")=userInfo.username
-          img(class="avatar" src=`${userInfo.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${userId}'`)
-        else
-          button(class="pageBtn" onClick="window.location.href='/loginPage'") Login
+  div(class="logo" onClick="window.location.href='/'") Inquire
+  div(class="userInfo")
+    if userId
+      div(class="userName")=userInfo.username
+      div(class="avatar")
+        img( src=`${userInfo.avatar}`, alt="alt" onclick="toggleShow()" )
+        span(class="popUp-text" )
+          button(class="profileBtn" onClick=`window.location.href='/viewProfile?id=${userId}'`) ViewProfile
+          button(class="logoutBtn" onClick="window.location.href='/cancel'") Logout
+    else
+      button(class="pageBtn" onClick="window.location.href='/loginPage'") Login

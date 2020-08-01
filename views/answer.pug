@@ -24,6 +24,8 @@ div(class="answers")
                     div(class="edit-btn" onclick=`makeCommentEditable(this,'${comment.id}')`) edit
                     div(class="cancel-btn hide" onclick=`makeCommentUneditable(this,'${comment.id}')`) cancel
                     div(class="save-btn hide" onclick=`saveComment(this, '${comment.id}')`) save
-                  div(class="c-author")=`${comment.username}, ${comment.receivedAt}`
+                  div(class="c-author")
+                    span(onclick=`window.location.href='/viewProfile?id=${comment.ownerId.slice(1)}'`)=comment.username
+                    span=`, ${comment.receivedAt}`
               include postComment
               +getId(answer.id)

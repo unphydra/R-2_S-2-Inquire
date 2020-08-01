@@ -21,7 +21,7 @@ div(class="container")
               each tag in question.tags
                 div(class="tag")=tag
             div(class='q-author')
-              span(class="q-author-name" onclick=`window.location.href='/viewProfile?id=${question.ownerId.slice('1')}'`)=`${question.ownerName}, `
+              span(class="q-author-name" onclick=`window.location.href='/viewProfile?id=${question.ownerId.slice('1')}'`)=`${question.ownerName}`
               span(class="date-time" time=`${question.receivedAt}`)
     else 
       p No questions
