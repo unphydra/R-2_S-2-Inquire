@@ -129,6 +129,9 @@ width: 80%;
   padding: 1vh 0vw 0.3vh 2vw;
   width: 82%;
 }
+.comment:focus {
+  outline: none;
+}
 .flex-row {
   width: 82%;
   display: flex;

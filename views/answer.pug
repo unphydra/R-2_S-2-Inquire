@@ -21,9 +21,10 @@ div(class="answers")
                 div(class="comment" id=`${comment.id}`)=comment.comment
                 div(class="flex-row")
                   div(class="c-btns")
-                    div(class="edit-btn" onclick=`makeCommentEditable(this,'${comment.id}')`) edit
-                    div(class="cancel-btn hide" onclick=`makeCommentUneditable(this,'${comment.id}')`) cancel
-                    div(class="save-btn hide" onclick=`saveComment(this, '${comment.id}')`) save
+                    if(comment.ownerId == `u${userId}`)
+                      div(class="edit-btn" onclick=`makeCommentEditable(this,'${comment.id}')`) edit
+                      div(class="cancel-btn hide" onclick=`makeCommentUneditable(this,'${comment.id}')`) cancel
+                      div(class="save-btn hide" onclick=`saveComment(this, '${comment.id}')`) save
                   div(class="c-author")
                     span(onclick=`window.location.href='/viewProfile?id=${comment.ownerId.slice(1)}'`)=comment.username
                     span=`, ${comment.receivedAt}`

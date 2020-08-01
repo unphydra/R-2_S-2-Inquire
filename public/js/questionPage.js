@@ -60,6 +60,16 @@ const toggleCommentBox = (className) => {
   commentBox.classList.add('hide');
 };
 
+const moveCursor = (element) => {
+  const range = document.createRange();
+  const sel = window.getSelection();
+  range.setStart(element.childNodes['0'], element.innerText.length);
+  range.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(range);
+  element.focus();
+};
+
 const makeCommentEditable = (editBtn, commentId) => {
   const comment = document.querySelector(`#${commentId}`);
   comment.setAttribute('contenteditable', true);
@@ -67,6 +77,7 @@ const makeCommentEditable = (editBtn, commentId) => {
   editBtn.parentElement.children['1'].classList.remove('hide');
   editBtn.parentElement.children['2'].classList.remove('hide');
   localStorage.setItem('oldComment', comment.innerText);
+  moveCursor(comment);
 };
 
 const makeCommentUneditable = (cancelBtn, commentId) => {
