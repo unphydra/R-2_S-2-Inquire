@@ -208,6 +208,19 @@ describe('DataStore', function () {
     });
   });
 
+  context('updateComment', function () {
+    it('should update the comment for given Id', async function () {
+      const actual = await dataStore.updateComment('c00003', 'It is right');
+      const expected = {
+        id: 'c00003',
+        responseId: 'a00002',
+        ownerId: 'u58027024',
+        comment: 'It is right',
+        receivedAt: '2020-07-25 15:14:36'
+      };
+      assert.deepStrictEqual(actual, expected);
+    });
+  });
   context('getRow', function () {
     it('should give specific row for the given id', async function () {
       const expected = {

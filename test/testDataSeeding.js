@@ -159,8 +159,8 @@ const insertIntoTables = async function(db) {
         'yes you are right',
         '2020-07-25 15:14:36'
       ),
-      ('
-        c00003',
+      (
+        'c00003',
         'a00002',
         'u58027024',
         'It is wrong',

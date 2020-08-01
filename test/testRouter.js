@@ -42,6 +42,13 @@ describe('get', function () {
           )
         ),
       saveComment: async () => 'c00001',
+      updateComment: async () => ({
+        id: 'c00003',
+        responseId: 'a00002',
+        ownerId: 'u58027024',
+        comment: 'It is right',
+        receivedAt: '2020-07-25 15:14:36'
+      }),
       getRow: async () => true,
       insertAnswer: async () => 'a00001',
       insertQuestion: async () => 'q00001',
@@ -397,6 +404,47 @@ describe('get', function () {
     });
   });
 
+  context('updateComment', function () {
+    it('should give updated comment row', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123 };
+        next();
+      });
+      request(app)
+        .post('/updateComment')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ comment: 'test comment', commentId: 'c00003' }))
+        .expect(200)
+        .expect(/It is right/, done);
+    });
+
+    it('should give the bad request error for wrong commentId', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns(undefined);
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123};
+        next();
+      });
+      request(app)
+        .post('/updateComment')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ comment: 'test comment', commentId: 'c00003' }))
+        .expect(400, done);
+    });
+
+    it('should give the error for others commentId', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns({ ownerId: 'u122'});
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123};
+        next();
+      });
+      request(app)
+        .post('/updateComment')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ comment: 'test comment', commentId: 'c00003' }))
+        .expect(405, done);
+    });
+  });
   context('acceptAnswer', function () {
     it('should accept the answer for given answerId and questionId', (done) => {
       app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
