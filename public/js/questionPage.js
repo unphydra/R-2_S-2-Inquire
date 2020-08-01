@@ -59,3 +59,37 @@ const toggleCommentBox = (className) => {
   }
   commentBox.classList.add('hide');
 };
+
+const makeCommentEditable = (editBtn, commentId) => {
+  const comment = document.querySelector(`#${commentId}`);
+  comment.setAttribute('contenteditable', true);
+  editBtn.classList.add('hide');
+  editBtn.parentElement.children['1'].classList.remove('hide');
+  editBtn.parentElement.children['2'].classList.remove('hide');
+  localStorage.setItem('oldComment', comment.innerText);
+};
+
+const makeCommentUneditable = (cancelBtn, commentId) => {
+  const comment = document.querySelector(`#${commentId}`);
+  comment.setAttribute('contenteditable', false);
+  cancelBtn.classList.add('hide');
+  cancelBtn.parentElement.children['0'].classList.remove('hide');
+  cancelBtn.parentElement.children['2'].classList.add('hide');
+  comment.innerText = localStorage.getItem('oldComment');
+  localStorage.removeItem('oldComment');
+};
+
+const saveComment = (saveBtn, commentId) => {
+  const comment = document.querySelector(`#${commentId}`);
+  const options = { 
+    headers: { 'Content-Type': 'application/json' },
+    method: 'POST', 
+    body: JSON.stringify({comment: comment.innerText, commentId})
+  };
+  fetch('/updateComment', options).then((res) => res.json()).then(data => {
+    comment.innerText = data.comment;
+    saveBtn.classList.add('hide');
+    saveBtn.parentElement.children['0'].classList.remove('hide');
+    saveBtn.parentElement.children['1'].classList.add('hide');
+  });
+};

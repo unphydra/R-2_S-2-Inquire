@@ -25,7 +25,8 @@ const {
   acceptAnswer,
   getUpdateVoteDetails,
   serveYourQuestionsPage,
-  serveYourAnswersPage
+  serveYourAnswersPage,
+  updateComment
 } = require('./handlers');
 
 const { env } = process;
@@ -62,6 +63,10 @@ app.post('/acceptAnswer/:questionId/:answerId', isLoggedIn, acceptAnswer);
 app.post(
   ['/upVote/:type/:resId', '/downVote/:type/:resId'],
   [isLoggedIn, getUpdateVoteDetails, updateVote]
+);
+app.post(
+  '/updateComment', 
+  [isLoggedIn, checkOptions('comment', 'commentId'), updateComment]
 );
 
 module.exports = { app };

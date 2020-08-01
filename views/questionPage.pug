@@ -45,8 +45,13 @@ html(lang='en')
           if(comments.length > 0)
             span Comments 
           each comment in comments
-            div(class="comment")=comment.comment
-            div(class="c-author")=`${comment.username}, ${comment.receivedAt}`
+            div(class="comment" id=`${comment.id}`)=comment.comment
+            div(class="flex-row")
+              div(class="c-btns")
+                div(class="edit-btn" onclick=`makeCommentEditable(this,'${comment.id}')`) edit
+                div(class="cancel-btn hide" onclick=`makeCommentUneditable(this,'${comment.id}')`) cancel
+                div(class="save-btn hide" onclick=`saveComment(this, '${comment.id}')`) save
+              div(class="c-author")=`${comment.username}, ${comment.receivedAt}`
           include postComment
           +getId(questionDetails.id)
         include postAnswer

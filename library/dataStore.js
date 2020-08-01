@@ -195,6 +195,13 @@ class DataStore {
     return `c${currentId}`;
   }
 
+  async updateComment(commentId, comment) {
+    const updateQuery = `UPDATE comments SET comment='${comment}'
+                         WHERE id='${commentId}'`;
+    await this.executeQuery(updateQuery);
+    return await this.getRow('comments', commentId);
+  }
+
   async acceptAnswer(questionId, answerId) {
     const updateQuery1 = `UPDATE answers SET isAccepted=TRUE 
             WHERE id='${answerId}' AND questionId='${questionId}'`;

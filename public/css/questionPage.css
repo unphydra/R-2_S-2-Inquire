@@ -126,24 +126,32 @@ width: 80%;
   padding: 1vh 0vw 0.3vh 2vw;
   width: 82%;
 }
+.flex-row {
+  width: 82%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-left: 2vw;
+  border-bottom:1px dashed rgba(41, 41, 41, 0.5) ;
+  color: #f48024;
+}
+
+.c-btns {
+  display: flex;
+  flex-direction: row;
+}
+.c-btns > div {
+  text-decoration: underline;
+  cursor: pointer;
+  margin-right: 1vw;
+}
 
 .c-author {
   font-weight: 400;
   padding-bottom: 1vh;
   margin-left: 2vw;
-  text-align: right;
-  width: 82%;
-  border-bottom:1px dashed rgba(41, 41, 41, 0.5) ;
-  color: #f48024;
 }
 
 .comments div:last-child {
   border: none;
-}
-
-.flex-row {
-  width: 72vw;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
 }

@@ -256,6 +256,21 @@ const acceptAnswer = async function(req, res) {
   res.json(status);
 };
 
+const updateComment = async function(req, res) {
+  const { id } = req.session;
+  const { dataStore } = req.app.locals;
+  const { comment, commentId } = req.body;
+  const row = await dataStore.getRow('comments', commentId);
+  if(!row) {
+    return res.status('400').send('bad request');
+  }
+  if(id !== +row.ownerId.slice('1')) {
+    return res.status('405').json({error: 'Your are not comment owner'});
+  }
+  const status = await dataStore.updateComment(commentId, comment);
+  res.json(status);
+};
+
 module.exports = {
   checkOptions,
   reqLogin,
@@ -276,5 +291,6 @@ module.exports = {
   acceptAnswer,
   getUpdateVoteDetails,
   serveYourQuestionsPage,
-  serveYourAnswersPage
+  serveYourAnswersPage,
+  updateComment
 };
