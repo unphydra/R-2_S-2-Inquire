@@ -2,7 +2,6 @@ html(lang='en')
   head
     meta(charset='utf-8')
     title QuestionPage
-    script(src="/js/questionPage.js")
     style
       include ../public/css/home.css
       include ../public/css/questionPage.css
@@ -12,14 +11,17 @@ html(lang='en')
     script(src="https://cdn.quilljs.com/1.3.6/quill.js")
     script(src="https://cdn.quilljs.com/1.3.6/quill.min.js")
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
-  body
+    script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript")
+    script(src="/js/renderingDates.js")
+    script(src="/js/questionPage.js")
+  body(onload="main()")
     include titleBar
     include menuBar
     div(class="container")
       if !questionDetails
         div not found
       else
-        -const {title,body,tags,comments,answers,votes} = questionDetails
+        -const {title,body,tags,comments,answers,votes,receivedAt} = questionDetails
         -const {id,avatar,username} = ownerInfo
         div(class="container-h")
           div(class="question-title")
@@ -29,7 +31,7 @@ html(lang='en')
                 img(class="author-avatar" src=`${avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${id.slice(1)}'`)
               div
                 div(class="author")=username
-                div(class="time") one minute ago
+                div(class="time" time=`${receivedAt}`)
         div(class="question-body")
           div(class="question-body-c")!=body
             div(class="tags" style="margin-left:0")
@@ -55,7 +57,7 @@ html(lang='en')
                   div(class="save-btn hide" onclick=`saveComment(this, '${comment.id}')`) save
               div(class="c-author")
                 span(onclick=`window.location.href='/viewProfile?id=${comment.ownerId.slice(1)}'`)=comment.username
-                span=`, ${comment.receivedAt}`
+                span(class='q-comment-time' time=`${comment.receivedAt}`) ,&nbsp;
           include postComment
           +getId(questionDetails.id)
         include postAnswer

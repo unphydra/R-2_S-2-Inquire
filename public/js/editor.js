@@ -1,5 +1,5 @@
 let quill;
-const main = function() {
+const renderEditor = function() {
   const toolbarOptions = [
     ['bold', 'italic', 'underline'], 
     ['code-block', 'link'],
@@ -16,4 +16,3 @@ const main = function() {
   });
 };
 
-window.onload = main;

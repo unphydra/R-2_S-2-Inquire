@@ -46,7 +46,7 @@ const updateAcceptAnswer = (questionId, answerId, tickmark) => {
   };
   fetch(url, options).then((res) => res.json()).then(data => {
     if(data && data.isAccepted === ONE) {
-      tickmark.setAttribute('src', '/images/greentickmark.png');
+      tickmark.firstElementChild.setAttribute('fill', '#42B883');
     }
   });
 };
@@ -103,4 +103,12 @@ const saveComment = (saveBtn, commentId) => {
     saveBtn.parentElement.children['0'].classList.remove('hide');
     saveBtn.parentElement.children['1'].classList.add('hide');
   });
+};
+
+const main = () => {
+  const questionDate = document.querySelector('.time');
+  renderDate(questionDate);
+  renderDates('.q-comment-time');
+  renderDates('.a-comment-time');
+  renderEditor();
 };

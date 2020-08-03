@@ -22,7 +22,7 @@ describe('DataStore', function () {
       const actual = await dataStore.getAllQuestions();
       const expected = [
         {
-          answers: 1,
+          answercount: 1,
           id: 'q00001',
           tags: ['java', 'javaScript'],
           title: 'what is sqlite?',
@@ -30,10 +30,10 @@ describe('DataStore', function () {
           ownerId: 'u58026024',
           ownerName: 'unphydra',
           receivedAt: '2020-07-25 15:14:36',
-          anyAnswerAccepted: 0,
+          isAccepted: 0,
         },
         {
-          answers: 1,
+          answercount: 1,
           id: 'q00002',
           tags: ['node'],
           title: 'what is the most powerful thing in database?',
@@ -41,7 +41,7 @@ describe('DataStore', function () {
           ownerId: 'u58027206',
           ownerName: 'satheesh-chandran',
           receivedAt: '2020-07-25 15:14:36',
-          anyAnswerAccepted: 0,
+          isAccepted: 0,
         },
       ];
       assert.deepStrictEqual(actual, expected);
@@ -50,7 +50,7 @@ describe('DataStore', function () {
       const actual = await dataStore.getAllQuestions(58026024);
       const expected = [
         {
-          answers: 1,
+          answercount: 1,
           id: 'q00001',
           tags: ['java', 'javaScript'],
           title: 'what is sqlite?',
@@ -58,7 +58,7 @@ describe('DataStore', function () {
           ownerId: 'u58026024',
           ownerName: 'unphydra',
           receivedAt: '2020-07-25 15:14:36',
-          anyAnswerAccepted: 0,
+          isAccepted: 0,
         }
       ];
       assert.deepStrictEqual(actual, expected);
@@ -72,6 +72,7 @@ describe('DataStore', function () {
         {
           id: 'q00002',
           answerId: 'a00002',
+          answercount: 1,
           tags: ['node'],
           title: 'what is the most powerful thing in database?',
           isAccepted: 0,

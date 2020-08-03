@@ -11,9 +11,8 @@
   flex-direction: column;
   justify-content: center;
 }
-.tickmark > img {
+.tickmark > svg{
   cursor: pointer;
-  margin-left: 0.6vw;
   margin-bottom: 2vh;
 }
 .vote-container{
