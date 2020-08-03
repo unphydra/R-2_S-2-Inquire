@@ -1,4 +1,5 @@
 const request = require('superagent');
+const knexDataStore = require('../library/knexDataStore');
 
 const checkOptions = function (...args) {
   return function (req, res, next) {
@@ -81,7 +82,7 @@ const serveHomepage = async (req, res) => {
   const { dataStore } = req.app.locals;
   const { id } = req.session;
   const { userId } = req.params;
-  const questions = await dataStore.getAllQuestions(userId);
+  const questions = await knexDataStore.getAllQuestions(userId);
   const userInfo = await dataStore.findUser(id);
   res.render('home', {userInfo, userId: id, questions});
 };

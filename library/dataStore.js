@@ -75,18 +75,6 @@ class DataStore {
     }
     return questions;
   }
-
-  async getAllQuestions(userId) {
-    const whereClause = userId ? `where t1.ownerId='u${userId}'` : '';
-    const query = `SELECT t1.id, t1.title, t1.votes, t1.anyAnswerAccepted,
-                  t1.ownerId, t1.receivedAt, count(t2.id) as answers FROM 
-                  questions t1 LEFT JOIN answers t2 ON t1.id = t2.questionId
-                  ${whereClause} GROUP BY(t1.id)`;
-    const questions = await this.executeQuery(query);
-    await this.attachUsernames(questions);
-    return await this.attachTags(questions);
-  }
-
   async getAllAnsweredQuestions(userId) {
     const query = `SELECT t1.id, t1.title,t2.id as answerId,t2.isAccepted,
                   t1.ownerId, t1.receivedAt FROM questions t1 LEFT JOIN 

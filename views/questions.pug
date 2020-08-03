@@ -8,9 +8,9 @@ div(class="container")
     if(questions.length > 0)
       each question in questions
         div(class="question")
-          -const className=question.anyAnswerAccepted ? "countName-ac" : question.answers > 0? "countName-a":"countName"
+          -const className=question.isAnsAccepted ? "countName-ac" : question.ansCount > 0? "countName-a":"countName"
           div(class=`${className}`)
-            div(class="count")=`${question.answers}`
+            div(class="count")=`${question.ansCount}`
               div(class="ansCount") answers
           div(class="ticksymbol hide")
               -const url=question.isAccepted ? "greentickmark.png" : "tickmark.png"
@@ -19,9 +19,9 @@ div(class="container")
             div(class="title" onClick=`window.location.href='/question/${question.id}'`)=question.title
             div(class="tags")
               each tag in question.tags
-                div(class="tag")=tag
+                div(class="tag")=tag.title
             div(class='q-author')
-              span(class="q-author-name" onclick=`window.location.href='/viewProfile?id=${question.ownerId.slice('1')}'`)=`${question.ownerName}`
+              span(class="q-author-name" onclick=`window.location.href='/viewProfile?id=${question.ownerId}'`)=`${question.ownerName}`
               span(class="date-time" time=`${question.receivedAt}`)
     else 
       p No questions

@@ -17,54 +17,6 @@ describe('DataStore', function () {
     insertIntoTables(db);
   });
 
-  context('getAllQuestions', function () {
-    it('should give all the details of the questions ', async function () {
-      const actual = await dataStore.getAllQuestions();
-      const expected = [
-        {
-          answers: 1,
-          id: 'q00001',
-          tags: ['java', 'javaScript'],
-          title: 'what is sqlite?',
-          votes: -1,
-          ownerId: 'u58026024',
-          ownerName: 'unphydra',
-          receivedAt: '2020-07-25 15:14:36',
-          anyAnswerAccepted: 0,
-        },
-        {
-          answers: 1,
-          id: 'q00002',
-          tags: ['node'],
-          title: 'what is the most powerful thing in database?',
-          votes: 0,
-          ownerId: 'u58027206',
-          ownerName: 'satheesh-chandran',
-          receivedAt: '2020-07-25 15:14:36',
-          anyAnswerAccepted: 0,
-        },
-      ];
-      assert.deepStrictEqual(actual, expected);
-    });
-    it('should give all questions of a particular user', async function () {
-      const actual = await dataStore.getAllQuestions(58026024);
-      const expected = [
-        {
-          answers: 1,
-          id: 'q00001',
-          tags: ['java', 'javaScript'],
-          title: 'what is sqlite?',
-          votes: -1,
-          ownerId: 'u58026024',
-          ownerName: 'unphydra',
-          receivedAt: '2020-07-25 15:14:36',
-          anyAnswerAccepted: 0,
-        }
-      ];
-      assert.deepStrictEqual(actual, expected);
-    });
-  });
-
   context('getAllAnsweredQuestions', function () {
     it('should give all answered questions of a particular user', async () => {
       const actual = await dataStore.getAllAnsweredQuestions(58026024);
@@ -263,16 +215,6 @@ describe('DataStore rejection', function () {
     const db = new sqlite.Database(env.DatabaseUrl);
     dataStore = new DataStore(db);
     dropTables(db);
-  });
-
-  context('getAllQuestions', async () => {
-    it('should give all the details of the questions ', async function () {
-      const message = 'SQLITE_ERROR: no such table: questions';
-      const actual = await dataStore
-        .getAllQuestions()
-        .catch((err) => assert.deepStrictEqual(err.message, message));
-      assert.isUndefined(actual);
-    });
   });
 
   context('findUser', () => {
