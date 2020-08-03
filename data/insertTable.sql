@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS comments
   ownerId INTEGER NOT NULL,
   comment VARCHAR(400) NOT NULL,
   type INTEGER NOT NULL,
-  receivedAt DATE DEFAULT (datetime('now','localtime'))
+  receivedAt DATE DEFAULT (datetime('now','localtime')),
   modifiedAt DATE DEFAULT (datetime('now','localtime'))
   CHECK (type=1 OR type=0),
   FOREIGN KEY (ownerId)
