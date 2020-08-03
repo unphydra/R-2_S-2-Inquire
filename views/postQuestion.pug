@@ -15,12 +15,14 @@ html
     include titleBar
     div(id="container")
       p(class="pageHeading") Post Your Question
-      div(id='error' class='blind') Please explain in brief
       div(class='editor-box')
+        div(id='title-error' class="blind") Please enter the title atleast of 20 characters
         label Title :
         input(type="text" name="title" placeholder="Enter title ..." autofocus)
+        div(id='body-error' class="blind") Please enter the body atleast of 30 characters
         label Body :
         div(id='editor')
+        div(id='tag-error' class="blind") Please enter the title atleast of 2 tags
         label Tags :
         input(type="text" name="tags" placeholder="Enter tags ...")
         div(id="formFooter")

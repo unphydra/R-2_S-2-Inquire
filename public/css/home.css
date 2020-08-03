@@ -109,7 +109,7 @@ body {
   to {opacity:1 ;}
 }
 
-.profileBtn {
+.profile-options {
   margin: 10%;
   height: 4vh;
   outline: none;
@@ -118,20 +118,11 @@ body {
   box-shadow: none;
   font-size: large;
   color: rgb(41, 41, 41,0.8);
-  background-color: white
+  cursor: pointer;
 }
 
-.logoutBtn {
-  margin: 10%;
+.margin-auto {
   margin-top: 0;
-  height: 4vh;
-  outline: none;
-  border: none;
-  box-shadow: none;
-  border-radius: 0;
-  font-size: large;
-  color: rgb(41, 41, 41,0.8);
-  background-color: #ff2c2c;
 }
 
 .menubar {

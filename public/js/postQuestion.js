@@ -1,5 +1,5 @@
-const showError = function() {
-  const error = document.getElementById('error');
+const showError = function(id) {
+  const error = document.getElementById(id);
   error.classList.remove('blind');
   const second = 5000;
   setTimeout(() => error.classList.add('blind'), second);
@@ -8,13 +8,15 @@ const showError = function() {
 const postQuestion = function(button) {
   const title = document.querySelector('input[name="title"');
   const tags = document.querySelector('input[name="tags"');
-  const titleLength = title.value.length;
-  const tagsLength = tags.value.length;
-  const bodyLength = quill.getLength();
-  const TiL = 20, TaL = 2, BL = 30;
-  if(titleLength < TiL && tagsLength < TaL && bodyLength < BL) {
-    showError();
-    return;
+  const TiL = 20, BL = 30, TaL = 2;
+  if(title.value.length < TiL) {
+    return showError('title-error');
+  }
+  if(quill.getLength() < BL) {
+    return showError('body-error');
+  }
+  if(tags.value.length < TaL) {
+    return showError('tag-error');
   }
   fetch('/postQuestion', {
     method: 'POST',

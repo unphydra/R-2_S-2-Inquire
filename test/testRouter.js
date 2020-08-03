@@ -6,7 +6,7 @@ const { app } = require('../src/router');
 const { assert } = require('chai');
 const statusCodes = { ok: 200, redirect: 302, badRequest: 400, notFound: 404 };
 
-describe('get', function () {
+describe('-- Public get methods --', function() {
   beforeEach(() => {
     app.locals.dataStore = {
       getAllQuestions: sinon.mock().returns([
@@ -21,18 +21,6 @@ describe('get', function () {
           receivedAt: '2020-07-25 15:14:36',
         },
       ]),
-      getAllAnsweredQuestions: sinon.mock().returns([
-        {
-          id: 'q00002',
-          answerId: 'a00002',
-          tags: ['node'],
-          title: 'what is the most powerful thing in database?',
-          isAccepted: 0,
-          ownerId: 'u58027206',
-          ownerName: 'satheesh-chandran',
-          receivedAt: '2020-07-25 15:14:36',
-        },
-      ]),
       addNewUser: sinon.mock().returns(),
       findUser: sinon
         .fake
@@ -41,19 +29,6 @@ describe('get', function () {
             { name: 'test', username: 'test', avatar: 'test', id: '12345'}
           )
         ),
-      saveComment: async () => 'c00001',
-      updateComment: async () => ({
-        id: 'c00003',
-        responseId: 'a00002',
-        ownerId: 'u58027024',
-        comment: 'It is right',
-        receivedAt: '2020-07-25 15:14:36'
-      }),
-      getRow: async () => true,
-      insertAnswer: async () => 'a00001',
-      insertQuestion: async () => 'q00001',
-      insertTags: async () => undefined,
-      acceptAnswer: async () => 1,
       getQuestionDetails: sinon
         .mock()
         .returns(Promise.resolve({
@@ -128,21 +103,6 @@ describe('get', function () {
     });
   });
 
-  context('registerNewUser', () => {
-    it('should redirected to the home page when registered', (done) => {
-      const body = JSON.stringify({ name: 'test', username: 'test' });
-      request(app)
-        .post('/newProfile')
-        .set('content-type', 'application/json')
-        .send(body)
-        .expect(statusCodes.redirect, done);
-    });
-
-    it('should give bad request when name & username is absent', (done) => {
-      request(app).post('/newProfile').expect(statusCodes.badRequest, done);
-    });
-  });
-
   context('viewProfile', () => {
     it('should get the view profile page', (done) => {
       request(app)
@@ -169,7 +129,6 @@ describe('get', function () {
         .expect('Content-Type', /text\/html/)
         .expect(/no user found/, done);
     });
-
   });
 
   context('serveQuestionPage', () => {
@@ -288,6 +247,186 @@ describe('get', function () {
     });
   });
 
+  context('serveLoginPage', function () {
+    it('should give the login page', (done) => {
+      request(app).get('/loginPage').expect(200, done);
+    });
+  });
+});
+
+describe('-- Private get methods --', function() {
+  beforeEach(() => {
+    app.locals.dataStore = {
+      getAllQuestions: sinon.mock().returns([
+        {
+          answers: 1,
+          id: 'q00001',
+          tags: ['java', 'javaScript'],
+          title: 'what is sqlite?',
+          votes: -1,
+          ownerId: 'u58026024',
+          ownerName: 'unphydra',
+          receivedAt: '2020-07-25 15:14:36',
+        },
+      ]),
+      getAllAnsweredQuestions: sinon.mock().returns([
+        {
+          id: 'q00002',
+          answerId: 'a00002',
+          tags: ['node'],
+          title: 'what is the most powerful thing in database?',
+          isAccepted: 0,
+          ownerId: 'u58027206',
+          ownerName: 'satheesh-chandran',
+          receivedAt: '2020-07-25 15:14:36',
+        },
+      ]),
+      findUser: sinon
+        .fake
+        .returns(
+          Promise.resolve(
+            { name: 'test', username: 'test', avatar: 'test', id: '12345'}
+          )
+        ),
+      getRow: sinon.mock().returns({ ownerId: 'u123' }),
+    };
+  });
+
+  afterEach(() => sinon.restore());
+
+  context('/yourQuestions', function () {
+    it('should give the yourQuestion page ', function (done) {
+      this.timeout(5000);
+      app.locals.dataStore.getRow = sinon.mock().returns({ ownerId: 'u123' });
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123 };
+        next();
+      });
+      request(app)
+        .get('/yourQuestions')
+        .expect(statusCodes.ok)
+        .expect('Content-Type', /text\/html/)
+        .expect(/Your Questions/)
+        .end(() => {
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
+          done();
+        });
+    });
+  });
+  
+  context('/yourAnswers', function () {
+    it('should give the your answers page ', function (done) {
+      this.timeout(5000);
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123 };
+        next();
+      });
+      request(app)
+        .get('/yourAnswers')
+        .expect(statusCodes.ok)
+        .expect('Content-Type', /text\/html/)
+        .expect(/Your Answers/)
+        .end(() => {
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
+          done();
+        });
+    });
+  });
+
+  context('/askQuestion', function () {
+    it('should give the postQuestion Page', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      request(app)
+        .get('/askQuestion')
+        .expect(200)
+        .end(() => {
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
+          done();
+        });
+    });
+  });
+});
+
+describe('-- post methods --', function () {
+  beforeEach(() => {
+    app.locals.dataStore = {
+      addNewUser: sinon.mock().returns(),
+      findUser: sinon
+        .fake
+        .returns(
+          Promise.resolve(
+            { name: 'test', username: 'test', avatar: 'test', id: '12345'}
+          )
+        ),
+      saveComment: sinon.mock().returns('c00001'),
+      updateComment: sinon.mock().returns({
+        id: 'c00003',
+        responseId: 'a00002',
+        ownerId: 'u58027024',
+        comment: 'It is right',
+        receivedAt: '2020-07-25 15:14:36'
+      }),
+      getRow: sinon.mock().returns(true),
+      insertAnswer: sinon.mock().returns('a00001'),
+      insertQuestion: sinon.mock().returns('q00001'),
+      insertTags: sinon.mock().returns(undefined),
+      acceptAnswer: sinon.mock().returns(1)
+    };
+  });
+
+  afterEach(() => sinon.restore());
+
+  context('registerNewUser', () => {
+    it('should redirected to the home page when registered', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      const body = JSON.stringify({ name: 'test', username: 'test' });
+      request(app)
+        .post('/newProfile')
+        .set('content-type', 'application/json')
+        .send(body)
+        .expect(statusCodes.redirect)
+        .end(() => {
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
+          done();
+        });
+    });
+
+    it('should give bad request when name & username is absent', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: '123' };
+        next();
+      });
+      request(app)
+        .post('/newProfile')
+        .expect(statusCodes.badRequest)
+        .end(() => {
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
+          done();
+        });
+    });
+  });
+
   context('postQuestion', function () {
     it('should give unauthorized error if session id is absent', (done) => {
       const body = { title: 'title', body: 'body', tags: 'js java' };
@@ -308,23 +447,14 @@ describe('get', function () {
         .post('/postQuestion')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
-        .expect(302, done);
-    });
-  });
-
-  context('servePostQuestionPage', function () {
-    it('should give the postQuestion Page', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
-        next();
-      });
-      request(app).get('/askQuestion').expect(200, done);
-    });
-  });
-
-  context('serveLoginPage', function () {
-    it('should give the login page', (done) => {
-      request(app).get('/loginPage').expect(200, done);
+        .expect(302)
+        .end(() => {
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
+          done();
+        });
     });
   });
 
@@ -339,7 +469,14 @@ describe('get', function () {
         .post('/postAnswer/q00001')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
-        .expect(401, done);
+        .expect(401)
+        .end(() => {
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
+          done();
+        });
     });
 
     it('should redirect to question page after insertion', (done) => {
@@ -352,7 +489,14 @@ describe('get', function () {
         .post('/postAnswer/q00001')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
-        .expect(302, done);
+        .expect(302)
+        .end(() => {
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
+          done();
+        });
     });
 
     it('should give badRequest error if the question is absent', (done) => {
@@ -361,7 +505,7 @@ describe('get', function () {
         req.session = { id: '123' };
         next();
       });
-      const body = { title: 'title', body: 'body', tags: 'js java' };
+      const body = { answer: 'test' };
       request(app)
         .post('/postAnswer/q00001')
         .set('content-type', 'application/json')
@@ -380,7 +524,14 @@ describe('get', function () {
         .post('/postComment/q00001/q00001')
         .set('content-type', 'application/json')
         .send(JSON.stringify({ comment: 'test comment' }))
-        .expect(302, done);
+        .expect(302)
+        .end(() => {
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
+          done();
+        });
     });
 
     it('should give the unauthorized error if id is absent', (done) => {
@@ -421,7 +572,14 @@ describe('get', function () {
         .set('content-type', 'application/json')
         .send(JSON.stringify({ comment: 'test comment', commentId: 'c00003' }))
         .expect(200)
-        .expect(/It is right/, done);
+        .expect(/It is right/)
+        .end(() => {
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
+          done();
+        });
     });
 
     it('should give the bad request error for wrong commentId', (done) => {
@@ -450,6 +608,7 @@ describe('get', function () {
         .expect(405, done);
     });
   });
+
   context('acceptAnswer', function () {
     it('should accept the answer for given answerId and questionId', (done) => {
       app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
@@ -460,8 +619,15 @@ describe('get', function () {
       request(app)
         .post('/acceptAnswer/q00001/a00001')
         .expect(200)
-        .expect('content-type', /application\/json/, done)
-        .expect(/1/);
+        .expect('content-type', /application\/json/)
+        .expect(/1/)
+        .end(() => {
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
+          done();
+        });
     });
 
     it('should give bad request error for wrong questionId', (done) => {
@@ -484,37 +650,6 @@ describe('get', function () {
       request(app)
         .post('/acceptAnswer/q00001/a00001')
         .expect(405, done);
-    });
-  });
-
-  context('serveYourQuestionPage', function () {
-    it('should give the yourQuestion page ', function (done) {
-      this.timeout(5000);
-      app.locals.dataStore.getRow = sinon.mock().returns({ ownerId: 'u123' });
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
-      request(app)
-        .get('/yourQuestions')
-        .expect(statusCodes.ok)
-        .expect('Content-Type', /text\/html/)
-        .expect(/Your Questions/, done);
-    });
-  });
-  
-  context('yourAnswers', function () {
-    it('should give the your answers page ', function (done) {
-      this.timeout(5000);
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
-      request(app)
-        .get('/yourAnswers')
-        .expect(statusCodes.ok)
-        .expect('Content-Type', /text\/html/)
-        .expect(/Your Answers/, done);
     });
   });
 
@@ -551,6 +686,10 @@ describe('get', function () {
           sinon.assert.calledWith(updateResponseVote, 'questions', 'q00001', 1);
           sinon.assert.calledWith(insertToVoteLog, '123', 'q00001', 1);
           sinon.assert.calledWith(getVoteCount, 'questions', 'q00001');
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
           done();
         });
     });
@@ -579,6 +718,10 @@ describe('get', function () {
           } = app.locals.dataStore;
           sinon.assert.calledWith(getVoteLog, '123', 'q00001');
           sinon.assert.calledOnce(getVoteLog);
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
           done();
         });
     });
@@ -615,6 +758,10 @@ describe('get', function () {
           sinon.assert.calledWith(updateResponseVote, 'questions', 'q00001', 1);
           sinon.assert.calledWith(deleteVoteLog, '123', 'q00001');
           sinon.assert.calledWith(getVoteCount, 'questions', 'q00001');
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
           done();
         });
     });
@@ -644,6 +791,10 @@ describe('get', function () {
           } = app.locals.dataStore;
           sinon.assert.calledWith(getVoteLog, '123', 'q00001');
           sinon.assert.calledWith(updateResponseVote, 'test', 'q00001', -1);
+          app.set('sessionMiddleware', (req, res, next) => {
+            req.session = {};
+            next();
+          });
           done();
         });
     });

@@ -1,5 +1,13 @@
 const request = require('superagent');
 
+const isLoggedIn = function (req, res, next) {
+  const { id } = req.session;
+  if (!id) {
+    return res.status('401').json({error: 'Your are not logged in'});
+  }
+  next();
+};
+
 const checkOptions = function (...args) {
   return function (req, res, next) {
     const hasOptions = args.every((arg) => req.body[arg]);
@@ -10,12 +18,8 @@ const checkOptions = function (...args) {
   };
 };
 
-const isLoggedIn = function (req, res, next) {
-  const { id } = req.session;
-  if (!id) {
-    return res.status('401').json({error: 'Your are not logged in'});
-  }
-  next();
+const serveLoginPage = function(req, res) {
+  res.render('loginPage');
 };
 
 const reqLogin = function (req, res) {
@@ -77,26 +81,34 @@ const handleLogin = async function (req, res) {
   res.render('newProfile');
 };
 
-const serveHomepage = async (req, res) => {
-  const { dataStore } = req.app.locals;
-  const { id } = req.session;
-  const { userId } = req.params;
-  const questions = await dataStore.getAllQuestions(userId);
-  const userInfo = await dataStore.findUser(id);
-  res.render('home', {userInfo, userId: id, questions});
+const cancelRegistration = function (req, res) {
+  req.session = null;
+  res.redirect('/');
 };
 
-const serveYourQuestionsPage = async function (req, res, next) {
-  req.params.userId = req.session.id;
+const serveQuestions = async (req, res) => {
+  const { dataStore } = req.app.locals;
+  const { id } = req.session;
+  const userInfo = await dataStore.findUser(id);
+  res.render('home', {userInfo, userId: id, questions: req.questions});
+};
+
+const serveHomepage = async (req, res, next) => {
+  const { dataStore } = req.app.locals;
+  req.questions = await dataStore.getAllQuestions();
   next();
 };
 
-const serveYourAnswersPage = async (req, res) => {
+const serveYourQuestionsPage = async function (req, res, next) {
   const { dataStore } = req.app.locals;
-  const { id } = req.session;
-  const questions = await dataStore.getAllAnsweredQuestions(id);
-  const userInfo = await dataStore.findUser(id);
-  res.render('home', {userInfo, userId: id, questions});
+  req.questions = await dataStore.getAllQuestions(req.session.id);
+  next();
+};
+
+const serveYourAnswersPage = async (req, res, next) => {
+  const { dataStore } = req.app.locals;
+  req.questions = await dataStore.getAllAnsweredQuestions(req.session.id);
+  next();
 };
 
 const serveQuestionPage = async (req, res) => {
@@ -121,11 +133,11 @@ const serveQuestionPage = async (req, res) => {
   }
 };
 
-const registerNewUser = async function (req, res) {
+const servePostQuestionPage = async function(req, res) {
   const { dataStore } = req.app.locals;
-  const { id, avatar } = req.session;
-  await dataStore.addNewUser({ id, avatar, ...req.body });
-  res.redirect('/');
+  const { id } = req.session;
+  const userInfo = await dataStore.findUser(id);
+  res.render('postQuestion', { userId: id, userInfo });
 };
 
 const serveProfilePage = async function (req, res) {
@@ -140,8 +152,10 @@ const serveProfilePage = async function (req, res) {
   res.render('profilePage', {details, userId, userInfo});
 };
 
-const cancelRegistration = function (req, res) {
-  req.session = null;
+const registerNewUser = async function (req, res) {
+  const { dataStore } = req.app.locals;
+  const { id, avatar } = req.session;
+  await dataStore.addNewUser({ id, avatar, ...req.body });
   res.redirect('/');
 };
 
@@ -152,7 +166,7 @@ const formatBody = function(response) {
   return text;
 };
 
-const saveQuestion = async function(req, res){
+const postQuestion = async function(req, res){
   const {dataStore} = req.app.locals;
   const { id } = req.session;
   const { title, body, tags } = req.body;
@@ -164,17 +178,6 @@ const saveQuestion = async function(req, res){
   );
   await dataStore.insertTags(questionId, tagList);
   res.redirect(`/question/${questionId}`);
-};
-
-const servePostQuestionPage = async function(req, res) {
-  const { dataStore } = req.app.locals;
-  const { id } = req.session;
-  const userInfo = await dataStore.findUser(id);
-  res.render('postQuestion', { userId: id, userInfo });
-};
-
-const serveLoginPage = function(req, res) {
-  res.render('loginPage');
 };
 
 const postAnswer = async function (req, res) {
@@ -200,6 +203,36 @@ const postComment = async function (req, res) {
   }
   await dataStore.saveComment(id, resId, req.body.comment);
   res.redirect(`/question/${questionId}`);
+};
+
+const updateComment = async function(req, res) {
+  const { id } = req.session;
+  const { dataStore } = req.app.locals;
+  const { comment, commentId } = req.body;
+  const row = await dataStore.getRow('comments', commentId);
+  if(!row) {
+    return res.status('400').send('bad request');
+  }
+  if(id !== +row.ownerId.slice('1')) {
+    return res.status('405').json({error: 'Your are not comment owner'});
+  }
+  const status = await dataStore.updateComment(commentId, comment);
+  res.json(status);
+};
+
+const acceptAnswer = async function(req, res) {
+  const { id } = req.session;
+  const { dataStore } = req.app.locals;
+  const { questionId, answerId } = req.params;
+  const row = await dataStore.getRow('questions', questionId);
+  if (!row) {
+    return res.status('400').send('bad request');
+  }
+  if(id !== +row.ownerId.slice('1')) {
+    return res.status('405').json({error: 'Your are not question owner'});
+  }
+  const status = await dataStore.acceptAnswer(questionId, answerId);
+  res.json(status);
 };
 
 const getCredential = function(url) {
@@ -241,56 +274,27 @@ const updateVote = async function(req, res){
   }
 };
 
-const acceptAnswer = async function(req, res) {
-  const { id } = req.session;
-  const { dataStore } = req.app.locals;
-  const { questionId, answerId } = req.params;
-  const row = await dataStore.getRow('questions', questionId);
-  if (!row) {
-    return res.status('400').send('bad request');
-  }
-  if(id !== +row.ownerId.slice('1')) {
-    return res.status('405').json({error: 'Your are not question owner'});
-  }
-  const status = await dataStore.acceptAnswer(questionId, answerId);
-  res.json(status);
-};
-
-const updateComment = async function(req, res) {
-  const { id } = req.session;
-  const { dataStore } = req.app.locals;
-  const { comment, commentId } = req.body;
-  const row = await dataStore.getRow('comments', commentId);
-  if(!row) {
-    return res.status('400').send('bad request');
-  }
-  if(id !== +row.ownerId.slice('1')) {
-    return res.status('405').json({error: 'Your are not comment owner'});
-  }
-  const status = await dataStore.updateComment(commentId, comment);
-  res.json(status);
-};
-
 module.exports = {
+  isLoggedIn,
   checkOptions,
+  serveLoginPage,
   reqLogin,
   fetchUserDetails,
   handleLogin,
-  serveHomepage,
-  serveQuestionPage,
-  registerNewUser,
-  serveProfilePage,
   cancelRegistration,
-  saveQuestion,
-  servePostQuestionPage,
-  serveLoginPage,
-  postAnswer,
-  postComment,
-  isLoggedIn,
-  updateVote,
-  acceptAnswer,
-  getUpdateVoteDetails,
+  serveQuestions,
+  serveHomepage,
   serveYourQuestionsPage,
   serveYourAnswersPage,
-  updateComment
+  serveQuestionPage,
+  servePostQuestionPage,
+  serveProfilePage,
+  registerNewUser,
+  postQuestion,
+  postAnswer,
+  postComment,
+  updateComment,
+  acceptAnswer,
+  getUpdateVoteDetails,
+  updateVote
 };

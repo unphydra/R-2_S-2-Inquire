@@ -14,7 +14,7 @@
   color: rgba(41,41,41,0.8)
 }
 
-#error {
+#title-error, #body-error, #tag-error {
   color: red;
   text-align: center;
 }

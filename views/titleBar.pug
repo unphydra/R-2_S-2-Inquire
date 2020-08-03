@@ -11,7 +11,7 @@ div(class="titleBar")
       div(class="avatar")
         img( src=`${userInfo.avatar}`, alt="alt" onclick="toggleShow()" )
         span(class="popUp-text" )
-          button(class="profileBtn" onClick=`window.location.href='/viewProfile?id=${userId}'`) ViewProfile
-          button(class="logoutBtn" onClick="window.location.href='/cancel'") Logout
+          button(class="profile-options" onClick=`window.location.href='/viewProfile?id=${userId}'`) ViewProfile
+          button(class="profile-options margin-auto" onClick="window.location.href='/cancel'") Logout
     else
       button(class="pageBtn" onClick="window.location.href='/loginPage'") Login

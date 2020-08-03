@@ -6,27 +6,28 @@ const DataStore = require('../library/dataStore');
 const app = express();
 
 const {
+  isLoggedIn,
   checkOptions,
+  serveLoginPage,
   reqLogin,
   fetchUserDetails,
   handleLogin,
-  serveHomepage,
-  serveQuestionPage,
-  registerNewUser,
-  serveProfilePage,
   cancelRegistration,
-  saveQuestion,
-  servePostQuestionPage,
-  serveLoginPage,
-  postAnswer,
-  postComment,
-  isLoggedIn,
-  updateVote,
-  acceptAnswer,
-  getUpdateVoteDetails,
+  serveQuestions,
+  serveHomepage,
   serveYourQuestionsPage,
   serveYourAnswersPage,
-  updateComment
+  serveQuestionPage,
+  servePostQuestionPage,
+  serveProfilePage,
+  registerNewUser,
+  postQuestion,
+  postAnswer,
+  postComment,
+  updateComment,
+  acceptAnswer,
+  getUpdateVoteDetails,
+  updateVote
 } = require('./handlers');
 
 const { env } = process;
@@ -45,28 +46,42 @@ app.use(express.static('public', { index: '/html/home.html' }));
 app.set('sessionMiddleware', cookeSession({secret: CookieSecret }));
 app.use((...args) => app.get('sessionMiddleware')(...args));
 
-app.get('/login', reqLogin);
 app.get('/loginPage', serveLoginPage);
 app.get('/user/auth', fetchUserDetails, handleLogin);
-app.get(['/', '/home'], serveHomepage);
-app.get('/yourQuestions', isLoggedIn, serveYourQuestionsPage, serveHomepage);
-app.get('/yourAnswers', isLoggedIn, serveYourAnswersPage);
-app.get('/question/:id', serveQuestionPage);
-app.post('/newProfile', checkOptions('name', 'username'), registerNewUser);
-app.get('/viewProfile', serveProfilePage);
+app.get('/login', reqLogin);
 app.get('/cancel', cancelRegistration);
-app.post('/postQuestion', isLoggedIn, saveQuestion);
-app.get('/askQuestion', servePostQuestionPage);
-app.post('/postAnswer/:questionId', isLoggedIn, postAnswer);
-app.post('/postComment/:questionId/:resId', isLoggedIn, postComment);
-app.post('/acceptAnswer/:questionId/:answerId', isLoggedIn, acceptAnswer);
+
+app.get(['/', '/home'], serveHomepage, serveQuestions);
+app.get('/yourQuestions', isLoggedIn, serveYourQuestionsPage, serveQuestions);
+app.get('/yourAnswers', isLoggedIn, serveYourAnswersPage, serveQuestions);
+app.get('/question/:id', serveQuestionPage);
+app.get('/askQuestion', isLoggedIn, servePostQuestionPage);
+app.get('/viewProfile', serveProfilePage);
+
 app.post(
-  ['/upVote/:type/:resId', '/downVote/:type/:resId'],
-  [isLoggedIn, getUpdateVoteDetails, updateVote]
+  '/newProfile', 
+  [isLoggedIn, checkOptions('name', 'username'), registerNewUser]
+);
+app.post(
+  '/postQuestion', 
+  [isLoggedIn, checkOptions('title', 'body', 'tags'), postQuestion]
+);
+app.post(
+  '/postAnswer/:questionId',
+  [isLoggedIn, checkOptions('answer'), postAnswer]
+);
+app.post(
+  '/postComment/:questionId/:resId', 
+  [isLoggedIn, checkOptions('comment'), postComment]
 );
 app.post(
   '/updateComment', 
   [isLoggedIn, checkOptions('comment', 'commentId'), updateComment]
+);
+app.post('/acceptAnswer/:questionId/:answerId', isLoggedIn, acceptAnswer);
+app.post(
+  ['/upVote/:type/:resId', '/downVote/:type/:resId'],
+  [isLoggedIn, getUpdateVoteDetails, updateVote]
 );
 
 module.exports = { app };
