@@ -1,6 +1,7 @@
 const { assert } = require('chai');
-const {env} = process;
-env.NODE_ENV = 'test';
+const path = require('path');
+const dotEnvPath = path.resolve('./.testEnv');
+require('dotenv').config({ path: dotEnvPath});
 const knex = require('../library/knex');
 const knexDataStore = require('../library/knexDataStore');
 

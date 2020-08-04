@@ -10,5 +10,3 @@ notifications:
       - 'Repo `%{repository_slug}` *%{result}* build (<%{build_url}|#%{build_number}>) for commit (<%{compare_url}|%{commit}>) on branch `%{branch}`  by %{author}.'
       - 'Execution time: *%{duration}*'
       - 'Message: %{message}'
-before-script:
-  - npm run createTestDb
