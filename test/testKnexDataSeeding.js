@@ -128,6 +128,14 @@ const insertData = async function (trx) {
       answer: 'database itself', 
       receivedAt: '2020-08-03 15:31:15',
       modifiedAt: '2020-08-03 15:31:15'
+    },
+    {
+      questionId: 2, 
+      ownerId: 58026024, 
+      answer: 'database itself 2nd', 
+      receivedAt: '2020-08-03 15:31:15',
+      modifiedAt: '2020-08-03 15:31:15',
+      isAccepted: 1
     }
   ]);
 
@@ -150,7 +158,7 @@ const insertData = async function (trx) {
     },
     {
       responseId: 2, 
-      ownerId: 58027024, 
+      ownerId: 58026024, 
       comment: 'It is wrong', 
       type: 1,
       receivedAt: '2020-08-03 15:31:15',
@@ -158,8 +166,16 @@ const insertData = async function (trx) {
     },
     {
       responseId: 2, 
-      ownerId: 58029024, 
+      ownerId: 58027206, 
       comment: 'you are wrong', 
+      type: 0,
+      receivedAt: '2020-08-03 15:31:15',
+      modifiedAt: '2020-08-03 15:31:15'
+    },
+    {
+      responseId: 2, 
+      ownerId: 58027206, 
+      comment: 'you are wrong 2nd', 
       type: 0,
       receivedAt: '2020-08-03 15:31:15',
       modifiedAt: '2020-08-03 15:31:15'

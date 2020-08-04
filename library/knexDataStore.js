@@ -1,20 +1,10 @@
-const {env} = process;
-const {DbClient, DatabaseUrl} = env;
-
-const knex = require('knex')({
-  client: DbClient,
-  connection: {
-    filename: DatabaseUrl,
-    timezone: 'utc'
-  },
-  useNullAsDefault: true
-});
-
+const knex = require('./knex');
 const NestHydrationJs = require('nesthydrationjs')();
 
 const users = knex('users').select();
 const questions = knex('questions').select();
 const answers = knex('answers').select();
+const comments = knex('comments').select();
 const voteLog = knex('voteLog').select();
 const tags = knex('tags').select();
 const questionTags = knex('questionTags').select();
@@ -35,6 +25,10 @@ const questionVote = voteCount
   .clone()
   .where({type: 1})
   .as('qVote');
+const answerVote = voteCount
+  .clone()
+  .where({type: 0})
+  .as('aVote');
 const acceptedAnswer = answers
   .clone()
   .select('questionId as qId2', 'isAccepted')
@@ -51,59 +45,144 @@ const questionTagTitle = questionTags
   )
   .as('questionTagTitle');
 
-const getAllQuestions = () => {
-  const allQuestionColumn = [
-    'questions.*', 
-    'users.username as ownerName', 
-    'users.avatar', 
-    'ansCount.count as ansCount', 
-    'qVote.vote', 
-    'acceptedAns.isAccepted as isAnsAccepted',
-    'qtt.title as tag'
-  ];
-  
-  const definition = [{
-    id: 'id',
-    ownerId: 'ownerId',
-    title: 'title',
-    body: 'body',
-    receivedAt: 'receivedAt',
-    modifiedAt: 'modifiedAt',
-    ownerName: 'ownerName',
-    avatar: 'avatar',
-    ansCount: 'ansCount',
-    vote: 'vote',
-    isAnsAccepted: 'isAnsAccepted',
-    tags: [{title: 'tag'}]
-  }];
+const allQuestionsData = questions
+  .clone()
+  .leftJoin( 
+    users.clone().as('users'), 
+    'ownerId', 
+    'users.id' 
+  )
+  .leftJoin(
+    answerCount.clone().as('ansCount'), 
+    'questions.id', 
+    'qId1'
+  )
+  .leftJoin(
+    questionVote.clone().as('qVote'), 
+    'questions.id', 
+    'rId'
+  )
+  .leftJoin(
+    acceptedAnswer.clone().as('acceptedAns'), 
+    'questions.id', 
+    'qId2'
+  )
+  .leftJoin(
+    questionTagTitle.clone().as('qtt'),
+    'questions.id',
+    'qId3'
+  );
 
-  return questions
-    .clone()
+const allComments = comments.clone()
+  .select('comments.*', 'username')
+  .leftJoin(
+    users.clone().as('users'),
+    'comments.ownerId',
+    'users.id'
+  )
+  .as('allComments');
+
+const allAnswers = answers.clone()
+  .select(
+    'answers.*', 
+    'username', 'avatar', 
+    'aVote.vote as votes'
+  )
+  .leftJoin(
+    users.clone().as('users'),
+    'answers.ownerId',
+    'users.id'
+  )
+  .leftJoin(
+    answerVote.clone().as('aVote'),
+    'answers.id',
+    'aVote.rId'
+  );
+
+const allQuestionColumn = [
+  'questions.*', 
+  'username', 
+  'users.avatar', 
+  'ansCount.count as ansCount', 
+  'qVote.vote', 
+  'qtt.title as tag',
+  'acceptedAns.isAccepted as isAnsAccepted'
+];
+  
+const definition = [{
+  id: 'id',
+  ownerId: 'ownerId',
+  title: 'title',
+  body: 'body',
+  receivedAt: 'receivedAt',
+  modifiedAt: 'modifiedAt',
+  username: 'username',
+  avatar: 'avatar',
+  ansCount: 'ansCount',
+  vote: 'vote',
+  isAnsAccepted: 'isAnsAccepted',
+  tags: [{title: 'tag'}]
+}];
+
+const getAllQuestions = () => {
+  return allQuestionsData.clone()
     .select(allQuestionColumn)
-    .leftJoin( users.clone().as('users'), 
-      'ownerId', 
-      'users.id' 
-    )
-    .leftJoin(answerCount.clone().as('ansCount'), 
-      'questions.id', 
-      'qId1'
-    )
-    .leftJoin(
-      questionVote.clone().as('qVote'), 
-      'questions.id', 
-      'rId'
-    )
-    .leftJoin(
-      acceptedAnswer.clone().as('acceptedAns'), 
-      'questions.id', 
-      'qId2'
-    )
-    .leftJoin(
-      questionTagTitle.clone().as('qtt'),
-      'questions.id',
-      'qId3'
-    )
     .then(data => NestHydrationJs.nest(data, definition));
 };
 
-module.exports = {knex, getAllQuestions};
+const getUser = (id) => {
+  return users.clone().where({id});
+};
+
+const addNewUser = (data) => {
+  return users.clone().insert(data);
+};
+
+const getYourQuestions = (userId) => {
+  return allQuestionsData.clone()
+    .select(allQuestionColumn)
+    .where({ownerId: userId})
+    .then(data => NestHydrationJs.nest(data, definition));
+};
+
+const getQuestionDetails = function(id) {
+  return allQuestionsData.clone()
+    .select(allQuestionColumn)
+    .where({'questions.id': id})
+    .then(([question]) => {
+      return allComments
+        .clone()
+        .where({'responseId': question.id, type: 1})
+        .then(comments => {
+          question.comments = comments;
+          return question;
+        });
+    })
+    .then(question => {
+      return allAnswers.clone()
+        .where('questionId', id)
+        .then(answers => {
+          return Promise.all(answers.map(answer => {
+            return allComments
+              .clone()
+              .where({'responseId': answer.id, type: 0})
+              .then(comments => {
+                answer.comments = comments;
+                return answer;
+              });
+          }));
+        })
+        .then(answers => {
+          question.answers = answers;
+          return question;
+        });
+    });
+};
+
+module.exports = {
+  getAllQuestions, 
+  getUser, 
+  addNewUser, 
+  getYourQuestions,
+  getQuestionDetails
+};
