@@ -249,6 +249,23 @@ describe('DataStore', function () {
     });
   });
 
+  context('getTable', function () {
+    it('should give specific table for the given tablename', async function () {
+      const expected = [
+        { id: 't00001', title: 'java'},
+        { id: 't00002', title: 'javaScript'},
+        { id: 't00003', title: 'node'},
+        { id: 't00004', title: 'node-net'}
+      ];
+      const actual = await dataStore.getTable('tags');
+      assert.deepStrictEqual(actual, expected);
+    });
+
+    it('should give undefined for wrong id', async function () {
+      const actual = await dataStore.getRow('answers', 'a00006');
+      assert.isUndefined(actual);
+    });
+  });
   context('acceptAnswer', () => {
     it('should give isAccepted 1 questionId and answerId', async function () {
       const actual = await dataStore.acceptAnswer('q00001', 'a00001');

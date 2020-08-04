@@ -33,6 +33,10 @@ class DataStore {
     });
   }
 
+  async getTable(tablename) {
+    return await this.executeQuery(`SELECT * FROM ${tablename}`);
+  }
+  
   async addNewUser({ id, avatar, name, username, email, company, bio }) {
     const query = `insert into users 
       values ("u${id}", "${name}", "${username}",

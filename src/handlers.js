@@ -137,7 +137,8 @@ const servePostQuestionPage = async function(req, res) {
   const { dataStore } = req.app.locals;
   const { id } = req.session;
   const userInfo = await dataStore.findUser(id);
-  res.render('postQuestion', { userId: id, userInfo });
+  const allTags = await dataStore.getTable('tags');
+  res.render('postQuestion', { userId: id, userInfo, allTags });
 };
 
 const serveProfilePage = async function (req, res) {

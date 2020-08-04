@@ -289,6 +289,7 @@ describe('-- Private get methods --', function() {
           )
         ),
       getRow: sinon.mock().returns({ ownerId: 'u123' }),
+      getTable: sinon.mock().returns([]),
     };
   });
 
