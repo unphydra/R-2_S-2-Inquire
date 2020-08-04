@@ -12,7 +12,7 @@ div(class="container")
           div(class=`${className}`)
             div(class="count")=`${question.answercount}`
               div(class="ansCount") answers
-          div
+          div(class="question-details")
             div(class="title" onClick=`window.location.href='/question/${question.id}'`)=question.title
             div(class="tags")
               each tag in question.tags

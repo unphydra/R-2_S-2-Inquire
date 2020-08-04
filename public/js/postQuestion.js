@@ -5,22 +5,45 @@ const showError = function(id) {
   setTimeout(() => error.classList.add('blind'), second);
 };
 
+const toggleTagSuggestions = (inputBox) => {
+  const tagSuggestions = document.querySelector('.tag-suggestions');
+  if(inputBox.value.trim() !== '') {
+    return tagSuggestions.classList.remove('hide');
+  }
+  tagSuggestions.classList.add('hide');
+};  
+
 const removeTag = (tag) => {
   const tags = document.querySelector('.tags');
   tags.removeChild(tag.parentElement);
 };
 
-const selectTag = (inputBox) => {
+const deselectTag = (inputBox) => {
+  const tags = document.querySelector('.tags');
+  if (inputBox.value === '' && tags.children.length) {
+    tags.removeChild(tags.lastChild);
+  }
+};
+
+const selectTag = (tagName) => {
+  const html = `
+    <div class="tag">
+      <span>${tagName}</span> &nbsp;
+      <span class="cross-btn" onclick="removeTag(this)"> X </span>
+    </div>`;
+  const tags = document.querySelector('.tags');
+  tags.innerHTML += html;
+  tags.nextElementSibling.value = '';
+};
+
+const addTag = (inputBox) => {
+  if(event.key === 'Backspace') {
+    return deselectTag(inputBox);
+  }
   if(event.key !== 'Enter' || inputBox.value.trim() === '') {
     return '0';
   }
-  const html = `
-    <div class="tag">
-      <span>${inputBox.value}</span> &nbsp;
-      <span class="cross-btn" onclick="removeTag(this)"> X </span>
-    </div>`;
-  inputBox.previousElementSibling.innerHTML += html;
-  inputBox.value = '';
+  selectTag(inputBox.value);
 };
 
 const getTags = () => {

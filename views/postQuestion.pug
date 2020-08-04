@@ -26,7 +26,10 @@ html
         label Tags :
         div(class="tags-list")
           span(class="tags")
-          input(type="text" name="tags" placeholder="Enter tags ..." onkeyup="selectTag(this)")
+          input(type="text" name="tags" placeholder="Enter tags ..." onkeyup="addTag(this)")
+        div(class="tag-suggestions")
+          each tag in allTags
+            span(class="tag" onclick=`selectTag('${tag.title}')`)=tag.title
         div(id="formFooter")
           button(onclick='postQuestion(this)') Submit
           a(href="/home" id="cancelButton") Cancel
