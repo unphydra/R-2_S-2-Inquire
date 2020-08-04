@@ -22,9 +22,11 @@ html
         div(id='body-error' class="blind") Please enter the body atleast of 30 characters
         label Body :
         div(id='editor')
-        div(id='tag-error' class="blind") Please enter the title atleast of 2 tags
+        div(id='tag-error' class="blind") Please enter the tags atleast of 2 tags
         label Tags :
-        input(type="text" name="tags" placeholder="Enter tags ...")
+        div(class="tags-list")
+          span(class="tags")
+          input(type="text" name="tags" placeholder="Enter tags ..." onkeyup="selectTag(this)")
         div(id="formFooter")
           button(onclick='postQuestion(this)') Submit
           a(href="/home" id="cancelButton") Cancel

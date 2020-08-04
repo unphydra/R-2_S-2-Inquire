@@ -429,7 +429,7 @@ describe('-- post methods --', function () {
 
   context('postQuestion', function () {
     it('should give unauthorized error if session id is absent', (done) => {
-      const body = { title: 'title', body: 'body', tags: 'js java' };
+      const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
       request(app)
         .post('/postQuestion')
         .set('content-type', 'application/json')
@@ -442,7 +442,7 @@ describe('-- post methods --', function () {
         req.session = { id: '123' };
         next();
       });
-      const body = { title: 'title', body: 'body', tags: 'js java' };
+      const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
       request(app)
         .post('/postQuestion')
         .set('content-type', 'application/json')

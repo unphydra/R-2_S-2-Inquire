@@ -170,13 +170,12 @@ const postQuestion = async function(req, res){
   const {dataStore} = req.app.locals;
   const { id } = req.session;
   const { title, body, tags } = req.body;
-  const tagList = tags.split(' ');
   const questionId = await dataStore.insertQuestion(
     id, 
     title, 
     formatBody(body)
   );
-  await dataStore.insertTags(questionId, tagList);
+  await dataStore.insertTags(questionId, tags);
   res.redirect(`/question/${questionId}`);
 };
 
