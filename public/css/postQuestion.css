@@ -11,12 +11,17 @@
 .pageHeading{
   font-size :xx-large;
   font-family:Helvetica, sans-serif;
-  color: rgba(41,41,41,0.8)
+  color: rgba(41,41,41,0.8);
+  margin: 1%;
 }
 
 #title-error, #body-error, #tag-error {
   color: red;
   text-align: center;
+}
+
+.ql-toolbar {
+  margin-top: 1%;
 }
 
 .ql-editor {
@@ -37,9 +42,6 @@
   align-self: center;
   width: 60%;
   text-align: left;
-}
-#toolbar {
-  margin-top: 1%;
 }
 
 #editor {

@@ -3,14 +3,14 @@ const highlightMenuItem = (id) => {
   menuItem && menuItem.classList.add('highlight');
 };
 
-const renderHeader = (questionsCount, id) => {
+const renderHeader = (questionsCount, path) => {
   const headers = {
     '/home': 'All Questions',
     '/yourQuestions': `You Have ${questionsCount} Questions`,
     '/yourAnswers': `You Have Answered ${questionsCount} Questions`
   };
   const header = document.querySelector('.con-header-title');
-  header.innerText = headers[id];  
+  header.innerText = headers[path];  
 };
 
 const main = (questionsCount) => {

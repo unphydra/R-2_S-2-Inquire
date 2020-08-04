@@ -1,27 +1,65 @@
-const toggleClass = (element, message) => {
+const togglePopUp = (element, className, message) => {
   element.innerText = message;
-  element.classList.remove('hide');
+  element.classList.remove(className);
   const seconds = 5000;
-  setTimeout(() => element.classList.add('hide'), seconds);
+  setTimeout(() => element.classList.add(className), seconds);
 };
 
-const postAnswer = (id, qId, button) => {
-  const answerLength = quill.getLength();
+const getFetchOptions = (method, body) => {
+  return {
+    method,
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(body)
+  };
+};
+
+const postAnswer = function (id, qId, button) {
   const BL = 30;
   const popUp = button.nextElementSibling;
   if (!id) {
     const message = '* please login before continue';
-    return toggleClass(popUp, message);
+    return togglePopUp(popUp, 'hide', message);
   }
-  if (answerLength < BL) {
+  if (quill.getLength() < BL) {
     const message = '* please explain in brief';
-    return toggleClass(popUp, message);
+    return togglePopUp(popUp, 'hide', message);
   }
-  fetch(`/postAnswer/${qId}`, {method: 'POST', headers: {
-    'Content-Type': 'application/json'},
-  body: JSON.stringify({answer: quill.root.innerHTML})}).then(res => {
+  const body = {answer: quill.root.innerHTML};
+  fetch(`/postAnswer/${qId}`, getFetchOptions('POST', body)).then(res => {
     window.location.href = res.url;
   });
+};
+
+const toggleCommentBtns = (commentBtns) => {
+  Array.from(commentBtns.children).forEach((btn) => {
+    btn.classList.toggle('hide');
+  });
+};
+
+const postComment = (saveBtn, commentId) => {
+  const comment = document.querySelector(`#${commentId}`);
+  const body = {comment: comment.innerText, commentId};
+  const options = getFetchOptions('POST', body);
+  fetch('/updateComment', options).then((res) => res.json()).then(data => {
+    comment.innerText = data.comment;
+    toggleCommentBtns(saveBtn.parentElement);
+  });
+};
+
+const makeCommentEditable = (editBtn, commentId) => {
+  const comment = document.querySelector(`#${commentId}`);
+  comment.setAttribute('contenteditable', true);
+  toggleCommentBtns(editBtn.parentElement);
+  localStorage.setItem('oldComment', comment.innerText);
+  moveCursor(comment);
+};
+
+const makeCommentUneditable = (cancelBtn, commentId) => {
+  const comment = document.querySelector(`#${commentId}`);
+  comment.setAttribute('contenteditable', false);
+  toggleCommentBtns(cancelBtn.parentElement);
+  comment.innerText = localStorage.getItem('oldComment');
+  localStorage.removeItem('oldComment');
 };
 
 const updateVote = (url, container) => {
@@ -41,10 +79,7 @@ const updateVote = (url, container) => {
 const updateAcceptAnswer = (questionId, answerId, tickmark) => {
   const ONE = 1;
   const url = `/acceptAnswer/${questionId}/${answerId}`;
-  const options = {
-    method: 'POST'
-  };
-  fetch(url, options).then((res) => res.json()).then(data => {
+  fetch(url, {method: 'POST'}).then((res) => res.json()).then(data => {
     if(data && data.isAccepted === ONE) {
       tickmark.firstElementChild.setAttribute('fill', '#42B883');
     }
@@ -70,44 +105,8 @@ const moveCursor = (element) => {
   element.focus();
 };
 
-const makeCommentEditable = (editBtn, commentId) => {
-  const comment = document.querySelector(`#${commentId}`);
-  comment.setAttribute('contenteditable', true);
-  editBtn.classList.add('hide');
-  editBtn.parentElement.children['1'].classList.remove('hide');
-  editBtn.parentElement.children['2'].classList.remove('hide');
-  localStorage.setItem('oldComment', comment.innerText);
-  moveCursor(comment);
-};
-
-const makeCommentUneditable = (cancelBtn, commentId) => {
-  const comment = document.querySelector(`#${commentId}`);
-  comment.setAttribute('contenteditable', false);
-  cancelBtn.classList.add('hide');
-  cancelBtn.parentElement.children['0'].classList.remove('hide');
-  cancelBtn.parentElement.children['2'].classList.add('hide');
-  comment.innerText = localStorage.getItem('oldComment');
-  localStorage.removeItem('oldComment');
-};
-
-const saveComment = (saveBtn, commentId) => {
-  const comment = document.querySelector(`#${commentId}`);
-  const options = { 
-    headers: { 'Content-Type': 'application/json' },
-    method: 'POST', 
-    body: JSON.stringify({comment: comment.innerText, commentId})
-  };
-  fetch('/updateComment', options).then((res) => res.json()).then(data => {
-    comment.innerText = data.comment;
-    saveBtn.classList.add('hide');
-    saveBtn.parentElement.children['0'].classList.remove('hide');
-    saveBtn.parentElement.children['1'].classList.add('hide');
-  });
-};
-
 const main = () => {
-  const questionDate = document.querySelector('.time');
-  renderDate(questionDate);
+  renderDates('.time');
   renderDates('.q-comment-time');
   renderDates('.a-comment-time');
   renderEditor();

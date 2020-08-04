@@ -21,7 +21,7 @@ html(lang='en')
       if !questionDetails
         div not found
       else
-        -const {title,body,tags,comments,answers,votes,receivedAt} = questionDetails
+        -const {title,body,tags,comments,answers,ownerId,votes,receivedAt} = questionDetails
         -const {id,avatar,username} = ownerInfo
         div(class="container-h")
           div(class="question-title")
@@ -30,7 +30,7 @@ html(lang='en')
               div(class="avatar-div")
                 img(class="author-avatar" src=`${avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${id.slice(1)}'`)
               div
-                div(class="author")=username
+                div(class="author" onclick=`window.location.href='/viewProfile?id=${ownerId.slice(1)}'`)=username
                 div(class="time" time=`${receivedAt}`)
         div(class="question-body")
           div(class="question-body-c")!=body
@@ -54,7 +54,7 @@ html(lang='en')
                 if(comment.ownerId == `u${userId}`)
                   div(class="edit-btn" onclick=`makeCommentEditable(this,'${comment.id}')`) edit
                   div(class="cancel-btn hide" onclick=`makeCommentUneditable(this,'${comment.id}')`) cancel
-                  div(class="save-btn hide" onclick=`saveComment(this, '${comment.id}')`) save
+                  div(class="save-btn hide" onclick=`postComment(this, '${comment.id}')`) save
               div(class="c-author")
                 span(onclick=`window.location.href='/viewProfile?id=${comment.ownerId.slice(1)}'`)=comment.username
                 span(class='q-comment-time' time=`${comment.receivedAt}`) ,&nbsp;

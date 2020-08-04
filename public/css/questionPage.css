@@ -67,6 +67,11 @@
 
 .author {
   font-size: medium;
+  cursor: pointer;
+}
+
+.author:hover {
+  text-decoration: underline;
 }
 
 .time {

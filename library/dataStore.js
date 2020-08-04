@@ -80,8 +80,8 @@ class DataStore {
     const whereClause = userId ? `where t1.ownerId='u${userId}'` : '';
     const query = `SELECT t1.id, t1.title, t1.votes, t1.ownerId, t1.receivedAt,
                   t1.anyAnswerAccepted as isAccepted,count(t2.id) as answercount
-                  FROM questions t1 LEFT JOIN answers t2
-                  ON t1.id = t2.questionId ${whereClause} GROUP BY(t1.id)`;
+                  FROM questions t1 LEFT JOIN answers t2 ON t1.id=t2.questionId 
+                  ${whereClause} GROUP BY(t1.id) ORDER BY(t1.receivedAt) desc`;
     const questions = await this.executeQuery(query);
     await this.attachUsernames(questions);
     return await this.attachTags(questions);
@@ -91,7 +91,8 @@ class DataStore {
     const query = `SELECT t1.id, t1.title,t2.id as answerId,t2.isAccepted,
                   t1.ownerId, t1.receivedAt,  count(t2.id) as answercount
                   FROM questions t1 LEFT JOIN answers t2 ON t1.id=t2.questionId 
-                  WHERE t2.ownerId='u${userId}' GROUP BY(t1.id)`;
+                  WHERE t2.ownerId='u${userId}' GROUP BY(t1.id)
+                  ORDER BY(t1.receivedAt) desc`;
     const questions = await this.executeQuery(query);
     await this.attachUsernames(questions);
     return await this.attachTags(questions);
@@ -106,8 +107,7 @@ class DataStore {
   }
 
   async getAnswers(questionId) {
-    const query = `select *
-                    from answers where questionId="${questionId}"`;
+    const query = `select * from answers where questionId="${questionId}"`;
     const answers = await this.executeQuery(query);
     for (let index = 0; index < answers.length; index++) {
       const answer = answers[index];
