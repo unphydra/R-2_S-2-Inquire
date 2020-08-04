@@ -71,7 +71,8 @@ const allQuestionsData = questions
     questionTagTitle.clone().as('qtt'),
     'questions.id',
     'qId3'
-  );
+  )
+  .orderBy('questions.receivedAt', 'desc');
 
 const allComments = comments.clone()
   .select('comments.*', 'username')
@@ -97,10 +98,16 @@ const allAnswers = answers.clone()
     answerVote.clone().as('aVote'),
     'answers.id',
     'aVote.rId'
-  );
+  )
+  .orderBy('answers.modifiedAt', 'desc');
 
 const allQuestionColumn = [
-  'questions.*', 
+  'questions.id as qId',
+  'questions.ownerId as qoId',
+  'questions.title as qTitle',
+  'questions.body as qBody',
+  'questions.receivedAt as qrAt',
+  'questions.modifiedAt as qmAt',
   'username', 
   'users.avatar', 
   'ansCount.count as ansCount', 
@@ -110,17 +117,17 @@ const allQuestionColumn = [
 ];
   
 const definition = [{
-  id: 'id',
-  ownerId: 'ownerId',
-  title: 'title',
-  body: 'body',
-  receivedAt: 'receivedAt',
-  modifiedAt: 'modifiedAt',
+  id: 'qId',
+  ownerId: 'qoId',
+  title: 'qTitle',
+  body: 'qBody',
+  receivedAt: 'qrAt',
+  modifiedAt: 'qmAt',
   username: 'username',
   avatar: 'avatar',
   ansCount: 'ansCount',
   vote: 'vote',
-  isAnsAccepted: 'isAnsAccepted',
+  isAnsAccepted: [{isAnsAccepted: 'isAnsAccepted'}],
   tags: [{title: 'tag'}]
 }];
 
@@ -149,6 +156,7 @@ const getQuestionDetails = function(id) {
   return allQuestionsData.clone()
     .select(allQuestionColumn)
     .where({'questions.id': id})
+    .then(data => NestHydrationJs.nest(data, definition))
     .then(([question]) => {
       return allComments
         .clone()
@@ -179,10 +187,23 @@ const getQuestionDetails = function(id) {
     });
 };
 
+const allQuestionsYourAnswered = function(id) {
+  definition['0'].isAnsAccepted = [{isAnsAccepted: 'isAccepted'}];
+  return answers.clone()
+    .join(
+      allQuestionsData.clone().select(allQuestionColumn).as('aqd'),
+      'answers.questionId',
+      'aqd.qId'
+    )
+    .where('answers.ownerId', id)
+    .then(data => NestHydrationJs.nest(data, definition));
+};
+
 module.exports = {
   getAllQuestions, 
   getUser, 
   addNewUser, 
   getYourQuestions,
-  getQuestionDetails
+  getQuestionDetails,
+  allQuestionsYourAnswered
 };

@@ -25,6 +25,20 @@ describe('knexDataStore', () => {
       const actual = await knexDataStore.getAllQuestions();
       const expected = [
         {
+          id: 2,
+          ownerId: 58027206,
+          title: 'what is the most powerful thing in database?',
+          body: 'i want to know it',
+          receivedAt: '2020-08-03 15:35:15',
+          modifiedAt: '2020-08-03 15:35:15',
+          username: 'satheesh-chandran',
+          avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+          ansCount: 2,
+          vote: -1,
+          isAnsAccepted: [{isAnsAccepted: 1}],
+          tags: [{ title: 'node' }, { title: 'node-net' }]
+        },
+        {
           id: 1,
           ownerId: 58026024,
           title: 'what is sqlite?',
@@ -35,22 +49,8 @@ describe('knexDataStore', () => {
           avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
           ansCount: 1,
           vote: 2,
-          isAnsAccepted: null,
+          isAnsAccepted: [],
           tags: [{ title: 'java' }, { title: 'javaScript' }]
-        },
-        {
-          id: 2,
-          ownerId: 58027206,
-          title: 'what is the most powerful thing in database?',
-          body: 'i want to know it',
-          receivedAt: '2020-08-03 15:31:15',
-          modifiedAt: '2020-08-03 15:31:15',
-          username: 'satheesh-chandran',
-          avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
-          ansCount: 2,
-          vote: -1,
-          isAnsAccepted: 1,
-          tags: [{ title: 'node' }]
         }
       ];
       assert.deepStrictEqual(actual, expected);
@@ -107,7 +107,7 @@ describe('knexDataStore', () => {
           avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
           ansCount: 1,
           vote: 2,
-          isAnsAccepted: null,
+          isAnsAccepted: [],
           tags: [{title: 'java'}, {title: 'javaScript'}]
         }
       ];
@@ -123,14 +123,14 @@ describe('knexDataStore', () => {
         ownerId: 58027206,
         title: 'what is the most powerful thing in database?',
         body: 'i want to know it',
-        receivedAt: '2020-08-03 15:31:15',
-        modifiedAt: '2020-08-03 15:31:15',
+        receivedAt: '2020-08-03 15:35:15',
+        modifiedAt: '2020-08-03 15:35:15',
         username: 'satheesh-chandran',
         avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
         ansCount: 2,
         vote: -1,
-        tag: 'node',
-        isAnsAccepted: 1,
+        tags: [{ title: 'node' }, { title: 'node-net' }],
+        isAnsAccepted: [{isAnsAccepted: 1}],
         comments: [
           {
             id: 3,
@@ -144,6 +144,19 @@ describe('knexDataStore', () => {
           }
         ],
         answers: [
+          {
+            id: 3,
+            questionId: 2,
+            ownerId: 58026024,
+            answer: 'database itself 2nd',
+            isAccepted: 1,
+            receivedAt: '2020-08-03 15:35:15',
+            modifiedAt: '2020-08-03 15:35:15',
+            username: 'unphydra',
+            avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
+            votes: null,
+            comments: []
+          },
           {
             id: 2,
             questionId: 2,
@@ -172,27 +185,37 @@ describe('knexDataStore', () => {
                 responseId: 2,
                 comment: 'you are wrong 2nd',
                 type: 0,
-                receivedAt: '2020-08-03 15:31:15',
-                modifiedAt: '2020-08-03 15:31:15',
+                receivedAt: '2020-08-03 15:35:15',
+                modifiedAt: '2020-08-03 15:35:15',
                 username: 'satheesh-chandran'
               }
             ]
-          },
-          {
-            id: 3,
-            questionId: 2,
-            ownerId: 58026024,
-            answer: 'database itself 2nd',
-            isAccepted: 1,
-            receivedAt: '2020-08-03 15:31:15',
-            modifiedAt: '2020-08-03 15:31:15',
-            username: 'unphydra',
-            avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
-            votes: null,
-            comments: []
           }
         ]
       };
+      assert.deepStrictEqual(actual, expected);
+    });
+  });
+
+  context('allQuestionYouAnswered', () => {
+    it('should name something', async() => {
+      const actual = await knexDataStore.allQuestionsYourAnswered(58026024);
+      const expected = [
+        {
+          id: 2,
+          ownerId: 58027206,
+          title: 'what is the most powerful thing in database?',
+          body: 'i want to know it',
+          receivedAt: '2020-08-03 15:35:15',
+          modifiedAt: '2020-08-03 15:35:15',
+          username: 'satheesh-chandran',
+          avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+          ansCount: 2,
+          vote: -1,
+          isAnsAccepted: [{'isAnsAccepted': 1}],
+          tags: [{title: 'node'}, {title: 'node-net'}]
+        }
+      ];
       assert.deepStrictEqual(actual, expected);
     });
   });

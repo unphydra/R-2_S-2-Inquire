@@ -109,8 +109,8 @@ const insertData = async function (trx) {
       ownerId: 58027206,
       title: 'what is the most powerful thing in database?', 
       body: 'i want to know it',
-      receivedAt: '2020-08-03 15:31:15',
-      modifiedAt: '2020-08-03 15:31:15'
+      receivedAt: '2020-08-03 15:35:15',
+      modifiedAt: '2020-08-03 15:35:15'
     }
   ]);
 
@@ -133,8 +133,8 @@ const insertData = async function (trx) {
       questionId: 2, 
       ownerId: 58026024, 
       answer: 'database itself 2nd', 
-      receivedAt: '2020-08-03 15:31:15',
-      modifiedAt: '2020-08-03 15:31:15',
+      receivedAt: '2020-08-03 15:35:15',
+      modifiedAt: '2020-08-03 15:35:15',
       isAccepted: 1
     }
   ]);
@@ -177,8 +177,8 @@ const insertData = async function (trx) {
       ownerId: 58027206, 
       comment: 'you are wrong 2nd', 
       type: 0,
-      receivedAt: '2020-08-03 15:31:15',
-      modifiedAt: '2020-08-03 15:31:15'
+      receivedAt: '2020-08-03 15:35:15',
+      modifiedAt: '2020-08-03 15:35:15'
     }
   ]);
 
@@ -201,7 +201,8 @@ const insertData = async function (trx) {
   await trx('questionTags').insert([
     {questionId: 1, tagId: 1},
     {questionId: 1, tagId: 2},
-    {questionId: 2, tagId: 3}
+    {questionId: 2, tagId: 3},
+    {questionId: 2, tagId: 4}
   ]);
 };
 
