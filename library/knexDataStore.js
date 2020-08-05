@@ -199,11 +199,53 @@ const allQuestionsYourAnswered = function(id) {
     .then(data => NestHydrationJs.nest(data, definition));
 };
 
+const getAllTags = function(){
+  return tags.clone();
+};
+
+const tagInsertion = function(qId, tag){
+  return this('tags')
+    .select('id as tId')
+    .where('title', tag)
+    .then(([id]) => {
+      if(id){
+        return {questionId: qId, tagId: id.tId};
+      }
+      return this('tags')
+        .insert({title: tag})
+        .then(() => {
+          return tagInsertion
+            .bind(this, qId)(tag);
+        });
+    });
+};
+
+const insertNewQuestion = function({ownerId, title, body, tags}){
+  return knex.transaction((trx) => {
+    trx('questions')
+      .insert({ownerId, title, body})
+      .then(() => {
+        return trx('questions')
+          .max('id as qId');
+      })
+      .then(([id]) => {
+        return Promise
+          .all(tags
+            .map(tagInsertion
+              .bind(trx, id.qId)));
+      })
+      .then(qTagEntries => trx('questionTags')
+        .insert(qTagEntries));
+  });
+};
+
 module.exports = {
   getAllQuestions, 
   getUser, 
   addNewUser, 
   getYourQuestions,
   getQuestionDetails,
-  allQuestionsYourAnswered
+  allQuestionsYourAnswered,
+  getAllTags,
+  insertNewQuestion
 };
