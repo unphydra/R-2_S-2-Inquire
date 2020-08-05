@@ -1,5 +1,4 @@
 const knex = require('./knex');
-const { response } = require('express');
 const NestHydrationJs = require('nesthydrationjs')();
 
 const users = knex('users').select();
