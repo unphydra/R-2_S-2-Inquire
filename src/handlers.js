@@ -148,6 +148,10 @@ const serveEditQuestionPage = async function(req, res) {
   const { dataStore } = req.app.locals;
   const { id } = req.session;
   const { questionId } = req.params;
+  const row = await dataStore.getRow('questions', questionId);
+  if(id !== +row.ownerId.slice('1')) {
+    return res.status('405').json({error: 'Your are not a question owner'});
+  }
   const userInfo = await dataStore.findUser(id);
   const allTags = await dataStore.getTable('tags');
   const questionDetails = await dataStore.getQuestionDetails(questionId);
@@ -196,13 +200,20 @@ const postQuestion = async function(req, res) {
 };
 
 const updateQuestion = async function(req, res) {
-  const {dataStore} = req.app.locals;
-  const { id } = req.session;
+  const { dataStore } = req.app.locals;
   const { title, body, tags } = req.body;
-  const { questionId } = req.params;
-  await dataStore.updateQuestion( id, title, formatBody(body), questionId );
-  await dataStore.updateTags(questionId, tags);
-  res.redirect(`/question/${questionId}`);
+  const row = await dataStore.getRow('questions', req.params.questionId);
+  if(!row) {
+    return res.status('400').send('bad request');
+  }
+  if(req.session.id !== +row.ownerId.slice('1')) {
+    return res.status('405').json({error: 'Your are not a question owner'});
+  }
+  await dataStore.updateQuestion( 
+    req.session.id, title, formatBody(body), req.params.questionId 
+  );
+  await dataStore.updateTags(req.params.questionId, tags);
+  res.redirect(`/question/${req.params.questionId}`);
 };
 
 const postAnswer = async function (req, res) {

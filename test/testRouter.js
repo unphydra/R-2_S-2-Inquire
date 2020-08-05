@@ -281,6 +281,55 @@ describe('-- Private get methods --', function() {
           receivedAt: '2020-07-25 15:14:36',
         },
       ]),
+      getQuestionDetails: sinon
+        .mock()
+        .returns(Promise.resolve({
+          id: 'q00001',
+          title: 'what is sqlite?',
+          body: 'i want to know about sqlite',
+          votes: -1,
+          receivedAt: '2020-07-25 15:14:36',
+          modifiedAt: '2020-07-25 15:14:36',
+          ownerId: 'u58026024',
+          tags: [{ title: 'java' }, { title: 'javaScript' }],
+          comments: [
+            {
+              id: 'c00001',
+              responseId: 'q00001',
+              ownerId: 'u58027206',
+              comment: 'what you want to know',
+              receivedAt: '2020-07-25 15:14:36',
+              username: 'satheesh-chandran'
+            },
+          ],
+          answers: [
+            {
+              id: 'a00001',
+              questionId: 'q00001',
+              ownerId: 'u58027206',
+              answer: 'search it on google',
+              receivedAt: '2020-07-25 15:14:36',
+              modifiedAt: '2020-07-25 15:14:36',
+              isAccepted: 0,
+              votes: 0,
+              ownerInfo: {
+                avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+                id: 'u58027206',
+                username: 'satheesh-chandran'
+              },
+              comments: [
+                {
+                  id: 'c00002',
+                  responseId: 'a00001',
+                  ownerId: 'u58026024',
+                  comment: 'yes you are right',
+                  receivedAt: '2020-07-25 15:14:36',
+                  username: 'unphydra'
+                },
+              ],
+            },
+          ],
+        })),
       findUser: sinon
         .fake
         .returns(
@@ -337,6 +386,32 @@ describe('-- Private get methods --', function() {
         .expect(200, done);
     });
   });
+
+  context('/editQuestion', function () {
+    it('should give the editQuestion Page', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123 };
+        next();
+      });
+      request(app)
+        .get('/editQuestion/q00001')
+        .expect(200)
+        .expect(/question/, done);
+    });
+
+    it('should give error for wrong questionId', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u122'});
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123 };
+        next();
+      });
+      request(app)
+        .get('/editQuestion/q00001')
+        .expect(405)
+        .expect(/Your are not a question owner/, done);
+    });
+  });
 });
 
 describe('-- post methods --', function () {
@@ -350,6 +425,17 @@ describe('-- post methods --', function () {
             { name: 'test', username: 'test', avatar: 'test', id: '12345'}
           )
         ),
+      updateTags: sinon.mock().returns(['t00005', 't00003']),
+      updateQuestion: sinon.mock().returns({
+        id: 'q00001',
+        ownerId: 'u58026024',
+        title: 'what is sqlite3',
+        body: 'i want to know about sqlite3',
+        votes: -1,
+        anyAnswerAccepted: 0,
+        receivedAt: '2020-07-25 15:14:36',
+        modifiedAt: '2020-07-25 15:14:36'
+      }),
       saveComment: sinon.mock().returns('c00001'),
       updateComment: sinon.mock().returns({
         id: 'c00003',
@@ -425,6 +511,50 @@ describe('-- post methods --', function () {
       const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
       request(app)
         .post('/postQuestion')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(302, done);
+    });
+  });
+
+  context('updateQuestion', function () {
+    it('should give bad request error for  wrong questionId', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns(false);
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123};
+        next();
+      });
+      const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
+      request(app)
+        .post('/updateQuestion/q00001')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(400, done);
+    });
+
+    it('should give error for wrong ownerId', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns({ ownerId: 'u122'});
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123};
+        next();
+      });
+      const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
+      request(app)
+        .post('/updateQuestion/q00001')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(405, done);
+    });
+
+    it('should redirect to question page after updation', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123 };
+        next();
+      });
+      const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
+      request(app)
+        .post('/updateQuestion/q00001')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
         .expect(302, done);
