@@ -307,14 +307,7 @@ describe('-- Private get methods --', function() {
         .get('/yourQuestions')
         .expect(statusCodes.ok)
         .expect('Content-Type', /text\/html/)
-        .expect(/Your Questions/)
-        .end(() => {
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
+        .expect(/Your Questions/, done);
     });
   });
   
@@ -329,14 +322,7 @@ describe('-- Private get methods --', function() {
         .get('/yourAnswers')
         .expect(statusCodes.ok)
         .expect('Content-Type', /text\/html/)
-        .expect(/Your Answers/)
-        .end(() => {
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
+        .expect(/Your Answers/, done);
     });
   });
 
@@ -348,14 +334,7 @@ describe('-- Private get methods --', function() {
       });
       request(app)
         .get('/askQuestion')
-        .expect(200)
-        .end(() => {
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
+        .expect(200, done);
     });
   });
 });
@@ -410,14 +389,7 @@ describe('-- post methods --', function () {
         .post('/newProfile')
         .set('content-type', 'application/json')
         .send(body)
-        .expect(statusCodes.redirect)
-        .end(() => {
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
+        .expect(statusCodes.redirect, done);
     });
 
     it('should give bad request when name & username is absent', (done) => {
@@ -427,19 +399,16 @@ describe('-- post methods --', function () {
       });
       request(app)
         .post('/newProfile')
-        .expect(statusCodes.badRequest)
-        .end(() => {
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
+        .expect(statusCodes.badRequest, done);
     });
   });
 
   context('postQuestion', function () {
     it('should give unauthorized error if session id is absent', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = {};
+        next();
+      });
       const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
       request(app)
         .post('/postQuestion')
@@ -458,14 +427,7 @@ describe('-- post methods --', function () {
         .post('/postQuestion')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
-        .expect(302)
-        .end(() => {
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
+        .expect(302, done);
     });
   });
 
@@ -480,14 +442,7 @@ describe('-- post methods --', function () {
         .post('/postAnswer/q00001')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
-        .expect(401)
-        .end(() => {
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
+        .expect(401, done);
     });
 
     it('should redirect to question page after insertion', (done) => {
@@ -500,14 +455,7 @@ describe('-- post methods --', function () {
         .post('/postAnswer/q00001')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
-        .expect(302)
-        .end(() => {
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
+        .expect(302, done);
     });
 
     it('should give badRequest error if the question is absent', (done) => {
@@ -577,14 +525,7 @@ describe('-- post methods --', function () {
         .post('/postComment/q00001/q00001')
         .set('content-type', 'application/json')
         .send(JSON.stringify({ comment: 'test comment' }))
-        .expect(302)
-        .end(() => {
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
+        .expect(302, done);
     });
 
     it('should give the unauthorized error if id is absent', (done) => {
@@ -625,14 +566,7 @@ describe('-- post methods --', function () {
         .set('content-type', 'application/json')
         .send(JSON.stringify({ comment: 'test comment', commentId: 'c00003' }))
         .expect(200)
-        .expect(/It is right/)
-        .end(() => {
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
+        .expect(/It is right/, done);
     });
 
     it('should give the bad request error for wrong commentId', (done) => {
@@ -673,14 +607,7 @@ describe('-- post methods --', function () {
         .post('/acceptAnswer/q00001/a00001')
         .expect(200)
         .expect('content-type', /application\/json/)
-        .expect(/1/)
-        .end(() => {
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
+        .expect(/1/, done);
     });
 
     it('should give bad request error for wrong questionId', (done) => {
