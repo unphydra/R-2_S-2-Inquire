@@ -1,3 +1,4 @@
+require('dotenv').config({path: './.testEnv'});
 const {env} = process;
 const {DbClient, DatabaseUrlK} = env;
 

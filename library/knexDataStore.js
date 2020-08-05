@@ -240,18 +240,20 @@ const insertNewQuestion = function(questionEntries, tags){
   );
 };
 
+const checkIfError = function(response, message) {
+  if(response){
+    return response;
+  }
+  throw new Error(message);
+};
+
 const insertNewAnswer = function(answerEntries) {
   const {questionId} = answerEntries;
   return knex.transaction((trx) =>
     trx('questions')
       .select()
       .where('id', questionId)
-      .then(([question]) => {
-        if(question){
-          return question;
-        }
-        throw new Error('no question found');
-      })
+      .then(([question]) => checkIfError(question, 'no question found'))
       .then(() => 
         trx('answers')
           .insert(answerEntries)
@@ -265,16 +267,60 @@ const insertNewComment = function(commentEntries, table) {
     trx(table)
       .select()
       .where('id', responseId)
-      .then(([response]) => {
-        if(response) {
-          return response;
-        }
-        throw new Error('no response found');
-      })
+      .then(([response]) => checkIfError(response, 'no response found'))
       .then(() => 
         trx('comments')
           .insert(commentEntries)
       )
+  );
+};
+
+const updateAcceptAnswer = function(entries, answerId) {
+  return knex.transaction((trx) =>
+    trx('answers')
+      .select()
+      .where('id', answerId)
+      .then(([answer]) => checkIfError(answer, 'no answer found'))
+      .then(() => 
+        trx('answers')
+          .update(entries)
+          .where('id', answerId)
+      )
+  );
+};
+
+const updateVote = function(entries, table){
+  const {responseId, vote, type, ownerId} = entries;
+  let currVote = 0;
+  return knex.transaction((trx) =>
+    trx(table)
+      .select()
+      .where('id', responseId)
+      .then(([response]) => checkIfError(response, 'no response found'))
+      .then(() => {
+        return trx('voteLog')
+          .select()
+          .where({responseId, ownerId, type})
+          .then(([logEntry]) => {
+            if (!logEntry) {
+              currVote = vote;
+              return trx('voteLog').insert(entries);
+            }
+            if (logEntry.vote !== vote) {
+              return trx('voteLog').del().where({responseId, type, ownerId});
+            }
+            currVote = logEntry.vote;
+          });
+      })
+      .then(() =>
+        trx('voteLog')
+          .sum('vote as vote')
+          .where({responseId, type})
+          .groupBy('responseId', 'type')
+      ).then(([data]) => {
+        data.type = currVote;
+        return data;
+      })
   );
 };
 
@@ -288,5 +334,7 @@ module.exports = {
   getAllTags,
   insertNewQuestion,
   insertNewAnswer,
-  insertNewComment
+  insertNewComment,
+  updateAcceptAnswer,
+  updateVote
 };

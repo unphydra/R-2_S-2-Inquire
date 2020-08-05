@@ -294,7 +294,7 @@ describe('knexDataStore', () => {
     });
   });
 
-  describe('insertNewAnswer', () => {
+  context('insertNewAnswer', () => {
     it('should insert a new answer', async() => {
       const actual = await knexDataStore.insertNewAnswer({
         ownerId: 58026024,
@@ -315,7 +315,7 @@ describe('knexDataStore', () => {
     });
   });
 
-  describe('insertNewComment', () => {
+  context('insertNewComment', () => {
     it('should insert a new comment', async() => {
       const actual = await knexDataStore.insertNewComment({
         ownerId: 58026024,
@@ -337,6 +337,84 @@ describe('knexDataStore', () => {
         responseId: -1
       },
       'questions'
+      ).catch(err => assert.match(err, /Error/));
+    });
+  });
+
+  context('updateAcceptAnswer', () => {
+    it('should update isAccepted of the answer', async() => {
+      const actual = await knexDataStore.updateAcceptAnswer(
+        {
+          isAccepted: 1
+        },
+        1
+      );
+      const expected = 1;
+      assert.deepStrictEqual(actual, expected);
+      
+    });
+
+    it('should not accept a answer if response id invalid', async() => {
+      await knexDataStore.updateAcceptAnswer(
+        {
+          isAccepted: 1
+        },
+        -1
+      ).catch(err => assert.match(err, /Error/));
+    });
+  });
+
+  context('updateVote', () => {
+    it('should update vote of the response', async() => {
+      const actual = await knexDataStore.updateVote(
+        {
+          ownerId: 58026024,
+          responseId: 1,
+          type: 1,
+          vote: 1
+        },
+        'questions'
+      );
+      const expected = { vote: 3, type: 1 };
+      assert.deepStrictEqual(actual, expected);
+    });
+
+    it('should down vote the response when it is given up vote', async() => {
+      const actual = await knexDataStore.updateVote(
+        {
+          ownerId: 58027206,
+          responseId: 1,
+          type: 1,
+          vote: -1
+        },
+        'questions'
+      );
+      const expected = { vote: 1, type: 0 };
+      assert.deepStrictEqual(actual, expected);
+      
+    });
+
+    it('should not up vote the response when it is given up vote', async() => {
+      const actual = await knexDataStore.updateVote(
+        {
+          ownerId: 58027206,
+          responseId: 1,
+          type: 1,
+          vote: 1
+        },
+        'questions'
+      );
+      const expected = { vote: 2, type: 1 };
+      assert.deepStrictEqual(actual, expected);
+      
+    });
+
+    it('should not update vote if response id invalid', async() => {
+      await knexDataStore.updateVote(
+        {
+          responseId: -1
+        },
+        'questions'
       ).catch(err => assert.match(err, /Error/));
     });
   });
