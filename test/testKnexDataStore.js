@@ -294,6 +294,41 @@ describe('knexDataStore', () => {
     });
   });
 
+  context('updateQuestion', () => {
+    it('should update the existing question', async() => {
+      const actual = await knexDataStore.updateQuestion({
+        id: 2,
+        ownerId: 58027206,
+        title: 'test',
+        body: 'test',
+      },
+      ['tag1', 'tag2']
+      );
+      const expected = [4];
+      assert.deepStrictEqual(actual, expected);
+    });
+
+    it('should not update if the question id invalid', async() => {
+      await knexDataStore.updateQuestion({
+        id: -1,
+        ownerId: 58027206,
+        title: 'test',
+        body: 'test',
+      }
+      ).catch(err => assert.match(err, /Error/));
+    });
+
+    it('should not update if the question owner id mismatch', async() => {
+      await knexDataStore.updateQuestion({
+        id: 1,
+        ownerId: 58027206,
+        title: 'test',
+        body: 'test',
+      }
+      ).catch(err => assert.match(err, /Error/));
+    });
+  });
+
   context('insertNewAnswer', () => {
     it('should insert a new answer', async() => {
       const actual = await knexDataStore.insertNewAnswer({
@@ -312,6 +347,37 @@ describe('knexDataStore', () => {
         answer: 'test',
         questionId: -1
       }).catch(err => assert.match(err, /Error/));
+    });
+  });
+
+  context('updateAnswer', () => {
+    it('should update the existing answer', async() => {
+      const actual = await knexDataStore.updateAnswer({
+        id: 2,
+        ownerId: 58026024,
+        answer: 'test updated',
+      }
+      );
+      const expected = 3;
+      assert.deepStrictEqual(actual, expected);
+    });
+
+    it('should not update if the answer id invalid', async() => {
+      await knexDataStore.updateAnswer({
+        id: -1,
+        ownerId: 58026024,
+        answer: 'test',
+      }
+      ).catch(err => assert.match(err, /Error/));
+    });
+
+    it('should not update if the answer owner id mismatch', async() => {
+      await knexDataStore.updateAnswer({
+        id: 1,
+        ownerId: 58026024,
+        answer: 'test',
+      }
+      ).catch(err => assert.match(err, /Error/));
     });
   });
 
@@ -337,6 +403,37 @@ describe('knexDataStore', () => {
         responseId: -1
       },
       'questions'
+      ).catch(err => assert.match(err, /Error/));
+    });
+  });
+
+  context('updateComment', () => {
+    it('should update the existing comment', async() => {
+      const actual = await knexDataStore.updateComment({
+        id: 2,
+        ownerId: 58026024,
+        comment: 'test updated',
+      }
+      );
+      const expected = 5;
+      assert.deepStrictEqual(actual, expected);
+    });
+
+    it('should not update if the comment id invalid', async() => {
+      await knexDataStore.updateComment({
+        id: -1,
+        ownerId: 58026024,
+        comment: 'test',
+      }
+      ).catch(err => assert.match(err, /Error/));
+    });
+
+    it('should not update if the comment owner id mismatch', async() => {
+      await knexDataStore.updateComment({
+        id: 1,
+        ownerId: 58026024,
+        comment: 'test',
+      }
       ).catch(err => assert.match(err, /Error/));
     });
   });

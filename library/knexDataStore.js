@@ -240,6 +240,28 @@ const insertNewQuestion = function(questionEntries, tags){
   );
 };
 
+const updateQuestion = function(questionEntries, tags){
+  const {id, ownerId, title, body} = questionEntries;
+  return knex.transaction((trx) => 
+    trx('questions')
+      .update({title, body})
+      .where({id, ownerId})
+      .then(() =>
+        trx('questionTags')
+          .del()
+          .where({questionId: id})
+      )
+      .then(() => {
+        return Promise
+          .all(tags
+            .map(tagInsertion
+              .bind(trx, id)));
+      })
+      .then(qTagEntries => trx('questionTags')
+        .insert(qTagEntries))
+  );
+};
+
 const checkIfError = function(response, message) {
   if(response){
     return response;
@@ -261,6 +283,20 @@ const insertNewAnswer = function(answerEntries) {
   );
 };
 
+const updateAnswer = function(answerEntries) {
+  const {id, ownerId, answer} = answerEntries;
+  return knex.transaction((trx) =>
+    trx('answers')
+      .select()
+      .where({id, ownerId})
+      .then(([response]) => checkIfError(response, 'no answer found'))
+      .then(() => 
+        trx('answers')
+          .update({answer})
+      )
+  );
+};
+
 const insertNewComment = function(commentEntries, table) {
   const {responseId} = commentEntries;
   return knex.transaction((trx) =>
@@ -271,6 +307,20 @@ const insertNewComment = function(commentEntries, table) {
       .then(() => 
         trx('comments')
           .insert(commentEntries)
+      )
+  );
+};
+
+const updateComment = function(commentEntries){
+  const {id, ownerId, comment} = commentEntries;
+  return knex.transaction((trx) =>
+    trx('comments')
+      .select()
+      .where({id, ownerId})
+      .then(([response]) => checkIfError(response, 'no comment found'))
+      .then(() => 
+        trx('comments')
+          .update({comment})
       )
   );
 };
@@ -333,8 +383,11 @@ module.exports = {
   allQuestionsYourAnswered,
   getAllTags,
   insertNewQuestion,
+  updateQuestion,
   insertNewAnswer,
+  updateAnswer,
   insertNewComment,
+  updateComment,
   updateAcceptAnswer,
   updateVote
 };
