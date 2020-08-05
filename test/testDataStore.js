@@ -244,6 +244,34 @@ describe('DataStore', function () {
       assert.deepStrictEqual(actual, expected);
     });
   });
+
+  context('updateQuestion', function () {
+    it('should update the question for given Id', async function () {
+      const actual = await dataStore.updateQuestion(
+        58026024, 'what is sqlite3', 'i want to know about sqlite3', 'q00001'
+      );
+      const expected = {
+        id: 'q00001',
+        ownerId: 'u58026024',
+        title: 'what is sqlite3',
+        body: 'i want to know about sqlite3',
+        votes: -1,
+        anyAnswerAccepted: 0,
+        receivedAt: '2020-07-25 15:14:36',
+        modifiedAt: '2020-07-25 15:14:36'
+      };
+      assert.deepStrictEqual(actual, expected);
+    });
+  });
+
+  context('updateTags', async () => {
+    it('should update the tags for given questionId', async () => {
+      const actual = await dataStore
+        .updateTags('q00001', ['js', 'node']);
+      assert.deepStrictEqual(actual, ['t00005', 't00003']);
+    });
+  });
+
   context('getRow', function () {
     it('should give specific row for the given id', async function () {
       const expected = {
@@ -444,4 +472,3 @@ describe('New Insertion in Database', function () {
     });
   });
 });
-
