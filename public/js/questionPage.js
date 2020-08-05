@@ -86,6 +86,10 @@ const updateAnswer = (questionId) => {
   });
 };
 
+const makeQuestionEditable = (questionId) => {
+  document.location = `/editQuestion/${questionId}`;
+};
+
 const updateVote = (url, container) => {
   fetch(url, {method: 'POST'}).then((res) => res.json()).then(data => {
     const ONE = 1;

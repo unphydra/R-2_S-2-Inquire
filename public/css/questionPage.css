@@ -160,11 +160,17 @@ width: 80%;
 .border {
   border-bottom:1px dashed rgba(41, 41, 41, 0.5) ;
 }
+.edit-q-btn {
+  color: #f48024;
+  font-size: large;
+  margin-top: 2vh;
+  margin-left: 3vw;
+}
 .edit-btns {
   display: flex;
   flex-direction: row;
 }
-.edit-btns > div {
+.edit-btns > div:hover, .edit-q-btn:hover {
   text-decoration: underline;
   cursor: pointer;
   margin-right: 1vw;

@@ -144,6 +144,18 @@ const servePostQuestionPage = async function(req, res) {
   res.render('postQuestion', { userId: id, userInfo, allTags });
 };
 
+const serveEditQuestionPage = async function(req, res) {
+  const { dataStore } = req.app.locals;
+  const { id } = req.session;
+  const { questionId } = req.params;
+  const userInfo = await dataStore.findUser(id);
+  const allTags = await dataStore.getTable('tags');
+  const questionDetails = await dataStore.getQuestionDetails(questionId);
+  res.render('editQuestion', 
+    { userId: id, userInfo, allTags, questionDetails }
+  );
+};
+
 const serveProfilePage = async function (req, res) {
   const { id } = req.query;
   if (!id) {
@@ -170,7 +182,7 @@ const formatBody = function(response) {
   return text;
 };
 
-const postQuestion = async function(req, res){
+const postQuestion = async function(req, res) {
   const {dataStore} = req.app.locals;
   const { id } = req.session;
   const { title, body, tags } = req.body;
@@ -180,6 +192,16 @@ const postQuestion = async function(req, res){
     formatBody(body)
   );
   await dataStore.insertTags(questionId, tags);
+  res.redirect(`/question/${questionId}`);
+};
+
+const updateQuestion = async function(req, res) {
+  const {dataStore} = req.app.locals;
+  const { id } = req.session;
+  const { title, body, tags } = req.body;
+  const { questionId } = req.params;
+  await dataStore.updateQuestion( id, title, formatBody(body), questionId );
+  await dataStore.updateTags(questionId, tags);
   res.redirect(`/question/${questionId}`);
 };
 
@@ -306,9 +328,11 @@ module.exports = {
   serveYourAnswersPage,
   serveQuestionPage,
   servePostQuestionPage,
+  serveEditQuestionPage,
   serveProfilePage,
   registerNewUser,
   postQuestion,
+  updateQuestion,
   postAnswer,
   updateAnswer,
   postComment,

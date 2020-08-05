@@ -1,7 +1,7 @@
 
 const renderDate = (element) => {
   const date = moment(element.getAttribute('time'));
-  element.innerText += date.startOf('min').fromNow();
+  element.innerText = ` ${date.startOf('min').fromNow()}`;
 };
 
 const renderDates = (selector) => {

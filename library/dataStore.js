@@ -176,6 +176,13 @@ class DataStore {
     return tagIds;
   }
 
+  async updateTags(questionId, tags) {
+    const deleteQuery = `DELETE FROM questionTags 
+                        WHERE questionId='${questionId}'`;
+    await this.executeQuery(deleteQuery);
+    return await this.insertTags(questionId, tags);
+  }
+
   async insertQuestion(owner, title, body) {
     let id = await this.fetchIds('questions');
     const currentId = `${++id}`.padStart(FIVE, ZERO);
@@ -183,6 +190,13 @@ class DataStore {
     VALUES ('q${currentId}', 'u${owner}', '${title}', "${body}")`;
     await this.executeQuery(insertQuery);
     return `q${currentId}`;
+  }
+
+  async updateQuestion(owner, title, body, questionId) {
+    const insertQuery = `UPDATE questions SET title="${title}", body="${body}"
+                         WHERE id='${questionId}' AND ownerId='u${owner}'`;
+    await this.executeQuery(insertQuery);
+    return await this.getRow('questions', questionId);
   }
 
   async insertAnswer(questionId, ownerId, answer) {

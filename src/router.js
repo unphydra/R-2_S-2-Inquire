@@ -19,9 +19,11 @@ const {
   serveYourAnswersPage,
   serveQuestionPage,
   servePostQuestionPage,
+  serveEditQuestionPage,
   serveProfilePage,
   registerNewUser,
   postQuestion,
+  updateQuestion,
   postAnswer,
   updateAnswer,
   postComment,
@@ -57,6 +59,7 @@ app.get('/yourQuestions', isLoggedIn, serveYourQuestionsPage, serveQuestions);
 app.get('/yourAnswers', isLoggedIn, serveYourAnswersPage, serveQuestions);
 app.get('/question/:id', serveQuestionPage);
 app.get('/askQuestion', isLoggedIn, servePostQuestionPage);
+app.get('/editQuestion/:questionId', isLoggedIn, serveEditQuestionPage);
 app.get('/viewProfile', serveProfilePage);
 
 app.post(
@@ -66,6 +69,10 @@ app.post(
 app.post(
   '/postQuestion', 
   [isLoggedIn, checkOptions('title', 'body', 'tags'), postQuestion]
+);
+app.post(
+  '/updateQuestion/:questionId', 
+  [isLoggedIn, checkOptions('title', 'body', 'tags'), updateQuestion]
 );
 app.post(
   '/postAnswer/:questionId',

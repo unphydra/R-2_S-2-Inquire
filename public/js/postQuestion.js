@@ -51,7 +51,7 @@ const getTags = () => {
   return tags.map((tag) => tag.innerText.trim());
 };
 
-const postQuestion = function(button) {
+const postQuestion = function(button, url) {
   const title = document.querySelector('input[name="title"');
   const tags = Array.from(document.querySelectorAll('.tag'));
   const TiL = 20, BL = 30, TaL = 2;
@@ -64,7 +64,7 @@ const postQuestion = function(button) {
   if(tags.length < TaL) {
     return showError('tag-error');
   }
-  fetch('/postQuestion', {
+  fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
