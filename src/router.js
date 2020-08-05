@@ -23,6 +23,7 @@ const {
   registerNewUser,
   postQuestion,
   postAnswer,
+  updateAnswer,
   postComment,
   updateComment,
   acceptAnswer,
@@ -69,6 +70,10 @@ app.post(
 app.post(
   '/postAnswer/:questionId',
   [isLoggedIn, checkOptions('answer'), postAnswer]
+);
+app.post(
+  '/updateAnswer', 
+  [isLoggedIn, checkOptions('answer', 'answerId'), updateAnswer]
 );
 app.post(
   '/postComment/:questionId/:resId', 

@@ -114,7 +114,8 @@ width: 80%;
 
 .answer-author {
   justify-content: flex-end;
-  width:80%;
+  margin-top: 0;
+  margin-right: 6vh;
 }
 
 .a-comments{
@@ -153,20 +154,25 @@ width: 80%;
   flex-direction: row;
   justify-content: space-between;
   margin-left: 2vw;
-  border-bottom:1px dashed rgba(41, 41, 41, 0.5) ;
   color: #f48024;
 }
 
-.c-btns {
+.border {
+  border-bottom:1px dashed rgba(41, 41, 41, 0.5) ;
+}
+.edit-btns {
   display: flex;
   flex-direction: row;
 }
-.c-btns > div {
+.edit-btns > div {
   text-decoration: underline;
   cursor: pointer;
   margin-right: 1vw;
 }
 
+.edit-btns > .answer-author {
+  margin-top: 0;
+}
 .c-author {
   font-weight: 400;
   padding-bottom: 1vh;

@@ -381,6 +381,16 @@ describe('-- post methods --', function () {
       }),
       getRow: sinon.mock().returns(true),
       insertAnswer: sinon.mock().returns('a00001'),
+      updateAnswer: sinon.mock().returns({
+        id: 'a00001',
+        questionId: 'q00001',
+        ownerId: 'u58027206',
+        answer: 'search it on net',
+        isAccepted: 0,
+        votes: 0,
+        receivedAt: '2020-07-25 15:14:36',
+        modifiedAt: '2020-07-25 15:14:36'
+      }),
       insertQuestion: sinon.mock().returns('q00001'),
       insertTags: sinon.mock().returns(undefined),
       acceptAnswer: sinon.mock().returns(1)
@@ -512,6 +522,48 @@ describe('-- post methods --', function () {
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
         .expect(400, done);
+    });
+  });
+
+  context('updateAnswer', function () {
+    it('should give updated answer row', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123 };
+        next();
+      });
+      request(app)
+        .post('/updateAnswer')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ answer: 'test comment', answerId: 'a00001' }))
+        .expect(200)
+        .expect(/search it on net/, done);
+    });
+
+    it('should give the bad request error for wrong answerId', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns(undefined);
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123};
+        next();
+      });
+      request(app)
+        .post('/updateAnswer')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ answer: 'test answer', answerId: 'a00001' }))
+        .expect(400, done);
+    });
+
+    it('should give the error for others answerId', (done) => {
+      app.locals.dataStore.getRow = sinon.mock().returns({ ownerId: 'u122'});
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = { id: 123};
+        next();
+      });
+      request(app)
+        .post('/updateAnswer')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ answer: 'test comment', answerId: 'c00003' }))
+        .expect(405, done);
     });
   });
 

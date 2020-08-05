@@ -1,0 +1,13 @@
+mixin getComments(comments)
+  span Comments 
+  each comment in comments
+    div(class="comment" id=`${comment.id}`)=comment.comment
+    div(class="flex-row border")
+      div(class="edit-btns")
+        if(comment.ownerId == `u${userId}`)
+          div(class="edit-btn" onclick=`makeCommentEditable(this,'${comment.id}')`) edit
+          div(class="cancel-btn hide" onclick=`makeCommentUneditable(this,'${comment.id}')`) cancel
+          div(class="save-btn hide" onclick=`updateComment(this, '${comment.id}')`) save
+      div(class="c-author")
+        span(onclick=`window.location.href='/viewProfile?id=${comment.ownerId.slice(1)}'`)=comment.username
+        span(class='a-comment-time' time=`${comment.receivedAt}`) ,&nbsp;

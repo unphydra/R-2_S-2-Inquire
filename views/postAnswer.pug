@@ -1,11 +1,14 @@
 style
   include ../public/css/postAnswer.css
 script(src="/js/editor.js")
-div(class="post-answer")
-  span Post Your Answer
-  div(class='editor-box')
-    div(id='toolbar')
-    div(id='editor')
-    div(id="formFooter")
-      button(onclick=`postAnswer(${userId},'${questionDetails.id}',this)`) Post Answer
-      div(class="popUp hide")
+mixin getQuestionId(qId)
+  div(class="post-answer")
+    span Post Your Answer
+    div(class='editor-box')
+      div(id='toolbar')
+      div(id='editor')
+      div(id="formFooter" class="edit-answer-btns")
+        button(onclick=`postAnswer(${userId},'${questionDetails.id}',this)`) Post Answer
+        button(class="cancel-btn hide" onclick=`makeAnswerUneditable('${qId}')`) Cancel
+        button(class="save-btn hide" onclick=`updateAnswer('${qId}')`) Save
+        div(class="popUp hide")

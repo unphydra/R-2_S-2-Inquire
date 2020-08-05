@@ -30,36 +30,60 @@ const postAnswer = function (id, qId, button) {
   });
 };
 
-const toggleCommentBtns = (commentBtns) => {
-  Array.from(commentBtns.children).forEach((btn) => {
+const toggleEditBtns = (editBtns) => {
+  Array.from(editBtns.children).forEach((btn) => {
     btn.classList.toggle('hide');
-  });
-};
-
-const postComment = (saveBtn, commentId) => {
-  const comment = document.querySelector(`#${commentId}`);
-  const body = {comment: comment.innerText, commentId};
-  const options = getFetchOptions('POST', body);
-  fetch('/updateComment', options).then((res) => res.json()).then(data => {
-    comment.innerText = data.comment;
-    toggleCommentBtns(saveBtn.parentElement);
   });
 };
 
 const makeCommentEditable = (editBtn, commentId) => {
   const comment = document.querySelector(`#${commentId}`);
   comment.setAttribute('contenteditable', true);
-  toggleCommentBtns(editBtn.parentElement);
-  localStorage.setItem('oldComment', comment.innerText);
+  toggleEditBtns(editBtn.parentElement);
   moveCursor(comment);
+  localStorage.setItem('oldComment', comment.innerText);
 };
 
 const makeCommentUneditable = (cancelBtn, commentId) => {
   const comment = document.querySelector(`#${commentId}`);
   comment.setAttribute('contenteditable', false);
-  toggleCommentBtns(cancelBtn.parentElement);
+  toggleEditBtns(cancelBtn.parentElement);
   comment.innerText = localStorage.getItem('oldComment');
   localStorage.removeItem('oldComment');
+};
+
+const updateComment = (saveBtn, commentId) => {
+  const comment = document.querySelector(`#${commentId}`);
+  const body = {comment: comment.innerText, commentId};
+  const options = getFetchOptions('POST', body);
+  fetch('/updateComment', options).then((res) => res.json()).then(data => {
+    comment.innerText = data.comment;
+    toggleEditBtns(saveBtn.parentElement);
+    localStorage.removeItem('oldComment');
+  });
+};
+
+const makeAnswerEditable = (editBtn, answerId) => {
+  const answer = document.querySelector(`#${answerId}`);
+  const formFooter = document.querySelector('.edit-answer-btns');
+  editBtn.classList.add('hide');
+  toggleEditBtns(formFooter);
+  quill.root.innerHTML = answer.innerHTML;
+  localStorage.setItem('answerId', answerId);
+};
+
+const makeAnswerUneditable = (questionId) => {
+  document.location = `/question/${questionId}`;
+};
+
+const updateAnswer = (questionId) => {
+  const answerId = localStorage.getItem('answerId');
+  localStorage.removeItem('answerId');
+  const body = {answer: quill.root.innerHTML, answerId};
+  const options = getFetchOptions('POST', body);
+  fetch('/updateAnswer', options).then(() => {
+    document.location = `/question/${questionId}`;
+  });
 };
 
 const updateVote = (url, container) => {

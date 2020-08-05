@@ -207,6 +207,23 @@ describe('DataStore', function () {
     });
   });
 
+  context('updateAnswer', function () {
+    it('should update the answer for given Id', async function () {
+      const actual = await dataStore.updateAnswer('a00001', 'search it on net');
+      const expected = {
+        id: 'a00001',
+        questionId: 'q00001',
+        ownerId: 'u58027206',
+        answer: 'search it on net',
+        isAccepted: 0,
+        votes: 0,
+        receivedAt: '2020-07-25 15:14:36',
+        modifiedAt: '2020-07-25 15:14:36'
+      };
+      assert.deepStrictEqual(actual, expected);
+    });
+  });
+
   context('saveComment', function () {
     it('should give the latest comment id after insertion', async function () {
       const actual = await dataStore.saveComment('u58026024', 'q00002', 'test');

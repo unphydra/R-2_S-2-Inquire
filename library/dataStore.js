@@ -194,6 +194,13 @@ class DataStore {
     return `a${currentId}`;
   }
 
+  async updateAnswer(answerId, answer) {
+    const updateQuery = `UPDATE answers SET answer="${answer}"
+                         WHERE id='${answerId}'`;
+    await this.executeQuery(updateQuery);
+    return await this.getRow('answers', answerId);
+  }
+
   async saveComment(ownerId, responseId, comment) {
     let id = await this.fetchIds('comments');
     const currentId = `${++id}`.padStart(FIVE, ZERO);

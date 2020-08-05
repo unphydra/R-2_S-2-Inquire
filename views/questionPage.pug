@@ -45,20 +45,10 @@ html(lang='en')
                 div(class="ansCount") votes
             div(class="down-arrow" onclick=`updateVote('/downVote/questions/${questionDetails.id}',this)`)
         div(class="comments") 
-          if(comments.length > 0)
-            span Comments 
-          each comment in comments
-            div(class="comment" id=`${comment.id}`)=comment.comment
-            div(class="flex-row")
-              div(class="c-btns")
-                if(comment.ownerId == `u${userId}`)
-                  div(class="edit-btn" onclick=`makeCommentEditable(this,'${comment.id}')`) edit
-                  div(class="cancel-btn hide" onclick=`makeCommentUneditable(this,'${comment.id}')`) cancel
-                  div(class="save-btn hide" onclick=`postComment(this, '${comment.id}')`) save
-              div(class="c-author")
-                span(onclick=`window.location.href='/viewProfile?id=${comment.ownerId.slice(1)}'`)=comment.username
-                span(class='q-comment-time' time=`${comment.receivedAt}`) ,&nbsp;
+          include comments
+          +getComments(comments)
           include postComment
           +getId(questionDetails.id)
         include postAnswer
+        +getQuestionId(questionDetails.id)
         include answer

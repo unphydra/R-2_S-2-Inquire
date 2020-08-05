@@ -3,7 +3,7 @@ div(class="answers")
       each answer in answers
         -const {ownerInfo} = answer;
         div(class="question-body")
-          div(class="question-body-c")!=answer.answer
+          div(class="question-body-c" id=`${answer.id}`)!=answer.answer
           div(class="sidebar") 
             div(class="tickmark")
               -const url=answer.isAccepted ? "#42B883" : "#ddd"
@@ -16,25 +16,18 @@ div(class="answers")
                   span=answer.votes
                   div(class="ansCount") votes
               div(class="down-arrow" onclick=`updateVote('/downVote/answers/${answer.id}',this)`)
-        div(class="question-title-b answer-author")
-              div(class="avatar-div")
-                img(class="author-avatar" src=`${ownerInfo.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${ownerInfo.id.slice(1)}'`)
-              div
-                div(class="author" onclick=`window.location.href='/viewProfile?id=${answer.ownerId.slice(1)}'`)=ownerInfo.username
-                div(class="time" time=`${answer.receivedAt}`)
+        div(class="flex-row")      
+          div(class="edit-btns")
+            if(answer.ownerId == `u${userId}`)
+              div(class="edit-btn" onclick=`makeAnswerEditable(this,'${answer.id}')`) edit
+          div(class="question-title-b answer-author")
+                div(class="avatar-div")
+                  img(class="author-avatar" src=`${ownerInfo.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${ownerInfo.id.slice(1)}'`)
+                div
+                  div(class="author" onclick=`window.location.href='/viewProfile?id=${answer.ownerId.slice(1)}'`)=ownerInfo.username
+                  div(class="time" time=`${answer.receivedAt}`)
         div(class="comments a-comments") 
-              if(comments.length > 0)
-                span Comments 
-              each comment in answer.comments
-                div(class="comment" id=`${comment.id}`)=comment.comment
-                div(class="flex-row")
-                  div(class="c-btns")
-                    if(comment.ownerId == `u${userId}`)
-                      div(class="edit-btn" onclick=`makeCommentEditable(this,'${comment.id}')`) edit
-                      div(class="cancel-btn hide" onclick=`makeCommentUneditable(this,'${comment.id}')`) cancel
-                      div(class="save-btn hide" onclick=`postComment(this, '${comment.id}')`) save
-                  div(class="c-author")
-                    span(onclick=`window.location.href='/viewProfile?id=${comment.ownerId.slice(1)}'`)=comment.username
-                    span(class='a-comment-time' time=`${comment.receivedAt}`) ,&nbsp;
-              include postComment
-              +getId(answer.id)
+          include comments
+          +getComments(answer.comments)
+          include postComment
+          +getId(answer.id)
