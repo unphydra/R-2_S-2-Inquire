@@ -90,24 +90,27 @@ const serveQuestions = async (req, res) => {
   const { dataStore } = req.app.locals;
   const { id } = req.session;
   const userInfo = await dataStore.findUser(id);
-  res.render('home', {userInfo, userId: id, questions: req.questions});
+  res.render(req.view, {userInfo, userId: id, questions: req.questions});
 };
 
 const serveHomepage = async (req, res, next) => {
   const { dataStore } = req.app.locals;
   req.questions = await dataStore.getAllQuestions();
+  req.view = 'home';
   next();
 };
 
 const serveYourQuestionsPage = async function (req, res, next) {
   const { dataStore } = req.app.locals;
   req.questions = await dataStore.getAllQuestions(req.session.id);
+  req.view = 'yourQuestions';
   next();
 };
 
 const serveYourAnswersPage = async (req, res, next) => {
   const { dataStore } = req.app.locals;
   req.questions = await dataStore.getAllAnsweredQuestions(req.session.id);
+  req.view = 'yourAnswers';
   next();
 };
 

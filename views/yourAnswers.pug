@@ -7,8 +7,8 @@ html(lang='en')
       include ../public/css/home.css
     script(src="../js/home.js")
     script(src="../js/renderingDates.js")
-  body(onload=`main()`)
+  body(onload=`main(${questions.length})`)
     include titleBar
     include menuBar
     include questions
-    +getHeader('All the Questions')
+    +getHeader(`You have answered ${questions.length} Questions`)

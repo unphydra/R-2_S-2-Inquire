@@ -1,24 +1,25 @@
-script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript")
-div(class="container")
-  div(class="container-h")
-    div(class="con-header-title") All Questions
-    if userId
-      button(class="askBtn" onClick="window.location.href='/askQuestion'") Ask Question
-  div(class="container-b")
-    if(questions.length > 0)
-      each question in questions
-        div(class="question")
-          -const className=question.isAccepted ? "countName-ac" : question.answercount > 0? "countName-a":"countName"
-          div(class=`${className}`)
-            div(class="count")=`${question.answercount}`
-              div(class="ansCount") answers
-          div(class="question-details")
-            div(class="title" onClick=`window.location.href='/question/${question.id}'`)=question.title
-            div(class="tags")
-              each tag in question.tags
-                div(class="tag")=tag
-            div(class='q-author')
-              span(class="q-author-name" onclick=`window.location.href='/viewProfile?id=${question.ownerId.slice('1')}'`)=`${question.ownerName}`
-              span(class="date-time" time=`${question.receivedAt}`) ,&nbsp;
-    else 
-      p No questions
+mixin getHeader(header)
+  script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript")
+  div(class="container")
+    div(class="container-h")
+      div(class="con-header-title")=`${header}`
+      if userId
+        button(class="askBtn" onClick="window.location.href='/askQuestion'") Ask Question
+    div(class="container-b")
+      if(questions.length > 0)
+        each question in questions
+          div(class="question")
+            -const className=question.isAccepted ? "countName-ac" : question.answercount > 0? "countName-a":"countName"
+            div(class=`${className}`)
+              div(class="count")=`${question.answercount}`
+                div(class="ansCount") answers
+            div(class="question-details")
+              div(class="title" onClick=`window.location.href='/question/${question.id}'`)=question.title
+              div(class="tags")
+                each tag in question.tags
+                  div(class="tag")=tag
+              div(class='q-author')
+                span(class="q-author-name" onclick=`window.location.href='/viewProfile?id=${question.ownerId.slice('1')}'`)=`${question.ownerName}`
+                span(class="date-time" time=`${question.receivedAt}`) ,&nbsp;
+      else 
+        p No questions
