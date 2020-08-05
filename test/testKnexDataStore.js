@@ -219,4 +219,125 @@ describe('knexDataStore', () => {
       assert.deepStrictEqual(actual, expected);
     });
   });
+
+  context('getAllTags', () => {
+    it('should give all the tags', async() => {
+      const actual = await knexDataStore.getAllTags();
+      const expected = [
+        { id: 1, title: 'java' },
+        { id: 2, title: 'javaScript' },
+        { id: 3, title: 'node' },
+        { id: 4, title: 'node-net' }
+      ];
+      assert.deepStrictEqual(actual, expected);
+    });
+  });
+
+  context('insertNewQuestion', () => {
+    it('should add a new question', async() => {
+      const actual1 = await knexDataStore.insertNewQuestion({
+        ownerId: 58027206,
+        title: 'test',
+        body: 'test',
+        receivedAt: '2020-08-05 06:15:32',
+        modifiedAt: '2020-08-05 06:15:32'
+      },
+      ['tag1', 'tag2']
+      );
+      const actual2 = await knexDataStore.getAllQuestions();
+      const expected = [
+        {
+          id: 3,
+          ownerId: 58027206,
+          title: 'test',
+          body: 'test',
+          receivedAt: '2020-08-05 06:15:32',
+          modifiedAt: '2020-08-05 06:15:32',
+          username: 'satheesh-chandran',
+          avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+          ansCount: null,
+          vote: null,
+          isAnsAccepted: [],
+          tags: [{ title: 'tag1' }, { title: 'tag2' }]
+        },
+        {
+          id: 2,
+          ownerId: 58027206,
+          title: 'what is the most powerful thing in database?',
+          body: 'i want to know it',
+          receivedAt: '2020-08-03 15:35:15',
+          modifiedAt: '2020-08-03 15:35:15',
+          username: 'satheesh-chandran',
+          avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+          ansCount: 2,
+          vote: -1,
+          isAnsAccepted: [{ isAnsAccepted: 1 }],
+          tags: [{ title: 'node' }, { title: 'node-net' }]
+        },
+        {
+          id: 1,
+          ownerId: 58026024,
+          title: 'what is sqlite?',
+          body: 'i want to know about sqlite',
+          receivedAt: '2020-08-03 15:31:15',
+          modifiedAt: '2020-08-03 15:31:15',
+          username: 'unphydra',
+          avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
+          ansCount: 1,
+          vote: 2,
+          isAnsAccepted: [],
+          tags: [{ title: 'java' }, { title: 'javaScript' }]
+        }
+      ];
+      assert.deepStrictEqual(actual1, [6]);
+      assert.deepStrictEqual(actual2, expected);
+    });
+  });
+
+  describe('insertNewAnswer', () => {
+    it('should insert a new answer', async() => {
+      const actual = await knexDataStore.insertNewAnswer({
+        ownerId: 58026024,
+        questionId: 1,
+        answer: 'test'
+      });
+      const expected = [4];
+      assert.deepStrictEqual(actual, expected);
+      
+    });
+
+    it('should not insert a new answer if question id invalid', async() => {
+      await knexDataStore.insertNewAnswer({
+        ownerId: 58026024,
+        answer: 'test',
+        questionId: -1
+      }).catch(err => assert.match(err, /Error/));
+    });
+  });
+
+  describe('insertNewComment', () => {
+    it('should insert a new comment', async() => {
+      const actual = await knexDataStore.insertNewComment({
+        ownerId: 58026024,
+        responseId: 1,
+        comment: 'test',
+        type: 1
+      },
+      'questions'
+      );
+      const expected = [6];
+      assert.deepStrictEqual(actual, expected);
+      
+    });
+
+    it('should not insert a new comment if response id invalid', async() => {
+      await knexDataStore.insertNewComment({
+        ownerId: 58026024,
+        comment: 'test',
+        responseId: -1
+      },
+      'questions'
+      ).catch(err => assert.match(err, /Error/));
+    });
+  });
 });

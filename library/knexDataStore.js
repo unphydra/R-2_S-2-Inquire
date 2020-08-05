@@ -1,4 +1,5 @@
 const knex = require('./knex');
+const { response } = require('express');
 const NestHydrationJs = require('nesthydrationjs')();
 
 const users = knex('users').select();
@@ -116,7 +117,7 @@ const allQuestionColumn = [
   'acceptedAns.isAccepted as isAnsAccepted'
 ];
   
-const definition = [{
+const definition = (field) => [{
   id: 'qId',
   ownerId: 'qoId',
   title: 'qTitle',
@@ -127,14 +128,14 @@ const definition = [{
   avatar: 'avatar',
   ansCount: 'ansCount',
   vote: 'vote',
-  isAnsAccepted: [{isAnsAccepted: 'isAnsAccepted'}],
+  isAnsAccepted: [{isAnsAccepted: field ? field : 'isAnsAccepted'}],
   tags: [{title: 'tag'}]
 }];
 
 const getAllQuestions = () => {
   return allQuestionsData.clone()
     .select(allQuestionColumn)
-    .then(data => NestHydrationJs.nest(data, definition));
+    .then(data => NestHydrationJs.nest(data, definition()));
 };
 
 const getUser = (id) => {
@@ -149,14 +150,14 @@ const getYourQuestions = (userId) => {
   return allQuestionsData.clone()
     .select(allQuestionColumn)
     .where({ownerId: userId})
-    .then(data => NestHydrationJs.nest(data, definition));
+    .then(data => NestHydrationJs.nest(data, definition()));
 };
 
 const getQuestionDetails = function(id) {
   return allQuestionsData.clone()
     .select(allQuestionColumn)
     .where({'questions.id': id})
-    .then(data => NestHydrationJs.nest(data, definition))
+    .then(data => NestHydrationJs.nest(data, definition()))
     .then(([question]) => {
       return allComments
         .clone()
@@ -188,7 +189,7 @@ const getQuestionDetails = function(id) {
 };
 
 const allQuestionsYourAnswered = function(id) {
-  definition['0'].isAnsAccepted = [{isAnsAccepted: 'isAccepted'}];
+  const currentDef = definition('isAccepted');
   return answers.clone()
     .join(
       allQuestionsData.clone().select(allQuestionColumn).as('aqd'),
@@ -196,7 +197,7 @@ const allQuestionsYourAnswered = function(id) {
       'aqd.qId'
     )
     .where('answers.ownerId', id)
-    .then(data => NestHydrationJs.nest(data, definition));
+    .then(data => NestHydrationJs.nest(data, currentDef));
 };
 
 const getAllTags = function(){
@@ -220,10 +221,10 @@ const tagInsertion = function(qId, tag){
     });
 };
 
-const insertNewQuestion = function({ownerId, title, body, tags}){
-  return knex.transaction((trx) => {
+const insertNewQuestion = function(questionEntries, tags){
+  return knex.transaction((trx) => 
     trx('questions')
-      .insert({ownerId, title, body})
+      .insert(questionEntries)
       .then(() => {
         return trx('questions')
           .max('id as qId');
@@ -235,8 +236,46 @@ const insertNewQuestion = function({ownerId, title, body, tags}){
               .bind(trx, id.qId)));
       })
       .then(qTagEntries => trx('questionTags')
-        .insert(qTagEntries));
-  });
+        .insert(qTagEntries))
+  );
+};
+
+const insertNewAnswer = function(answerEntries) {
+  const {questionId} = answerEntries;
+  return knex.transaction((trx) =>
+    trx('questions')
+      .select()
+      .where('id', questionId)
+      .then(([question]) => {
+        if(question){
+          return question;
+        }
+        throw new Error('no question found');
+      })
+      .then(() => 
+        trx('answers')
+          .insert(answerEntries)
+      )
+  );
+};
+
+const insertNewComment = function(commentEntries, table) {
+  const {responseId} = commentEntries;
+  return knex.transaction((trx) =>
+    trx(table)
+      .select()
+      .where('id', responseId)
+      .then(([response]) => {
+        if(response) {
+          return response;
+        }
+        throw new Error('no response found');
+      })
+      .then(() => 
+        trx('comments')
+          .insert(commentEntries)
+      )
+  );
 };
 
 module.exports = {
@@ -247,5 +286,7 @@ module.exports = {
   getQuestionDetails,
   allQuestionsYourAnswered,
   getAllTags,
-  insertNewQuestion
+  insertNewQuestion,
+  insertNewAnswer,
+  insertNewComment
 };
