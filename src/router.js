@@ -1,8 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
 const cookeSession = require('cookie-session');
-const sqlite = require('sqlite3').verbose();
-const DataStore = require('../library/dataStore');
 const app = express();
 
 const {
@@ -34,11 +32,9 @@ const {
 } = require('./handlers');
 
 const { env } = process;
-const { ClientID, ClientSecret, DatabaseUrl, CookieSecret } = env;
-const db = new sqlite.Database(DatabaseUrl);
-const dataStore = new DataStore(db);
+const { ClientID, ClientSecret, CookieSecret } = env;
 
-app.locals = { ClientID, ClientSecret, dataStore, CookieSecret };
+app.locals = { ClientID, ClientSecret, CookieSecret };
 
 app.use(morgan('tiny'));
 app.use(cookeSession({ secret: app.locals.CookieSecret }));

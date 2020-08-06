@@ -18,7 +18,7 @@ describe('knexDataStore', () => {
     await insertDataTransaction(knex);
   });
 
-  process.on('exit', () => knex.destroy());
+  after(async() => await knex.destroy());
 
   context('getAllQuestions', () => {
     it('should get all details', async() => {
@@ -72,6 +72,11 @@ describe('knexDataStore', () => {
         }
       ];
       assert.deepStrictEqual(actual, expected);
+    });
+
+    it('should give empty if no id is given', async() => {
+      const actual = await knexDataStore.getUser();
+      assert.deepStrictEqual(actual, []);
     });
   });
 

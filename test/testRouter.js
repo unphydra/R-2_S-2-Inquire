@@ -157,11 +157,6 @@ describe('-- Public get methods --', function() {
     });
 
     it('should give not found for wrong user id', (done) => {
-      const stub = sinon.stub();
-      stub.withArgs(undefined).returns(Promise.resolve(
-        { name: 'test', username: 'test', avatar: 'test', id: '12345'}));
-      stub.withArgs(123).returns(undefined);
-      app.locals.dataStore.findUser = stub;
       request(app)
         .get('/viewProfile')
         .query({ id: 123 })
