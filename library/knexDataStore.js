@@ -137,7 +137,7 @@ const getAllQuestions = () => {
     .then(data => NestHydrationJs.nest(data, definition()));
 };
 
-const getUser = (id) => {
+const getUser = (id = '0') => {
   return users.clone().where({id});
 };
 
@@ -157,7 +157,8 @@ const getQuestionDetails = function(id) {
     .select(allQuestionColumn)
     .where({'questions.id': id})
     .then(data => NestHydrationJs.nest(data, definition()))
-    .then(([question]) => {
+    .then(([question]) => checkIfError(question, 'no question found'))
+    .then((question) => {
       return allComments
         .clone()
         .where({'responseId': question.id, type: 1})
@@ -221,21 +222,26 @@ const tagInsertion = function(qId, tag){
 };
 
 const insertNewQuestion = function(questionEntries, tags){
+  let ID;
   return knex.transaction((trx) => 
     trx('questions')
       .insert(questionEntries)
       .then(() => {
         return trx('questions')
-          .max('id as qId');
+          .max('id as qId')
+          .then(([id]) => {
+            ID = id.qId;
+          });
       })
-      .then(([id]) => {
+      .then(() => {
         return Promise
           .all(tags
             .map(tagInsertion
-              .bind(trx, id.qId)));
+              .bind(trx, ID)));
       })
       .then(qTagEntries => trx('questionTags')
         .insert(qTagEntries))
+      .then(() => ID)
   );
 };
 
@@ -245,6 +251,7 @@ const updateQuestion = function(questionEntries, tags){
     trx('questions')
       .update({title, body})
       .where({id, ownerId})
+      .then(row => checkIfError(row, 'no question found'))
       .then(() =>
         trx('questionTags')
           .del()
@@ -324,12 +331,18 @@ const updateComment = function(commentEntries){
   );
 };
 
-const updateAcceptAnswer = function(entries, answerId) {
+const updateAcceptAnswer = function(entries, answerId, qOwnerId) {
   return knex.transaction((trx) =>
     trx('answers')
       .select()
       .where('id', answerId)
       .then(([answer]) => checkIfError(answer, 'no answer found'))
+      .then(answer =>
+        trx('questions')
+          .select()
+          .where({id: answer.questionId, ownerId: qOwnerId})
+          .then(([question]) => checkIfError(question, 'no question found'))
+      )
       .then(() => 
         trx('answers')
           .update(entries)

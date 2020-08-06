@@ -1,12 +1,12 @@
-require('dotenv').config({path: './.testEnv'});
+require('dotenv').config({path: './.env'});
 const {env} = process;
-const {DbClient, DatabaseUrlK} = env;
+const {DbClient, DatabaseUrlT, DatabaseUrl} = env;
 
 module.exports = {
   development: {
     client: DbClient,
     connection: {
-      filename: DatabaseUrlK
+      filename: DatabaseUrl
     },
     useNullAsDefault: true
   },
@@ -14,7 +14,7 @@ module.exports = {
   test: {
     client: DbClient,
     connection: {
-      filename: DatabaseUrlK
+      filename: DatabaseUrlT
     },
     useNullAsDefault: true
   },

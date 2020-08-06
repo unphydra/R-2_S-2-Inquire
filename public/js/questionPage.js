@@ -13,10 +13,10 @@ const getFetchOptions = (method, body) => {
   };
 };
 
-const postAnswer = function (id, qId, button) {
+const postAnswer = function (user, qId, button) {
   const BL = 30;
   const popUp = button.nextElementSibling;
-  if (!id) {
+  if (!user) {
     const message = '* please login before continue';
     return togglePopUp(popUp, 'hide', message);
   }
@@ -52,19 +52,18 @@ const makeCommentUneditable = (cancelBtn, commentId) => {
   localStorage.removeItem('oldComment');
 };
 
-const updateComment = (saveBtn, commentId) => {
+const updateComment = (commentId, questionId) => {
   const comment = document.querySelector(`#${commentId}`);
   const body = {comment: comment.innerText, commentId};
   const options = getFetchOptions('POST', body);
-  fetch('/updateComment', options).then((res) => res.json()).then(data => {
-    comment.innerText = data.comment;
-    toggleEditBtns(saveBtn.parentElement);
+  fetch(`/updateComment/${questionId}`, options).then((res) => {
     localStorage.removeItem('oldComment');
+    window.location.href = res.url;
   });
 };
 
-const makeAnswerEditable = (editBtn, answerId) => {
-  const answer = document.querySelector(`#${answerId}`);
+const makeAnswerEditable = (editBtn, boxId, answerId) => {
+  const answer = document.querySelector(`#${boxId}`);
   const formFooter = document.querySelector('.edit-answer-btns');
   editBtn.classList.add('hide');
   toggleEditBtns(formFooter);
@@ -79,10 +78,12 @@ const makeAnswerUneditable = (questionId) => {
 const updateAnswer = (questionId) => {
   const answerId = localStorage.getItem('answerId');
   localStorage.removeItem('answerId');
-  const body = {answer: quill.root.innerHTML, answerId};
+  const body = {
+    answer: quill.root.innerHTML, answerId: +answerId, questionId: +questionId
+  };
   const options = getFetchOptions('POST', body);
-  fetch('/updateAnswer', options).then(() => {
-    document.location = `/question/${questionId}`;
+  fetch('/updateAnswer', options).then((res) => {
+    window.location.href = res.url;
   });
 };
 
@@ -104,14 +105,17 @@ const updateVote = (url, container) => {
   });
 };
 
-const updateAcceptAnswer = (questionId, answerId, tickmark) => {
+const updateAcceptAnswer = (qOwnerId, answerId, tickMark) => {
   const ONE = 1;
   const url = `/acceptAnswer/${questionId}/${answerId}`;
-  fetch(url, {method: 'POST'}).then((res) => res.json()).then(data => {
-    if(data && data.isAccepted === ONE) {
-      tickmark.firstElementChild.setAttribute('fill', '#42B883');
-    }
-  });
+  const body = {qOwnerId: +qOwnerId, answerId: +answerId};
+  fetch(url, getFetchOptions('POST', body))
+    .then((res) => res.json())
+    .then(data => {
+      if(data && data.isAccepted === ONE) {
+        tickMark.firstElementChild.setAttribute('fill', '#42B883');
+      }
+    });
 };
 
 const toggleCommentBox = (className) => {

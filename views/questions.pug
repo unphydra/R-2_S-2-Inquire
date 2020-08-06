@@ -3,23 +3,24 @@ mixin getHeader(header)
   div(class="container")
     div(class="container-h")
       div(class="con-header-title")=`${header}`
-      if userId
+      if userInfo
         button(class="askBtn" onClick="window.location.href='/askQuestion'") Ask Question
     div(class="container-b")
       if(questions.length > 0)
         each question in questions
+          -const {id,ownerId,title,body,receivedAt,username,ansCount,isAnsAccepted,tags} = question
           div(class="question")
-            -const className=question.isAccepted ? "countName-ac" : question.answercount > 0? "countName-a":"countName"
+            -const className=isAnsAccepted.some(a=>a.isAnsAccepted) ? "countName-ac" : ansCount > 0? "countName-a":"countName"
             div(class=`${className}`)
-              div(class="count")=`${question.answercount}`
+              div(class="count")=`${ansCount}`
                 div(class="ansCount") answers
             div(class="question-details")
-              div(class="title" onClick=`window.location.href='/question/${question.id}'`)=question.title
+              div(class="title" onClick=`window.location.href='/question/${id}'`)=title
               div(class="tags")
-                each tag in question.tags
-                  div(class="tag")=tag
+                each tag in tags
+                  div(class="tag")=tag.title
               div(class='q-author')
-                span(class="q-author-name" onclick=`window.location.href='/viewProfile?id=${question.ownerId.slice('1')}'`)=`${question.ownerName}`
-                span(class="date-time" time=`${question.receivedAt}`) ,&nbsp;
+                span(class="q-author-name" onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=`${username}`
+                span(class="date-time" time=`${receivedAt}`) ,&nbsp;
       else 
         p No questions

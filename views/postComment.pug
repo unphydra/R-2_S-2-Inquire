@@ -1,9 +1,10 @@
 style
   include ../public/css/postAnswer.css
   include ../public/css/postComment.css
-mixin getId(resId)
-  p(class="add-comment" onclick=`toggleCommentBox('.form-${resId}')`) add comment
-  form(class=`form-${resId} hide` action=`/postComment/${questionDetails.id}/${resId}` method="POST" onSubmit=`return checkForm(${userId}, this)`)
+mixin getId(resId,type)
+  p(class="add-comment" onclick=`toggleCommentBox('.form-${resId}-${type}')`) add comment
+  form(class=`form-${resId}-${type} hide` action=`/postComment/${qd.id}/${type?'questions':'answers'}` method="POST" onSubmit=`return checkForm(this)`)
+    input(type="number", name="responseId" value=`${resId}` style="display: none")
     input(name="comment", type="text",placeholder="Enter comment..." minlength='10' maxlength='180' required)
     div(id="formFooter")
       button Post comment

@@ -1,4 +1,5 @@
 const request = require('superagent');
+const knexDataStore = require('../library/knexDataStore');
 
 const isLoggedIn = function (req, res, next) {
   const { id } = req.session;
@@ -10,7 +11,9 @@ const isLoggedIn = function (req, res, next) {
 
 const checkOptions = function (...args) {
   return function (req, res, next) {
-    const hasOptions = args.every((arg) => req.body[arg]);
+    const hasOptions = args.every(([val, type]) => 
+      req.body[val] && req.body[val].constructor === type
+    );
     if (!hasOptions) {
       return res.status('400').send('bad request');
     }
@@ -67,14 +70,13 @@ const fetchUserDetails = async function (req, res, next) {
 };
 
 const handleLogin = async function (req, res) {
-  const { userInfo, app } = req;
-  const { dataStore } = app.locals;
+  const { userInfo} = req;
   req.session = {
     id: userInfo.id,
     avatar: userInfo['avatar_url'],
     time: new Date().toJSON()
   };
-  const isRegisteredUser = await dataStore.findUser(userInfo.id);
+  const [isRegisteredUser] = await knexDataStore.getUser(userInfo.id);
   if (isRegisteredUser) {
     return res.redirect('/');
   }
@@ -87,95 +89,82 @@ const cancelRegistration = function (req, res) {
 };
 
 const serveQuestions = async (req, res) => {
-  const { dataStore } = req.app.locals;
   const { id } = req.session;
-  const userInfo = await dataStore.findUser(id);
-  res.render(req.view, {userInfo, userId: id, questions: req.questions});
+  const [userInfo] = await knexDataStore.getUser(id);
+  res.render(req.view, {userInfo, questions: req.questions});
 };
 
 const serveHomepage = async (req, res, next) => {
-  const { dataStore } = req.app.locals;
-  req.questions = await dataStore.getAllQuestions();
+  req.questions = await knexDataStore.getAllQuestions();
   req.view = 'home';
   next();
 };
 
 const serveYourQuestionsPage = async function (req, res, next) {
-  const { dataStore } = req.app.locals;
-  req.questions = await dataStore.getAllQuestions(req.session.id);
+  req.questions = await knexDataStore.getYourQuestions(req.session.id);
   req.view = 'yourQuestions';
   next();
 };
 
 const serveYourAnswersPage = async (req, res, next) => {
-  const { dataStore } = req.app.locals;
-  req.questions = await dataStore.getAllAnsweredQuestions(req.session.id);
+  req.questions = await knexDataStore.allQuestionsYourAnswered(req.session.id);
   req.view = 'yourAnswers';
   next();
 };
 
 const serveQuestionPage = async (req, res) => {
   const { id } = req.params;
-  const { dataStore } = req.app.locals;
-  const userInfo = await dataStore.findUser(req.session.id);
+  const [userInfo] = await knexDataStore.getUser(req.session.id);
   try {
-    const questionDetails = await dataStore.getQuestionDetails(id);
-    const ownerInfo = await dataStore.findUser(
-      questionDetails.ownerId.slice('1')
-    );
-    return res.render('questionPage', {
-      userInfo,
-      userId: req.session.id,
-      questionDetails,
-      ownerInfo
-    });
+    const questionDetails = await knexDataStore.getQuestionDetails(+id);
+    return res.render('questionPage', { userInfo, questionDetails });
   } catch (err) {
     return res
       .status('400')
-      .render('questionPage', { userId: req.session.id, userInfo }); 
+      .render('questionPage', { userInfo }); 
   }
 };
 
 const servePostQuestionPage = async function(req, res) {
-  const { dataStore } = req.app.locals;
   const { id } = req.session;
-  const userInfo = await dataStore.findUser(id);
-  const allTags = await dataStore.getTable('tags');
-  res.render('postQuestion', { userId: id, userInfo, allTags });
+  const userInfo = await knexDataStore.getUser(id);
+  const allTags = await knexDataStore.getAllTags();
+  res.render('postQuestion', { userInfo, allTags });
 };
 
 const serveEditQuestionPage = async function(req, res) {
-  const { dataStore } = req.app.locals;
-  const { id } = req.session;
   const { questionId } = req.params;
-  const row = await dataStore.getRow('questions', questionId);
-  if(id !== +row.ownerId.slice('1')) {
-    return res.status('405').json({error: 'Your are not a question owner'});
+  const [userInfo] = await knexDataStore.getUser(req.session.id);
+  try {
+    const allTags = await knexDataStore.getAllTags();
+    const {
+      title, tags, id, body
+    } = await knexDataStore.getQuestionDetails(questionId);
+    res.render('editQuestion', 
+      {userInfo, allTags, questionDetails: {title, tags, id, body}}
+    );
+  }catch(error){
+    res.status('400').send('bad request');
   }
-  const userInfo = await dataStore.findUser(id);
-  const allTags = await dataStore.getTable('tags');
-  const questionDetails = await dataStore.getQuestionDetails(questionId);
-  res.render('editQuestion', 
-    { userId: id, userInfo, allTags, questionDetails }
-  );
 };
 
 const serveProfilePage = async function (req, res) {
   const { id } = req.query;
   if (!id) {
-    return res.status('400').send('bad request');
+    return res.status('400').send('no user found');
   }
-  const { dataStore } = req.app.locals;
-  const userId = req.session.id;
-  const userInfo = await dataStore.findUser(userId);
-  const details = await dataStore.findUser(id);
-  res.render('profilePage', {details, userId, userInfo});
+  const [userInfo] = await knexDataStore.getUser(req.session.id);
+  try {
+    const [details] = await knexDataStore.getUser(id);
+    return res.render('profilePage', {details, userInfo});
+  }catch(error) {
+    res.status('400').send('no user found');
+  }
 };
 
 const registerNewUser = async function (req, res) {
-  const { dataStore } = req.app.locals;
   const { id, avatar } = req.session;
-  await dataStore.addNewUser({ id, avatar, ...req.body });
+  await knexDataStore.addNewUser({ id, avatar, ...req.body });
   res.redirect('/');
 };
 
@@ -187,103 +176,112 @@ const formatBody = function(response) {
 };
 
 const postQuestion = async function(req, res) {
-  const {dataStore} = req.app.locals;
-  const { id } = req.session;
   const { title, body, tags } = req.body;
-  const questionId = await dataStore.insertQuestion(
-    id, 
-    title, 
-    formatBody(body)
+  const questionId = await knexDataStore.insertNewQuestion(
+    {ownerId: req.session.id, title, body: formatBody(body)},
+    tags
   );
-  await dataStore.insertTags(questionId, tags);
   res.redirect(`/question/${questionId}`);
 };
 
 const updateQuestion = async function(req, res) {
-  const { dataStore } = req.app.locals;
   const { title, body, tags } = req.body;
-  const row = await dataStore.getRow('questions', req.params.questionId);
-  if(!row) {
-    return res.status('400').send('bad request');
+  try {
+    await knexDataStore.updateQuestion( 
+      {
+        id: +req.params.questionId, 
+        ownerId: req.session.id, 
+        title, 
+        body: formatBody(body)
+      },
+      tags
+    );
+    return res.redirect(`/question/${req.params.questionId}`);
+  } catch (error) {
+    res.status('400').send('not found');
   }
-  if(req.session.id !== +row.ownerId.slice('1')) {
-    return res.status('405').json({error: 'Your are not a question owner'});
-  }
-  await dataStore.updateQuestion( 
-    req.session.id, title, formatBody(body), req.params.questionId 
-  );
-  await dataStore.updateTags(req.params.questionId, tags);
-  res.redirect(`/question/${req.params.questionId}`);
 };
 
 const postAnswer = async function (req, res) {
-  const { questionId } = req.params;
-  const { dataStore } = req.app.locals;
-  const { id } = req.session;
-  const questionDetails = await dataStore.getRow('questions', questionId);
-  if (!questionDetails) {
-    return res.status('400').send('bad request');
+  try {
+    await knexDataStore.insertNewAnswer(
+      {
+        ownerId: req.session.id,
+        questionId: +req.params.questionId,
+        answer: formatBody(req.body.answer)
+      }
+    );
+    return res.redirect(`/question/${req.params.questionId}`);
+  } catch (error) {
+    res.status('400').send('not found');
   }
-  await dataStore.insertAnswer(questionId, id, formatBody(req.body.answer));
-  res.redirect(`/question/${questionId}`);
 };
 
 const updateAnswer = async function(req, res) {
-  const { id } = req.session;
-  const { dataStore } = req.app.locals;
-  const { answer, answerId } = req.body;
-  const row = await dataStore.getRow('answers', answerId);
-  if(!row) {
-    return res.status('400').send('bad request');
+  const { answer, answerId, questionId} = req.body;
+  try {
+    await knexDataStore.updateAnswer({
+      id: answerId,
+      ownerId: req.session.id,
+      answer: formatBody(answer)
+    });
+    return res.redirect(`/question/${questionId}`);
+  } catch (error) {
+    res.status('400').send('not found');
   }
-  if(id !== +row.ownerId.slice('1')) {
-    return res.status('405').json({error: 'Your are not answer owner'});
-  }
-  const status = await dataStore.updateAnswer(answerId, formatBody(answer));
-  res.json(status);
 };
 
 const postComment = async function (req, res) {
-  const { id } = req.session;
-  const { dataStore } = req.app.locals;
-  const { questionId, resId } = req.params;
-  const tables = { 'q': 'questions', 'a': 'answers' };
-  const row = await dataStore.getRow(tables[resId.slice('0', '1')], resId);
-  if (!row) {
+  const {questionId, type } = req.params;
+  const {responseId, comment} = req.body;
+  const tables = { questions: 1, answers: 0 };
+  try {
+    await knexDataStore.insertNewComment(
+      {
+        ownerId: req.session.id,
+        responseId,
+        comment,
+        type: tables[type]
+      },
+      type
+    );
+    return res.redirect(`/question/${questionId}`);
+  } catch (error) {
     return res.status('400').send('bad request');
   }
-  await dataStore.saveComment(id, resId, req.body.comment);
-  res.redirect(`/question/${questionId}`);
+
 };
 
 const updateComment = async function(req, res) {
-  const { id } = req.session;
-  const { dataStore } = req.app.locals;
   const { comment, commentId } = req.body;
-  const row = await dataStore.getRow('comments', commentId);
-  if(!row) {
-    return res.status('400').send('bad request');
+  try {
+    await knexDataStore.updateComment(
+      {
+        id: commentId,
+        ownerId: req.session.id,
+        comment
+      }
+    );
+    return res.redirect(`/question/${req.params.questionId}`);
+  } catch (error) {
+    res.status('400').send('bad request');
   }
-  if(id !== +row.ownerId.slice('1')) {
-    return res.status('405').json({error: 'Your are not comment owner'});
-  }
-  const status = await dataStore.updateComment(commentId, comment);
-  res.json(status);
 };
 
 const acceptAnswer = async function(req, res) {
-  const { id } = req.session;
-  const { dataStore } = req.app.locals;
-  const { questionId, answerId } = req.params;
-  const row = await dataStore.getRow('questions', questionId);
-  if (!row) {
-    return res.status('400').send('bad request');
+  const { qOwnerId, answerId } = req.body;
+  try {
+    const isAccepted = await knexDataStore.updateAcceptAnswer(
+      {
+        isAccepted: 1
+      },
+      answerId,
+      qOwnerId
+    );
+    return res.json({isAccepted});
+  } catch (error) {
+    res.status('400').send('bad request');
   }
-  if(id !== +row.ownerId.slice('1')) {
-    return res.status('405').json({error: 'Your are not question owner'});
-  }
-  const status = await dataStore.acceptAnswer(questionId, answerId);
-  res.json(status);
 };
 
 const getCredential = function(url) {

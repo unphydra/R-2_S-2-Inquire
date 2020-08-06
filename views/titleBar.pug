@@ -6,12 +6,13 @@ script.
 div(class="titleBar")
   div(class="logo" onClick="window.location.href='/'") Inquire
   div(class="userInfo")
-    if userId
-      div(class="userName")=userInfo.username
+    if userInfo
+      -const {id,username,avatar} = userInfo
+      div(class="userName")=username
       div(class="avatar")
-        img( src=`${userInfo.avatar}`, alt="alt" onclick="toggleShow()" )
+        img( src=`${avatar}`, alt="alt" onclick="toggleShow()" )
         span(class="popUp-text" )
-          button(class="profile-options" onClick=`window.location.href='/viewProfile?id=${userId}'`) ViewProfile
+          button(class="profile-options" onClick=`window.location.href='/viewProfile?id=${id}'`) ViewProfile
           button(class="profile-options margin-auto" onClick="window.location.href='/cancel'") Logout
     else
       button(class="pageBtn" onClick="window.location.href='/loginPage'") Login

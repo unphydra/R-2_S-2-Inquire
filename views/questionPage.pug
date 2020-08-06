@@ -21,35 +21,35 @@ html(lang='en')
       if !questionDetails
         div not found
       else
-        -const {title,body,tags,comments,answers,ownerId,votes,receivedAt} = questionDetails
-        -const {id,avatar,username} = ownerInfo
+        -const {ownerId,title,body,receivedAt,ansCount,vote,tags,comments} = questionDetails
+        -const qd = questionDetails
         div(class="container-h")
           div(class="question-title")
             div(class="question-title-h")=title
             div(class="question-title-b")
               div(class="avatar-div")
-                img(class="author-avatar" src=`${avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${id.slice(1)}'`)
+                img(class="author-avatar" src=`${qd.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${ownerId}'`)
               div
-                div(class="author" onclick=`window.location.href='/viewProfile?id=${ownerId.slice(1)}'`)=username
+                div(class="author" onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=qd.username
                 div(class="time" time=`${receivedAt}`)
-            div(class="edit-q-btn" onclick=`makeQuestionEditable('${questionDetails.id}')`) edit
+            div(class="edit-q-btn" onclick=`makeQuestionEditable('${qd.id}')`) edit
         div(class="question-body")
           div(class="question-body-c")!=body
             div(class="tags" style="margin-left:0")
               each tag in tags
                 div(class="tag q-tag")=tag.title
           div(class="vote-container")
-            div(class="up-arrow" onclick=`updateVote('/upVote/questions/${questionDetails.id}',this)`)
+            div(class="up-arrow" onclick=`updateVote('/upVote/questions/${qd.id}',this)`)
             div(class="countName votes")
               div(class="count")
-                span=votes
+                span=vote
                 div(class="ansCount") votes
-            div(class="down-arrow" onclick=`updateVote('/downVote/questions/${questionDetails.id}',this)`)
+            div(class="down-arrow" onclick=`updateVote('/downVote/questions/${qd.id}',this)`)
         div(class="comments") 
           include comments
           +getComments(comments)
           include postComment
-          +getId(questionDetails.id)
+          +getId(qd.id,1)
         include postAnswer
-        +getQuestionId(questionDetails.id)
+        +getQuestionId(qd.id)
         include answer

@@ -7,8 +7,7 @@ html(lang='en')
       include ../public/css/home.css
       include ../public/css/profilePage.css
     script(src="/js/home.js")
-    -const detailsId = details && details.id.slice(1);
-  body( onload=`highlightMenuItem('/viewProfile?id=${detailsId}')`)
+  body( onload=`highlightMenuItem('/viewProfile?id=${details && details.id}')`)
     include titleBar
     include menuBar
     div(class="container")

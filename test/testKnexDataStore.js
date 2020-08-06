@@ -289,7 +289,7 @@ describe('knexDataStore', () => {
           tags: [{ title: 'java' }, { title: 'javaScript' }]
         }
       ];
-      assert.deepStrictEqual(actual1, [6]);
+      assert.deepStrictEqual(actual1, 3);
       assert.deepStrictEqual(actual2, expected);
     });
   });
@@ -444,7 +444,8 @@ describe('knexDataStore', () => {
         {
           isAccepted: 1
         },
-        1
+        1,
+        58026024
       );
       const expected = 1;
       assert.deepStrictEqual(actual, expected);
@@ -456,7 +457,18 @@ describe('knexDataStore', () => {
         {
           isAccepted: 1
         },
-        -1
+        -1,
+        58026024
+      ).catch(err => assert.match(err, /Error/));
+    });
+
+    it('should not accept a answer if question owner id mismatch', async() => {
+      await knexDataStore.updateAcceptAnswer(
+        {
+          isAccepted: 1
+        },
+        1,
+        58027260
       ).catch(err => assert.match(err, /Error/));
     });
   });

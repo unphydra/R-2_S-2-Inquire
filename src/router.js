@@ -64,33 +64,66 @@ app.get('/viewProfile', serveProfilePage);
 
 app.post(
   '/newProfile', 
-  [isLoggedIn, checkOptions('name', 'username'), registerNewUser]
+  [
+    isLoggedIn, 
+    checkOptions(['name', String], ['username', String]), 
+    registerNewUser
+  ]
 );
 app.post(
   '/postQuestion', 
-  [isLoggedIn, checkOptions('title', 'body', 'tags'), postQuestion]
+  [
+    isLoggedIn, 
+    checkOptions(['title', String], ['body', String], ['tags', Array]), 
+    postQuestion
+  ]
 );
 app.post(
   '/updateQuestion/:questionId', 
-  [isLoggedIn, checkOptions('title', 'body', 'tags'), updateQuestion]
+  [
+    isLoggedIn, 
+    checkOptions(['title', String], ['body', String], ['tags', Array]), 
+    updateQuestion
+  ]
 );
 app.post(
   '/postAnswer/:questionId',
-  [isLoggedIn, checkOptions('answer'), postAnswer]
+  [isLoggedIn, checkOptions(['answer', String]), postAnswer]
 );
 app.post(
   '/updateAnswer', 
-  [isLoggedIn, checkOptions('answer', 'answerId'), updateAnswer]
+  [
+    isLoggedIn, 
+    checkOptions(
+      ['answer', String], ['answerId', Number], ['questionId', Number]
+    ), 
+    updateAnswer
+  ]
 );
 app.post(
-  '/postComment/:questionId/:resId', 
-  [isLoggedIn, checkOptions('comment'), postComment]
+  '/postComment/:questionId/:type', 
+  [
+    isLoggedIn, 
+    checkOptions(['comment', String], ['responseId', Number]), 
+    postComment
+  ]
 );
 app.post(
-  '/updateComment', 
-  [isLoggedIn, checkOptions('comment', 'commentId'), updateComment]
+  '/updateComment/:questionId', 
+  [
+    isLoggedIn, 
+    checkOptions(['comment', String], ['commentId', Number]), 
+    updateComment
+  ]
 );
-app.post('/acceptAnswer/:questionId/:answerId', isLoggedIn, acceptAnswer);
+app.post(
+  '/acceptAnswer', 
+  [
+    isLoggedIn, 
+    checkOptions(['qOwnerId', Number], ['answerId', Number]),
+    acceptAnswer
+  ]
+);
 app.post(
   ['/upVote/:type/:resId', '/downVote/:type/:resId'],
   [isLoggedIn, getUpdateVoteDetails, updateVote]

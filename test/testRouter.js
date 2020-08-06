@@ -4,81 +4,121 @@ require('dotenv').config({ path: './.env' });
 const sinon = require('sinon');
 const { app } = require('../src/router');
 const { assert } = require('chai');
+const knexDataStore = require('../library/knexDataStore');
 const statusCodes = { ok: 200, redirect: 302, badRequest: 400, notFound: 404 };
 
 describe('-- Public get methods --', function() {
   beforeEach(() => {
-    app.locals.dataStore = {
-      getAllQuestions: sinon.mock().returns([
+    sinon.replace(knexDataStore, 'getAllQuestions', sinon.fake.returns(
+      [
         {
-          answers: 1,
-          id: 'q00001',
-          tags: ['java', 'javaScript'],
-          title: 'what is sqlite?',
-          votes: -1,
-          ownerId: 'u58026024',
-          ownerName: 'unphydra',
-          receivedAt: '2020-07-25 15:14:36',
-        },
-      ]),
-      addNewUser: sinon.mock().returns(),
-      findUser: sinon
-        .fake
-        .returns(
-          Promise.resolve(
-            { name: 'test', username: 'test', avatar: 'test', id: '12345'}
-          )
-        ),
-      getQuestionDetails: sinon
-        .mock()
-        .returns(Promise.resolve({
-          id: 'q00001',
-          title: 'what is sqlite?',
-          body: 'i want to know about sqlite',
-          votes: -1,
-          receivedAt: '2020-07-25 15:14:36',
-          modifiedAt: '2020-07-25 15:14:36',
-          ownerId: 'u58026024',
-          tags: [{ title: 'java' }, { title: 'javaScript' }],
-          comments: [
-            {
-              id: 'c00001',
-              responseId: 'q00001',
-              ownerId: 'u58027206',
-              comment: 'what you want to know',
-              receivedAt: '2020-07-25 15:14:36',
-              username: 'satheesh-chandran'
-            },
-          ],
-          answers: [
-            {
-              id: 'a00001',
-              questionId: 'q00001',
-              ownerId: 'u58027206',
-              answer: 'search it on google',
-              receivedAt: '2020-07-25 15:14:36',
-              modifiedAt: '2020-07-25 15:14:36',
-              isAccepted: 0,
-              votes: 0,
-              ownerInfo: {
-                avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
-                id: 'u58027206',
+          id: 2,
+          ownerId: 58027206,
+          title: 'what is the most powerful thing in database?',
+          body: 'i want to know it',
+          receivedAt: '2020-08-03 15:35:15',
+          modifiedAt: '2020-08-03 15:35:15',
+          username: 'satheesh-chandran',
+          avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+          ansCount: 2,
+          vote: -1,
+          isAnsAccepted: [{isAnsAccepted: 1}],
+          tags: [{ title: 'node' }, { title: 'node-net' }]
+        }
+      ]
+    ));
+    const stubGetUser = sinon.stub();
+    sinon.replace(knexDataStore, 'getUser', stubGetUser);
+    stubGetUser.withArgs(123)
+      .returns(
+        Promise.resolve(
+          [{ name: 'test', username: 'test', avatar: 'test', id: '12345'}]
+        )
+      );
+    stubGetUser.withArgs().returns([]);
+    stubGetUser.withArgs(12345).returns([]);
+
+    const fakeGetQuestion = sinon.stub();
+    fakeGetQuestion.withArgs(-1).throws(new Error('error'));
+    fakeGetQuestion.withArgs(1)
+      .returns(Promise.resolve({
+        id: 2,
+        ownerId: 58027206,
+        title: 'what is the most powerful thing in database?',
+        body: 'i want to know it',
+        receivedAt: '2020-08-03 15:35:15',
+        modifiedAt: '2020-08-03 15:35:15',
+        username: 'satheesh-chandran',
+        avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+        ansCount: 2,
+        vote: -1,
+        tags: [{ title: 'node' }, { title: 'node-net' }],
+        isAnsAccepted: [{isAnsAccepted: 1}],
+        comments: [
+          {
+            id: 3,
+            ownerId: 58026024,
+            responseId: 2,
+            comment: 'It is wrong',
+            type: 1,
+            receivedAt: '2020-08-03 15:31:15',
+            modifiedAt: '2020-08-03 15:31:15',
+            username: 'unphydra'
+          }
+        ],
+        answers: [
+          {
+            id: 3,
+            questionId: 2,
+            ownerId: 58026024,
+            answer: 'database itself 2nd',
+            isAccepted: 1,
+            receivedAt: '2020-08-03 15:35:15',
+            modifiedAt: '2020-08-03 15:35:15',
+            username: 'unphydra',
+            avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
+            votes: null,
+            comments: []
+          },
+          {
+            id: 2,
+            questionId: 2,
+            ownerId: 58026024,
+            answer: 'database itself',
+            isAccepted: null,
+            receivedAt: '2020-08-03 15:31:15',
+            modifiedAt: '2020-08-03 15:31:15',
+            username: 'unphydra',
+            avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
+            votes: -1,
+            comments: [
+              {
+                id: 4,
+                ownerId: 58027206,
+                responseId: 2,
+                comment: 'you are wrong',
+                type: 0,
+                receivedAt: '2020-08-03 15:31:15',
+                modifiedAt: '2020-08-03 15:31:15',
                 username: 'satheesh-chandran'
               },
-              comments: [
-                {
-                  id: 'c00002',
-                  responseId: 'a00001',
-                  ownerId: 'u58026024',
-                  comment: 'yes you are right',
-                  receivedAt: '2020-07-25 15:14:36',
-                  username: 'unphydra'
-                },
-              ],
-            },
-          ],
-        })),
-    };
+              {
+                id: 5,
+                ownerId: 58027206,
+                responseId: 2,
+                comment: 'you are wrong 2nd',
+                type: 0,
+                receivedAt: '2020-08-03 15:35:15',
+                modifiedAt: '2020-08-03 15:35:15',
+                username: 'satheesh-chandran'
+              }
+            ]
+          }
+        ]
+      }));
+      
+    sinon.replace(knexDataStore, 'getQuestionDetails', fakeGetQuestion);
+    sinon.replace(knexDataStore, 'addNewUser', sinon.mock().returns());
   });
 
   afterEach(() => sinon.restore());
@@ -133,22 +173,23 @@ describe('-- Public get methods --', function() {
 
   context('serveQuestionPage', () => {
     it('should get the question page', (done) => {
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = {id: 123};
+        next();
+      });
       request(app)
-        .get('/question/q00001')
+        .get('/question/1')
         .expect(statusCodes.ok)
-        .expect('Content-Type', /text\/html/)
-        .end(() => {
-          sinon.assert.calledTwice(app.locals.dataStore.findUser);
-          done();
-        });
+        .expect('Content-Type', /text\/html/, done);
     });
 
     it('should give not found when question id invalid', (done) => {
-      app.locals.dataStore.getQuestionDetails = sinon
-        .mock()
-        .throws(new Error('notFound'));
+      app.set('sessionMiddleware', (req, res, next) => {
+        req.session = {};
+        next();
+      });
       request(app)
-        .get('/question/qabcd1')
+        .get('/question/-1')
         .expect(statusCodes.badRequest)
         .expect('Content-Type', /text\/html/, done);
     });
@@ -171,10 +212,7 @@ describe('-- Public get methods --', function() {
 
       nock('https://api.github.com')
         .get('/user')
-        .reply(200, { id: '12345', avatar: 'avatar' });
-
-      app.locals.dataStore.findUser = sinon.mock().returns();
-
+        .reply(200, { id: 12345, avatar: 'avatar' });
       request(app)
         .get('/user/auth')
         .expect('content-type', /text\/html/)
@@ -188,7 +226,7 @@ describe('-- Public get methods --', function() {
 
       nock('https://api.github.com')
         .get('/user')
-        .reply(200, { id: '58026024', avatar: 'avatar' });
+        .reply(200, { id: 123, avatar: 'avatar' });
 
       request(app)
         .get('/user/auth')
@@ -395,7 +433,7 @@ describe('-- Private get methods --', function() {
         next();
       });
       request(app)
-        .get('/editQuestion/q00001')
+        .get('/editQuestion/1')
         .expect(200)
         .expect(/question/, done);
     });
@@ -408,58 +446,55 @@ describe('-- Private get methods --', function() {
       });
       request(app)
         .get('/editQuestion/q00001')
-        .expect(405)
-        .expect(/Your are not a question owner/, done);
+        .expect(400)
+        .expect(/bad request/, done);
     });
   });
 });
 
 describe('-- post methods --', function () {
+  const fakeFunctions = {
+    addNewUser: sinon.fake.returns(),
+    getUser: sinon.stub(),
+    insertNewQuestion: sinon.fake.returns(3),
+    updateQuestion: sinon.stub(),
+    insertNewAnswer: sinon.stub(),
+    updateAnswer: sinon.stub(),
+    insertNewComment: sinon.stub(),
+    updateComment: sinon.stub(),
+    updateAcceptAnswer: sinon.stub()
+  };
   beforeEach(() => {
-    app.locals.dataStore = {
-      addNewUser: sinon.mock().returns(),
-      findUser: sinon
-        .fake
-        .returns(
-          Promise.resolve(
-            { name: 'test', username: 'test', avatar: 'test', id: '12345'}
-          )
-        ),
-      updateTags: sinon.mock().returns(['t00005', 't00003']),
-      updateQuestion: sinon.mock().returns({
-        id: 'q00001',
-        ownerId: 'u58026024',
-        title: 'what is sqlite3',
-        body: 'i want to know about sqlite3',
-        votes: -1,
-        anyAnswerAccepted: 0,
-        receivedAt: '2020-07-25 15:14:36',
-        modifiedAt: '2020-07-25 15:14:36'
-      }),
-      saveComment: sinon.mock().returns('c00001'),
-      updateComment: sinon.mock().returns({
-        id: 'c00003',
-        responseId: 'a00002',
-        ownerId: 'u58027024',
-        comment: 'It is right',
-        receivedAt: '2020-07-25 15:14:36'
-      }),
-      getRow: sinon.mock().returns(true),
-      insertAnswer: sinon.mock().returns('a00001'),
-      updateAnswer: sinon.mock().returns({
-        id: 'a00001',
-        questionId: 'q00001',
-        ownerId: 'u58027206',
-        answer: 'search it on net',
-        isAccepted: 0,
-        votes: 0,
-        receivedAt: '2020-07-25 15:14:36',
-        modifiedAt: '2020-07-25 15:14:36'
-      }),
-      insertQuestion: sinon.mock().returns('q00001'),
-      insertTags: sinon.mock().returns(undefined),
-      acceptAnswer: sinon.mock().returns(1)
-    };
+    fakeFunctions['getUser'].withArgs(123).returns(
+      Promise.resolve(
+        [{ name: 'test', username: 'test', avatar: 'test', id: '12345'}]
+      )
+    );
+    fakeFunctions['getUser'].withArgs().returns([]);
+
+    sinon.replace(knexDataStore, 'addNewUser', fakeFunctions['addNewUser']);
+    sinon.replace(knexDataStore, 'getUser', fakeFunctions['getUser']);
+    sinon.replace(
+      knexDataStore, 'insertNewQuestion', fakeFunctions['insertNewQuestion']
+    );
+    sinon.replace(
+      knexDataStore, 'updateQuestion', fakeFunctions['updateQuestion']
+    );
+    sinon.replace(
+      knexDataStore, 'insertNewAnswer', fakeFunctions['insertNewAnswer']
+    );
+    sinon.replace(
+      knexDataStore, 'updateAnswer', fakeFunctions['updateAnswer']
+    );
+    sinon.replace(
+      knexDataStore, 'insertNewComment', fakeFunctions['insertNewComment']
+    );
+    sinon.replace(
+      knexDataStore, 'updateComment', fakeFunctions['updateComment']
+    );
+    sinon.replace(
+      knexDataStore, 'updateAcceptAnswer', fakeFunctions['updateAcceptAnswer']
+    );
   });
 
   afterEach(() => sinon.restore());
@@ -467,7 +502,7 @@ describe('-- post methods --', function () {
   context('registerNewUser', () => {
     it('should redirected to the home page when registered', (done) => {
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
+        req.session = { id: 123 };
         next();
       });
       const body = JSON.stringify({ name: 'test', username: 'test' });
@@ -480,7 +515,7 @@ describe('-- post methods --', function () {
 
     it('should give bad request when name & username is absent', (done) => {
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
+        req.session = { id: 123 };
         next();
       });
       request(app)
@@ -505,7 +540,7 @@ describe('-- post methods --', function () {
 
     it('should redirect to question page after insertion', (done) => {
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
+        req.session = { id: 123 };
         next();
       });
       const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
@@ -519,42 +554,42 @@ describe('-- post methods --', function () {
 
   context('updateQuestion', function () {
     it('should give bad request error for  wrong questionId', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns(false);
+      fakeFunctions['updateQuestion'].withArgs({
+        id: -1, 
+        ownerId: 123, 
+        title: 'title', 
+        body: 'body'
+      },
+      ['js', 'java']
+      ).throws(new Error('error'));
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123};
         next();
       });
       const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
       request(app)
-        .post('/updateQuestion/q00001')
+        .post('/updateQuestion/-1')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
         .expect(400, done);
     });
 
-    it('should give error for wrong ownerId', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns({ ownerId: 'u122'});
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123};
-        next();
-      });
-      const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
-      request(app)
-        .post('/updateQuestion/q00001')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify(body))
-        .expect(405, done);
-    });
-
-    it('should redirect to question page after updation', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
+    it('should redirect to question page after update', (done) => {
+      fakeFunctions['updateQuestion'].withArgs({
+        id: 1, 
+        ownerId: 123, 
+        title: 'title', 
+        body: 'body'
+      },
+      ['js', 'java']
+      ).returns();
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123 };
         next();
       });
       const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
       request(app)
-        .post('/updateQuestion/q00001')
+        .post('/updateQuestion/1')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
         .expect(302, done);
@@ -569,34 +604,43 @@ describe('-- post methods --', function () {
       });
       const body = {};
       request(app)
-        .post('/postAnswer/q00001')
+        .post('/postAnswer/1')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
         .expect(401, done);
     });
 
     it('should redirect to question page after insertion', (done) => {
+      fakeFunctions['insertNewAnswer'].withArgs({ 
+        ownerId: 123, 
+        questionId: 1,
+        answer: 'test'
+      }).returns();
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
+        req.session = { id: 123 };
         next();
       });
       const body = {answer: 'test'};
       request(app)
-        .post('/postAnswer/q00001')
+        .post('/postAnswer/1')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
         .expect(302, done);
     });
 
     it('should give badRequest error if the question is absent', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns(false);
+      fakeFunctions['insertNewAnswer'].withArgs({ 
+        ownerId: 123, 
+        questionId: -1,
+        answer: 'test'
+      }).throws(new Error('error'));
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
+        req.session = { id: 123 };
         next();
       });
       const body = { answer: 'test' };
       request(app)
-        .post('/postAnswer/q00001')
+        .post('/postAnswer/-1')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
         .expect(400, done);
@@ -604,8 +648,12 @@ describe('-- post methods --', function () {
   });
 
   context('updateAnswer', function () {
-    it('should give updated answer row', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
+    it('should redirect after update the answer', (done) => {
+      fakeFunctions['updateAnswer'].withArgs({ 
+        id: 1,
+        ownerId: 123, 
+        answer: 'test'
+      }).returns();
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123 };
         next();
@@ -613,13 +661,17 @@ describe('-- post methods --', function () {
       request(app)
         .post('/updateAnswer')
         .set('content-type', 'application/json')
-        .send(JSON.stringify({ answer: 'test comment', answerId: 'a00001' }))
-        .expect(200)
-        .expect(/search it on net/, done);
+        .send(JSON.stringify({ answer: 'test', answerId: 1, questionId: 1 }))
+        .expect('Location', '/question/1')
+        .expect(302, done);
     });
 
     it('should give the bad request error for wrong answerId', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns(undefined);
+      fakeFunctions['updateAnswer'].withArgs({ 
+        id: -1,
+        ownerId: 123, 
+        answer: 'test'
+      }).throws(new Error('error'));
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123};
         next();
@@ -627,34 +679,31 @@ describe('-- post methods --', function () {
       request(app)
         .post('/updateAnswer')
         .set('content-type', 'application/json')
-        .send(JSON.stringify({ answer: 'test answer', answerId: 'a00001' }))
+        .send(JSON.stringify({ answer: 'test', answerId: -1, questionId: 1 }))
         .expect(400, done);
-    });
-
-    it('should give the error for others answerId', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns({ ownerId: 'u122'});
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123};
-        next();
-      });
-      request(app)
-        .post('/updateAnswer')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify({ answer: 'test comment', answerId: 'c00003' }))
-        .expect(405, done);
     });
   });
 
   context('postComment', function () {
     it('should redirect to the question page after insertion', (done) => {
+      fakeFunctions['insertNewComment'].withArgs(
+        {
+          ownerId: 123,
+          responseId: 1,
+          comment: 'test',
+          type: 1
+        },
+        'questions'
+      ).returns();
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
+        req.session = { id: 123 };
         next();
       });
       request(app)
-        .post('/postComment/q00001/q00001')
+        .post('/postComment/1/1')
         .set('content-type', 'application/json')
-        .send(JSON.stringify({ comment: 'test comment' }))
+        .send(JSON.stringify({ comment: 'test', responseId: 1}))
+        .expect('Location', '/question/1')
         .expect(302, done);
     });
 
@@ -664,106 +713,117 @@ describe('-- post methods --', function () {
         next();
       });
       request(app)
-        .post('/postComment/q00001/q00001')
+        .post('/postComment/1/questions')
         .set('content-type', 'application/json')
         .send(JSON.stringify({ comment: 'test comment' }))
         .expect(401, done);
     });
 
-    it('should give the unauthorized error if id is absent', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns(false);
+    it('should give bad request if response id is wrong', (done) => {
+      fakeFunctions['insertNewComment'].withArgs(
+        {
+          ownerId: 123,
+          responseId: -1,
+          comment: 'test',
+          type: 1
+        },
+        'questions'
+      ).throws(new Error('error'));
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123'};
+        req.session = { id: 123 };
         next();
       });
       request(app)
-        .post('/postComment/q00001/q00001')
+        .post('/postComment/1/questions')
         .set('content-type', 'application/json')
-        .send(JSON.stringify({ comment: 'test comment' }))
+        .send(JSON.stringify({ comment: 'test', responseId: -1 }))
         .expect(400, done);
     });
   });
 
   context('updateComment', function () {
-    it('should give updated comment row', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
+    it('should redirected to question page after update', (done) => {
+      fakeFunctions['updateComment'].withArgs(
+        {
+          id: 2,
+          ownerId: 123,
+          comment: 'test',
+        }
+      ).returns();
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123 };
         next();
       });
       request(app)
-        .post('/updateComment')
+        .post('/updateComment/1')
         .set('content-type', 'application/json')
-        .send(JSON.stringify({ comment: 'test comment', commentId: 'c00003' }))
-        .expect(200)
-        .expect(/It is right/, done);
+        .send(JSON.stringify({ comment: 'test', commentId: 2 }))
+        .expect('Location', '/question/1')
+        .expect(302, done);
     });
 
     it('should give the bad request error for wrong commentId', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns(undefined);
+      fakeFunctions['updateComment'].withArgs(
+        {
+          id: 2,
+          ownerId: 123,
+          comment: 'test',
+        }
+      ).throws(new Error('error'));
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123};
         next();
       });
       request(app)
-        .post('/updateComment')
+        .post('/updateComment/1')
         .set('content-type', 'application/json')
-        .send(JSON.stringify({ comment: 'test comment', commentId: 'c00003' }))
+        .send(JSON.stringify({ comment: 'test', commentId: 2 }))
         .expect(400, done);
-    });
-
-    it('should give the error for others commentId', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns({ ownerId: 'u122'});
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123};
-        next();
-      });
-      request(app)
-        .post('/updateComment')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify({ comment: 'test comment', commentId: 'c00003' }))
-        .expect(405, done);
     });
   });
 
   context('acceptAnswer', function () {
     it('should accept the answer for given answerId and questionId', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
+      fakeFunctions['updateAcceptAnswer'].withArgs(
+        {
+          isAccepted: 1
+        },
+        1,
+        123
+      ).returns();
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123 };
         next();
       });
       request(app)
-        .post('/acceptAnswer/q00001/a00001')
+        .post('/acceptAnswer')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ qOwnerId: 123, answerId: 1 }))
         .expect(200)
-        .expect('content-type', /application\/json/)
-        .expect(/1/, done);
+        .expect('content-type', /application\/json/, done);
     });
 
-    it('should give bad request error for wrong questionId', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns(undefined);
+    it('should give bad request error for wrong answerId', (done) => {
+      fakeFunctions['updateAcceptAnswer'].withArgs(
+        {
+          isAccepted: 1
+        },
+        -1,
+        123
+      ).throws(new Error('error'));
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
+        req.session = { id: 123 };
         next();
       });
       request(app)
-        .post('/acceptAnswer/q00001/a00001')
+        .post('/acceptAnswer')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ qOwnerId: 123, answerId: -1 }))
         .expect(400, done);
-    });
-
-    it('should give method not allowed error for wrong userId', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '103' };
-        next();
-      });
-      request(app)
-        .post('/acceptAnswer/q00001/a00001')
-        .expect(405, done);
     });
   });
 
-  context('Voting', () => {
+  context.skip('Voting', () => {
     it('should upVote a question', (done) => {
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: '123' };
