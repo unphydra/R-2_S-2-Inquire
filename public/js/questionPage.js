@@ -107,7 +107,7 @@ const updateVote = (url, container) => {
 
 const updateAcceptAnswer = (qOwnerId, answerId, tickMark) => {
   const ONE = 1;
-  const url = `/acceptAnswer/${questionId}/${answerId}`;
+  const url = '/acceptAnswer';
   const body = {qOwnerId: +qOwnerId, answerId: +answerId};
   fetch(url, getFetchOptions('POST', body))
     .then((res) => res.json())

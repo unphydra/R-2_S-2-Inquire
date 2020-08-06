@@ -42,7 +42,7 @@ html(lang='en')
             div(class="up-arrow" onclick=`updateVote('/upVote/questions/${qd.id}',this)`)
             div(class="countName votes")
               div(class="count")
-                span=vote
+                span=vote||0
                 div(class="ansCount") votes
             div(class="down-arrow" onclick=`updateVote('/downVote/questions/${qd.id}',this)`)
         div(class="comments") 

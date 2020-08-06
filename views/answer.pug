@@ -13,7 +13,7 @@ div(class="answers")
                 div(class="up-arrow" onclick=`updateVote('/upVote/answers/${answer.id}',this)`)
                 div(class="countName votes")
                   div(class="count")
-                    span=answer.vote
+                    span=answer.vote || 0
                     div(class="ansCount") votes
                 div(class="down-arrow" onclick=`updateVote('/downVote/answers/${answer.id}',this)`)
           div(class="flex-row")      

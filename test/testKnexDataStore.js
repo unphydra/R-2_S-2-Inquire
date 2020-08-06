@@ -363,7 +363,7 @@ describe('knexDataStore', () => {
         answer: 'test updated',
       }
       );
-      const expected = 3;
+      const expected = 1;
       assert.deepStrictEqual(actual, expected);
     });
 
@@ -420,7 +420,7 @@ describe('knexDataStore', () => {
         comment: 'test updated',
       }
       );
-      const expected = 5;
+      const expected = 1;
       assert.deepStrictEqual(actual, expected);
     });
 

@@ -307,6 +307,7 @@ const updateAnswer = function(answerEntries) {
       .then(() => 
         trx('answers')
           .update({answer})
+          .where({id, ownerId})
       )
   );
 };
@@ -335,6 +336,7 @@ const updateComment = function(commentEntries){
       .then(() => 
         trx('comments')
           .update({comment})
+          .where({id, ownerId})
       )
   );
 };
