@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "nyc mocha",
+    "coverage": "nyc --reporter=text-lcov mocha | coveralls",
     "start": "node -r dotenv/config server.js  ",
     "dev": "nodemon -r dotenv/config server.js",
     "lint": "eslint src/*.js test/*.js public/js/*.js *.js library/*.js",
