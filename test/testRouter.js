@@ -293,99 +293,111 @@ describe('-- Public get methods --', function() {
 });
 
 describe('-- Private get methods --', function() {
-  beforeEach(() => {
-    app.locals.dataStore = {
-      getAllQuestions: sinon.mock().returns([
+  
+  const stubGetAllQuestions = sinon.stub();
+  const stubGetAllTags = sinon.stub();
+  const stubGetYourQuestions = sinon.stub();
+  const stubAllQuestionsYouAnswered = sinon.stub();
+  const stubGetUser = sinon.stub();
+  const stubGetYourQuestionDetails = sinon.stub();
+  
+  before(() => {
+
+    sinon.replace(knexDataStore, 'getAllQuestions', stubGetAllQuestions);
+    sinon.replace(knexDataStore, 'getAllTags', stubGetAllTags);
+    sinon.replace(knexDataStore, 'getYourQuestions', stubGetYourQuestions);
+    sinon.replace(
+      knexDataStore, 'allQuestionsYouAnswered', stubAllQuestionsYouAnswered
+    );
+    sinon.replace(knexDataStore, 'getUser', stubGetUser);
+    sinon.replace(
+      knexDataStore, 'getYourQuestionDetails', stubGetYourQuestionDetails
+    );
+    
+    stubGetAllQuestions.withArgs().returns([
+      {
+        id: 2,
+        ownerId: 58027206,
+        title: 'what is the most powerful thing in database?',
+        body: 'i want to know it',
+        receivedAt: '2020-08-03 15:35:15',
+        modifiedAt: '2020-08-03 15:35:15',
+        username: 'satheesh-chandran',
+        avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+        ansCount: 2,
+        vote: -1,
+        isAnsAccepted: [{isAnsAccepted: 1}],
+        tags: [{ title: 'node' }, { title: 'node-net' }]
+      }
+    ]);
+
+    stubGetUser.withArgs(123)
+      .returns(
+        Promise.resolve(
+          [{ name: 'test', username: 'test', avatar: 'test', id: '12345'}]
+        )
+      );
+    stubGetUser.withArgs().returns([]);
+    stubGetUser.withArgs(12345).returns([]);
+
+    stubGetYourQuestionDetails.withArgs(1).returns(
+      [
         {
-          answers: 1,
-          id: 'q00001',
-          tags: ['java', 'javaScript'],
-          title: 'what is sqlite?',
-          votes: -1,
-          ownerId: 'u58026024',
-          ownerName: 'unphydra',
-          receivedAt: '2020-07-25 15:14:36',
-        },
-      ]),
-      getAllAnsweredQuestions: sinon.mock().returns([
-        {
-          id: 'q00002',
-          answerId: 'a00002',
-          tags: ['node'],
+          id: 2,
+          ownerId: 58027206,
           title: 'what is the most powerful thing in database?',
-          isAccepted: 0,
-          ownerId: 'u58027206',
-          ownerName: 'satheesh-chandran',
-          receivedAt: '2020-07-25 15:14:36',
-        },
-      ]),
-      getQuestionDetails: sinon
-        .mock()
-        .returns(Promise.resolve({
-          id: 'q00001',
-          title: 'what is sqlite?',
-          body: 'i want to know about sqlite',
-          votes: -1,
-          receivedAt: '2020-07-25 15:14:36',
-          modifiedAt: '2020-07-25 15:14:36',
-          ownerId: 'u58026024',
-          tags: [{ title: 'java' }, { title: 'javaScript' }],
-          comments: [
-            {
-              id: 'c00001',
-              responseId: 'q00001',
-              ownerId: 'u58027206',
-              comment: 'what you want to know',
-              receivedAt: '2020-07-25 15:14:36',
-              username: 'satheesh-chandran'
-            },
-          ],
-          answers: [
-            {
-              id: 'a00001',
-              questionId: 'q00001',
-              ownerId: 'u58027206',
-              answer: 'search it on google',
-              receivedAt: '2020-07-25 15:14:36',
-              modifiedAt: '2020-07-25 15:14:36',
-              isAccepted: 0,
-              votes: 0,
-              ownerInfo: {
-                avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
-                id: 'u58027206',
-                username: 'satheesh-chandran'
-              },
-              comments: [
-                {
-                  id: 'c00002',
-                  responseId: 'a00001',
-                  ownerId: 'u58026024',
-                  comment: 'yes you are right',
-                  receivedAt: '2020-07-25 15:14:36',
-                  username: 'unphydra'
-                },
-              ],
-            },
-          ],
-        })),
-      findUser: sinon
-        .fake
-        .returns(
-          Promise.resolve(
-            { name: 'test', username: 'test', avatar: 'test', id: '12345'}
-          )
-        ),
-      getRow: sinon.mock().returns({ ownerId: 'u123' }),
-      getTable: sinon.mock().returns([]),
-    };
+          body: 'i want to know it',
+          receivedAt: '2020-08-03 15:35:15',
+          modifiedAt: '2020-08-03 15:35:15',
+          username: 'satheesh-chandran',
+          avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+          ansCount: 2,
+          vote: -1,
+          tags: [{ title: 'node' }, { title: 'node-net' }],
+          isAnsAccepted: [{isAnsAccepted: 1}]
+        }
+      ]
+    );
+    stubGetAllTags.withArgs().returns(['abc']);
+    stubGetYourQuestions.withArgs(123).returns([
+      {
+        id: 2,
+        ownerId: 123,
+        title: 'what is the most powerful thing in database?',
+        body: 'i want to know it',
+        receivedAt: '2020-08-03 15:35:15',
+        modifiedAt: '2020-08-03 15:35:15',
+        username: 'satheesh-chandran',
+        avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+        ansCount: 2,
+        vote: -1,
+        isAnsAccepted: [{isAnsAccepted: 1}],
+        tags: [{ title: 'node' }, { title: 'node-net' }]
+      }
+    ]);
+
+    stubAllQuestionsYouAnswered.withArgs(123).returns([
+      {
+        id: 2,
+        ownerId: 123,
+        title: 'what is the most powerful thing in database?',
+        body: 'i want to know it',
+        receivedAt: '2020-08-03 15:35:15',
+        modifiedAt: '2020-08-03 15:35:15',
+        username: 'satheesh-chandran',
+        avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+        ansCount: 2,
+        vote: -1,
+        isAnsAccepted: [{isAnsAccepted: 1}],
+        tags: [{ title: 'node' }, { title: 'node-net' }]
+      }
+    ]);
   });
 
-  afterEach(() => sinon.restore());
+  after(() => sinon.restore());
 
   context('/yourQuestions', function () {
     it('should give the yourQuestion page ', function (done) {
-      this.timeout(5000);
-      app.locals.dataStore.getRow = sinon.mock().returns({ ownerId: 'u123' });
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123 };
         next();
@@ -400,7 +412,6 @@ describe('-- Private get methods --', function() {
   
   context('/yourAnswers', function () {
     it('should give the your answers page ', function (done) {
-      this.timeout(5000);
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123 };
         next();
@@ -416,7 +427,7 @@ describe('-- Private get methods --', function() {
   context('/askQuestion', function () {
     it('should give the postQuestion Page', (done) => {
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
+        req.session = { id: 123 };
         next();
       });
       request(app)
@@ -427,7 +438,6 @@ describe('-- Private get methods --', function() {
 
   context('/editQuestion', function () {
     it('should give the editQuestion Page', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u123'});
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123 };
         next();
@@ -439,13 +449,12 @@ describe('-- Private get methods --', function() {
     });
 
     it('should give error for wrong questionId', (done) => {
-      app.locals.dataStore.getRow = sinon.mock().returns({ownerId: 'u122'});
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123 };
         next();
       });
       request(app)
-        .get('/editQuestion/q00001')
+        .get('/editQuestion/-1')
         .expect(400)
         .expect(/bad request/, done);
     });

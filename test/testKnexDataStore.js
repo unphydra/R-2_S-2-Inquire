@@ -199,7 +199,7 @@ describe('knexDataStore', () => {
 
   context('allQuestionYouAnswered', () => {
     it('should name something', async() => {
-      const actual = await knexDataStore.allQuestionsYourAnswered(58026024);
+      const actual = await knexDataStore.allQuestionsYouAnswered(58026024);
       const expected = [
         {
           id: 2,
@@ -525,6 +525,29 @@ describe('knexDataStore', () => {
         },
         'questions'
       ).catch(err => assert.match(err, /Error/));
+    });
+  });
+
+  context('getYourQuestionDetails', () => {
+    it('should give question details of given id and ownerId', async() => {
+      const actual = await knexDataStore.getYourQuestionDetails(1, 58026024);
+      const expected = [
+        {
+          id: 1,
+          ownerId: 58026024,
+          title: 'what is sqlite?',
+          body: 'i want to know about sqlite',
+          receivedAt: '2020-08-03 15:31:15',
+          modifiedAt: '2020-08-03 15:31:15',
+          username: 'unphydra',
+          avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
+          ansCount: 1,
+          vote: 2,
+          isAnsAccepted: [],
+          tags: [{title: 'java'}, {title: 'javaScript'}]
+        }
+      ];
+      assert.deepStrictEqual(actual, expected);
     });
   });
 });

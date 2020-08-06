@@ -107,7 +107,7 @@ const serveYourQuestionsPage = async function (req, res, next) {
 };
 
 const serveYourAnswersPage = async (req, res, next) => {
-  req.questions = await knexDataStore.allQuestionsYourAnswered(req.session.id);
+  req.questions = await knexDataStore.allQuestionsYouAnswered(req.session.id);
   req.view = 'yourAnswers';
   next();
 };
@@ -137,11 +137,11 @@ const serveEditQuestionPage = async function(req, res) {
   const [userInfo] = await knexDataStore.getUser(req.session.id);
   try {
     const allTags = await knexDataStore.getAllTags();
-    const {
-      title, tags, id, body
-    } = await knexDataStore.getQuestionDetails(questionId);
+    const [questionDetails] = await knexDataStore.getYourQuestionDetails(
+      +questionId, req.session.id
+    );
     res.render('editQuestion', 
-      {userInfo, allTags, questionDetails: {title, tags, id, body}}
+      {userInfo, allTags, questionDetails}
     );
   }catch(error){
     res.status('400').send('bad request');

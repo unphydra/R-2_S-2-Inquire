@@ -188,7 +188,15 @@ const getQuestionDetails = function(id) {
     });
 };
 
-const allQuestionsYourAnswered = function(id) {
+const getYourQuestionDetails = function(qid, ownerId) {
+  return allQuestionsData
+    .clone()
+    .select(allQuestionColumn)
+    .where({'questions.id': qid, 'questions.ownerId': ownerId})
+    .then(data => NestHydrationJs.nest(data, definition()));
+};
+
+const allQuestionsYouAnswered = function(id) {
   const currentDef = definition('isAccepted');
   return answers.clone()
     .join(
@@ -391,8 +399,9 @@ module.exports = {
   getUser, 
   addNewUser, 
   getYourQuestions,
+  getYourQuestionDetails,
   getQuestionDetails,
-  allQuestionsYourAnswered,
+  allQuestionsYouAnswered,
   getAllTags,
   insertNewQuestion,
   updateQuestion,
