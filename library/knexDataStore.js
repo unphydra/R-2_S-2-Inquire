@@ -388,7 +388,6 @@ const updateVote = function(entries, table){
         trx('voteLog')
           .sum('vote as vote')
           .where({responseId, type})
-          .groupBy('responseId', 'type')
       ).then(([data]) => {
         data.type = currVote;
         return data;

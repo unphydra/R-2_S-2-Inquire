@@ -94,13 +94,13 @@ const makeQuestionEditable = (questionId) => {
 const updateVote = (url, container) => {
   fetch(url, {method: 'POST'}).then((res) => res.json()).then(data => {
     const ONE = 1;
-    if(data && 'votes' in data){
+    if(data && 'vote' in data){
       container
         .parentElement
         .children[ONE]
         .firstChild
         .firstChild
-        .innerText = data.votes;
+        .innerText = data.vote;
     }
   });
 };

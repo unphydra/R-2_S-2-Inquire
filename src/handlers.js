@@ -284,40 +284,20 @@ const acceptAnswer = async function(req, res) {
   }
 };
 
-const getCredential = function(url) {
-  const [, action] = url.split('/');
-  const zero = 0, one = 1, negativeOne = -1;
-  const isUpVote = action === 'upVote' ? one : zero;
-  const delta = isUpVote ? one : negativeOne;
-  return {delta, isUpVote};
-};
-
-const getUpdateVoteDetails = async function(req, res, next) {
-  const {id} = req.session;
-  const {dataStore} = req.app.locals;
-  const {type, resId} = req.params;
-  const {delta, isUpVote} = getCredential(req.url);
-  const log = await dataStore.getVoteLog(id, resId);
-  const isInValid = log && log.vote === isUpVote;
-  req.details = {id, dataStore, type, resId, delta, isUpVote, log, isInValid};
-  next();
-};
-
-const updateVote = async function(req, res){
-  const {
-    id, dataStore, type, resId, delta, isUpVote, log, isInValid
-  } = req.details;
+const updateVote = async function (req, res) {
+  const { resId, table } = req.params;
+  const [, action] = req.url.split('/');
+  const delta = { upVote: 1, downVote: -1 };
+  const types = { answers: 0, questions: 1 };
+  const entries = {
+    ownerId: req.session.id,
+    responseId: +resId,
+    type: types[table],
+    vote: delta[action]
+  };
   try {
-    if (isInValid) {
-      return res.json({});
-    }
-    await dataStore.updateResponseVote(type, resId, delta);
-    if(!log){
-      await dataStore.insertToVoteLog(id, resId, isUpVote);
-    } else {
-      await dataStore.deleteVoteLog(id, resId);
-    }
-    return res.json(await dataStore.getVoteCount(type, resId));
+    const response = await knexDataStore.updateVote(entries, table);
+    res.json(response);
   } catch (error) {
     return res.status('400').send('bad request');
   }
@@ -347,6 +327,5 @@ module.exports = {
   postComment,
   updateComment,
   acceptAnswer,
-  getUpdateVoteDetails,
   updateVote
 };

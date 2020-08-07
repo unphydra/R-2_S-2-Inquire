@@ -27,7 +27,6 @@ const {
   postComment,
   updateComment,
   acceptAnswer,
-  getUpdateVoteDetails,
   updateVote
 } = require('./handlers');
 
@@ -121,8 +120,8 @@ app.post(
   ]
 );
 app.post(
-  ['/upVote/:type/:resId', '/downVote/:type/:resId'],
-  [isLoggedIn, getUpdateVoteDetails, updateVote]
+  ['/upVote/:table/:resId', '/downVote/:table/:resId'],
+  [isLoggedIn, updateVote]
 );
 
 module.exports = { app };
