@@ -120,7 +120,8 @@ app.post(
   ]
 );
 app.post(
-  ['/upVote/:table/:resId', '/downVote/:table/:resId'],
+  ['/upVote', '/downVote'],
+  checkOptions(['table', String], ['responseId', Number]),
   [isLoggedIn, updateVote]
 );
 

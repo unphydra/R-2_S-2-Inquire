@@ -91,8 +91,9 @@ const makeQuestionEditable = (questionId) => {
   document.location = `/editQuestion/${questionId}`;
 };
 
-const updateVote = (url, container) => {
-  fetch(url, {method: 'POST'}).then((res) => res.json()).then(data => {
+const updateVote = (url, table, responseId, container) => {
+  const options = getFetchOptions('POST', { table, responseId: +responseId });
+  fetch(url, options).then((res) => res.json()).then(data => {
     const ONE = 1;
     if(data && 'vote' in data){
       container

@@ -285,13 +285,13 @@ const acceptAnswer = async function(req, res) {
 };
 
 const updateVote = async function (req, res) {
-  const { resId, table } = req.params;
+  const { responseId, table } = req.body;
   const [, action] = req.url.split('/');
   const delta = { upVote: 1, downVote: -1 };
   const types = { answers: 0, questions: 1 };
   const entries = {
     ownerId: req.session.id,
-    responseId: +resId,
+    responseId: +responseId,
     type: types[table],
     vote: delta[action]
   };
