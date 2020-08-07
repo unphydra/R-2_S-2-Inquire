@@ -32,7 +32,8 @@ html(lang='en')
               div
                 div(class="author" onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=qd.username
                 div(class="time" time=`${receivedAt}`)
-            div(class="edit-q-btn" onclick=`makeQuestionEditable('${qd.id}')`) edit
+            if(userInfo && userInfo.id == ownerId)
+              div(class="edit-q-btn" onclick=`makeQuestionEditable('${qd.id}')`) edit
         div(class="question-body")
           div(class="question-body-c")!=body
             div(class="tags" style="margin-left:0")

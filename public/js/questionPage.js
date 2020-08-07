@@ -15,7 +15,7 @@ const getFetchOptions = (method, body) => {
 
 const postAnswer = function (user, qId, button) {
   const BL = 30;
-  const popUp = button.nextElementSibling;
+  const popUp = button.parentElement.lastElementChild;
   if (!user) {
     const message = '* please login before continue';
     return togglePopUp(popUp, 'hide', message);

@@ -18,7 +18,7 @@ div(class="answers")
                 div(class="down-arrow" onclick=`updateVote('/downVote','answers','${answer.id}',this)`)
           div(class="flex-row")      
             div(class="edit-btns")
-              if(answer.ownerId == userInfo.id)
+              if(userInfo && answer.ownerId == userInfo.id)
                 div(class="edit-btn" onclick=`makeAnswerEditable(this,'a${answer.id}_0','${answer.id}')`) edit
             div(class="question-title-b answer-author")
                   div(class="avatar-div")
