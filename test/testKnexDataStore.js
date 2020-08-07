@@ -520,7 +520,6 @@ describe('knexDataStore', () => {
       );
       const expected = { vote: 2, type: 1 };
       assert.deepStrictEqual(actual, expected);
-      
     });
 
     it('should not update vote if response id invalid', async() => {

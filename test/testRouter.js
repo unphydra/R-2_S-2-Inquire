@@ -466,7 +466,8 @@ describe('-- post methods --', function () {
     updateAnswer: sinon.stub(),
     insertNewComment: sinon.stub(),
     updateComment: sinon.stub(),
-    updateAcceptAnswer: sinon.stub()
+    updateAcceptAnswer: sinon.stub(),
+    updateVote: sinon.stub()
   };
   beforeEach(() => {
     fakeFunctions['getUser'].withArgs(123).returns(
@@ -499,6 +500,7 @@ describe('-- post methods --', function () {
     sinon.replace(
       knexDataStore, 'updateAcceptAnswer', fakeFunctions['updateAcceptAnswer']
     );
+    sinon.replace( knexDataStore, 'updateVote', fakeFunctions['updateVote'] );
   });
 
   afterEach(() => sinon.restore());
@@ -827,150 +829,52 @@ describe('-- post methods --', function () {
     });
   });
 
-  context.skip('Voting', () => {
-    it('should upVote a question', (done) => {
+  context('Voting', () => {
+    it('should upVote a response', (done) => {
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
+        req.session = { id: 58027208 };
         next();
       });
-      app.locals.dataStore = {
-        getVoteLog: sinon.fake.returns(undefined),
-        updateResponseVote: sinon.fake.returns(),
-        insertToVoteLog: sinon.fake.returns(),
-        getVoteCount: sinon.fake.returns({votes: 1})
-      };
+      fakeFunctions.updateVote.withArgs({
+        ownerId: 58027208,
+        responseId: 1,
+        type: 0,
+        vote: 1
+      }, 'answers').returns({ vote: 2, type: 1});
 
       request(app)
-        .post('/upVote/questions/q00001')
+        .post('/upVote')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({table: 'answers', responseId: 1 }))
         .end((err, res) => {
           assert.deepStrictEqual(
             res.headers['content-type'], 
             'application/json; charset=utf-8'
           );
-          assert.deepStrictEqual(res.status, statusCodes.ok);
-          assert.deepStrictEqual(res.body, {votes: 1});
+          assert.deepStrictEqual(res.status, 200);
+          assert.deepStrictEqual(res.body, {vote: 2, type: 1});
           assert.ifError(err);
-          const {
-            getVoteLog,
-            updateResponseVote,
-            insertToVoteLog, 
-            getVoteCount
-          } = app.locals.dataStore;
-          sinon.assert.calledWith(getVoteLog, '123', 'q00001');
-          sinon.assert.calledWith(updateResponseVote, 'questions', 'q00001', 1);
-          sinon.assert.calledWith(insertToVoteLog, '123', 'q00001', 1);
-          sinon.assert.calledWith(getVoteCount, 'questions', 'q00001');
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
-    });
-
-    it('should give empty when question is already upVoted', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
-        next();
-      });
-      app.locals.dataStore = {
-        getVoteLog: sinon.fake.returns({vote: 1}),
-      };
-
-      request(app)
-        .post('/upVote/questions/q00001')
-        .end((err, res) => {
-          assert.deepStrictEqual(
-            res.headers['content-type'], 
-            'application/json; charset=utf-8'
-          );
-          assert.deepStrictEqual(res.status, statusCodes.ok);
-          assert.deepStrictEqual(res.body, {});
-          assert.ifError(err);
-          const {
-            getVoteLog,
-          } = app.locals.dataStore;
-          sinon.assert.calledWith(getVoteLog, '123', 'q00001');
-          sinon.assert.calledOnce(getVoteLog);
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
-    });
-
-    it('should upVote a question is already downVoted', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
-        next();
-      });
-      app.locals.dataStore = {
-        getVoteLog: sinon.fake.returns({vote: 0}),
-        updateResponseVote: sinon.fake.returns(),
-        deleteVoteLog: sinon.fake.returns(),
-        getVoteCount: sinon.fake.returns({votes: 0})
-      };
-
-      request(app)
-        .post('/upVote/questions/q00001')
-        .end((err, res) => {
-          assert.deepStrictEqual(
-            res.headers['content-type'], 
-            'application/json; charset=utf-8'
-          );
-          assert.deepStrictEqual(res.status, statusCodes.ok);
-          assert.deepStrictEqual(res.body, {votes: 0});
-          assert.ifError(err);
-          const {
-            getVoteLog,
-            updateResponseVote,
-            deleteVoteLog, 
-            getVoteCount
-          } = app.locals.dataStore;
-          sinon.assert.calledWith(getVoteLog, '123', 'q00001');
-          sinon.assert.calledWith(updateResponseVote, 'questions', 'q00001', 1);
-          sinon.assert.calledWith(deleteVoteLog, '123', 'q00001');
-          sinon.assert.calledWith(getVoteCount, 'questions', 'q00001');
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
           done();
         });
     });
 
     it('should give bad request if type is given wrong', (done) => {
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: '123' };
+        req.session = { id: 58027206 };
         next();
       });
-      app.locals.dataStore = {
-        getVoteLog: sinon.fake.returns({vote: 1}),
-        updateResponseVote: sinon.fake.returns(new Error('no such table')),
-      };
+      fakeFunctions.updateVote.withArgs({
+        ownerId: 58027206,
+        responseId: 1,
+        type: 0,
+        vote: 1
+      }, 'answers').throws(new Error('error'));
       request(app)
-        .post('/downVote/test/q00001')
-        .end((err, res) => {
-          assert.deepStrictEqual(
-            res.headers['content-type'], 
-            'text/html; charset=utf-8'
-          );
-          assert.deepStrictEqual(res.text, 'bad request');
-          assert.deepStrictEqual(res.status, statusCodes.badRequest);
-          assert.ifError(err);
-          const {
-            getVoteLog,
-            updateResponseVote,
-          } = app.locals.dataStore;
-          sinon.assert.calledWith(getVoteLog, '123', 'q00001');
-          sinon.assert.calledWith(updateResponseVote, 'test', 'q00001', -1);
-          app.set('sessionMiddleware', (req, res, next) => {
-            req.session = {};
-            next();
-          });
-          done();
-        });
+        .post('/upVote')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ table: 'answers', responseId: 1 }))
+        .expect('content-type', /text\/html/)
+        .expect(400, done);
     });
   });
 });

@@ -296,8 +296,7 @@ const updateVote = async function (req, res) {
     vote: delta[action]
   };
   try {
-    const response = await knexDataStore.updateVote(entries, table);
-    res.json(response);
+    res.json(await knexDataStore.updateVote(entries, table));
   } catch (error) {
     return res.status('400').send('bad request');
   }
