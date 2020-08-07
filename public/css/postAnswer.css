@@ -11,7 +11,7 @@
   align-self: center;
   width: 80%;
   text-align: left;
-  margin:1% 0vw 1.5% 2vw;
+  margin:1% 0vw 0% 2vw;
 }
 
 #editor {
@@ -55,12 +55,13 @@ textarea {
   padding-left:1%;
   font-family: Helvetica, sans-serif;
 }
-#formFooter {
+.formFooter {
   display: flex;
   flex-direction: row;
   width: 80%;
+  margin-bottom: 1.5%;
 }
-#formFooter > button {
+.formFooter > button {
   margin-right:5%;
   width: 30%;
   height: 5vh;
@@ -71,13 +72,12 @@ textarea {
   transition: border .3s ease-in;
   outline: none;
 }
-#formFooter > a:hover, #formFooter > button:hover {
+.formFooter > a:hover, .formFooter > button:hover {
    box-shadow: 0px 0px 3px 0px rgb(66, 66, 66);
 }
 
 .popUp {
   color: red;
-  font-size: larger;
   align-self: center;
 }
 .hide {

@@ -323,6 +323,16 @@ const insertNewComment = function(commentEntries, table) {
         trx('comments')
           .insert(commentEntries)
       )
+      .then(([id]) =>
+        trx('comments')
+          .select('comments.*', 'username')
+          .leftJoin(
+            trx(users).as('users'),
+            'comments.ownerId',
+            'users.id'
+          )
+          .where('comments.id', id)
+      )
   );
 };
 

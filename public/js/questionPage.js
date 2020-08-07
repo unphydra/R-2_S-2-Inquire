@@ -1,5 +1,5 @@
 const togglePopUp = (element, className, message) => {
-  element.innerText = message;
+  message && (element.innerText = message);
   element.classList.remove(className);
   const seconds = 5000;
   setTimeout(() => element.classList.add(className), seconds);
@@ -94,14 +94,14 @@ const makeQuestionEditable = (questionId) => {
 const updateVote = (url, table, responseId, container) => {
   const options = getFetchOptions('POST', { table, responseId: +responseId });
   fetch(url, options).then((res) => res.json()).then(data => {
-    const ONE = 1;
+    const ONE = 1, zero = 0;
     if(data && 'vote' in data){
       container
         .parentElement
         .children[ONE]
         .firstChild
         .firstChild
-        .innerText = data.vote;
+        .innerText = data.vote || zero;
     }
   });
 };
@@ -119,14 +119,8 @@ const updateAcceptAnswer = (qOwnerId, answerId, tickMark) => {
     });
 };
 
-const toggleCommentBox = (className) => {
-  const commentBox = document.querySelector(className);
-  if(commentBox.classList.contains('hide')) {
-    commentBox.classList.remove('hide');
-    return '0';
-  }
-  commentBox.classList.add('hide');
-};
+const toggleCommentBox = (addComment) => 
+  addComment.nextElementSibling.classList.toggle('hide');
 
 const moveCursor = (element) => {
   const range = document.createRange();
@@ -136,6 +130,41 @@ const moveCursor = (element) => {
   sel.removeAllRanges();
   sel.addRange(range);
   element.focus();
+};
+
+const convertToHtml = function(text) {
+  const div = document.createElement('div');
+  div.innerHTML = text;
+  return Array.from(div.children);
+};
+
+const postComment = function(boxId, qId, resId, table) {
+  const commentBox = document.querySelector(`#${boxId}`);
+  const comment = commentBox.firstChild.value;
+  const length = comment.length;
+  const popup = document.querySelector(`#${boxId}p`);
+  const lowerLimit = 9, upperLimit = 180;
+  if(length < lowerLimit || length > upperLimit) {
+    return togglePopUp(popup, 'hide', '*please enter at least ten character');
+  }
+  const body = {questionId: +qId, responseId: +resId, table, comment};
+  return fetch('/postComment', getFetchOptions('POST', body))
+    .then(res => {
+      if (res.statusText === 'OK') {
+        return res.text();
+      }
+    })
+    .then(text => {
+      if (text) {
+        convertToHtml(text).forEach(ele =>
+          commentBox.
+            parentElement.insertBefore(ele, commentBox.previousElementSibling)
+        );
+        toggleCommentBox(commentBox.previousSibling);
+        renderDates('.q-comment-time');
+        renderDates('.a-comment-time');
+      }
+    });
 };
 
 const main = () => {

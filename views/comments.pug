@@ -1,5 +1,4 @@
 mixin getComments(comments)
-  span Comments 
   each Comment in comments
     -const {id,ownerId,responseId,comment,type,receivedAt,username} = Comment
     div(class="comment" id=`${id}`)=comment

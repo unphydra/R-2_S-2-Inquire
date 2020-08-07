@@ -1,16 +1,16 @@
-form {
+.new_comment_box {
   align-self: center;
   width: 80%;
   text-align: left;
   margin-left: 2vw;
 }
 
-input::placeholder {
+.new_comment_box > input::placeholder {
   opacity: 0.7;
   font-size: medium;
   font-family: Helvetica, sans-serif;
 }
-input {
+.new_comment_box > input {
   margin-bottom: 3%;
   margin-top: 2%;
   width: 100%;
@@ -26,7 +26,7 @@ input {
   font-family: Helvetica, sans-serif;
 }
 .add-comment {
-  margin-left: 3%;
+  margin: 1.5% 3%;
   cursor: pointer;
   color: #f48024;
 }

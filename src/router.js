@@ -96,10 +96,15 @@ app.post(
   ]
 );
 app.post(
-  '/postComment/:questionId/:type', 
+  '/postComment', 
   [
     isLoggedIn, 
-    checkOptions(['comment', String], ['responseId', Number]), 
+    checkOptions(
+      ['comment', String], 
+      ['questionId', Number], 
+      ['responseId', Number], 
+      ['table', String]
+    ), 
     postComment
   ]
 );

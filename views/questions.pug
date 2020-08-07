@@ -1,26 +1,27 @@
 mixin getHeader(header)
   script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript")
-  div(class="container")
-    div(class="container-h")
-      div(class="con-header-title")=`${header}`
+  .container
+    .container-h
+      .con-header-title=header
       if userInfo
-        button(class="askBtn" onClick="window.location.href='/askQuestion'") Ask Question
-    div(class="container-b")
+        button.askBtn(onClick="window.location.href='/askQuestion'") Ask Question
+    .container-b
       if(questions.length > 0)
         each question in questions
           -const {id,ownerId,title,body,receivedAt,username,ansCount,isAnsAccepted,tags} = question
-          div(class="question")
-            -const className=isAnsAccepted.some(a=>a.isAnsAccepted) ? "countName-ac" : ansCount > 0? "countName-a":"countName"
-            div(class=`${className}`)
-              div(class="count")=`${ansCount || 0}`
-                div(class="ansCount") answers
-            div(class="question-details")
-              div(class="title" onClick=`window.location.href='/question/${id}'`)=title
-              div(class="tags")
+          .question
+            -const isAnyAnsAccepted = isAnsAccepted.some(a=>a.isAnsAccepted);
+            -const className = isAnyAnsAccepted ? "countName-ac" : ansCount > 0? "countName-a":"countName"
+            div(class=className)
+              .count=ansCount || 0
+                .ansCount answers
+            .question-details
+              .title(onClick=`window.location.href='/question/${id}'`)=title
+              .tags
                 each tag in tags
-                  div(class="tag")=tag.title
-              div(class='q-author')
-                span(class="q-author-name" onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=`${username}`
-                span(class="date-time" time=`${receivedAt}`) ,&nbsp;
+                  .tag=tag.title
+              .q-author
+                span.q-author-name(onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=username
+                span.date-time(time=receivedAt) ,&nbsp;
       else 
         p No questions

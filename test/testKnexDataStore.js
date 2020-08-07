@@ -392,11 +392,24 @@ describe('knexDataStore', () => {
         ownerId: 58026024,
         responseId: 1,
         comment: 'test',
-        type: 1
+        type: 1,
+        receivedAt: '2020-08-07 12:21:42',
+        modifiedAt: '2020-08-07 12:21:42'
       },
       'questions'
       );
-      const expected = [6];
+      const expected = [
+        {
+          id: 6,
+          ownerId: 58026024,
+          responseId: 1,
+          comment: 'test',
+          type: 1,
+          receivedAt: '2020-08-07 12:21:42',
+          modifiedAt: '2020-08-07 12:21:42',
+          username: 'unphydra'
+        }
+      ];
       assert.deepStrictEqual(actual, expected);
       
     });

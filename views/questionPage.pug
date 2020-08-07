@@ -2,9 +2,9 @@ html(lang='en')
   head
     meta(charset='utf-8')
     title QuestionPage
-    style
-      include ../public/css/home.css
-      include ../public/css/questionPage.css
+    link(rel="stylesheet", href="/css/home.css")
+    link(rel="stylesheet", href="/css/questionPage.css")
+    link(rel="stylesheet", href="/css/postComment.css")
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/hopscotch.min.css")
     link(rel="stylesheet", href="https://cdn.quilljs.com/1.3.6/quill.snow.css")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js")
@@ -47,10 +47,11 @@ html(lang='en')
                 div(class="ansCount") votes
             div(class="down-arrow" onclick=`updateVote('/downVote','answers','${qd.id}',this)`)
         div(class="comments") 
+          span Comments
           include comments
           +getComments(comments)
           include postComment
-          +getId(qd.id,1)
+          +comments_editor(qd.id,'questions')
         include postAnswer
         +getQuestionId(qd.id)
         include answer

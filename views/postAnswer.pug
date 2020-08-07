@@ -7,7 +7,7 @@ mixin getQuestionId(qId)
     div(class='editor-box')
       div(id='toolbar')
       div(id='editor')
-      div(id="formFooter" class="edit-answer-btns")
+      div(class="formFooter" class="edit-answer-btns")
         button(onclick=`postAnswer('${userInfo && userInfo.id}','${qId}',this)`) Post Answer
         button(class="cancel-btn hide" onclick=`makeAnswerUneditable('${qId}')`) Cancel
         button(class="save-btn hide" onclick=`updateAnswer('${qId}')`) Save

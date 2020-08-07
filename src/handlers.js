@@ -226,20 +226,25 @@ const updateAnswer = async function(req, res) {
 };
 
 const postComment = async function (req, res) {
-  const {questionId, type } = req.params;
-  const {responseId, comment} = req.body;
+  const {responseId, comment, questionId, table} = req.body;
   const tables = { questions: 1, answers: 0 };
   try {
-    await knexDataStore.insertNewComment(
+    const newComment = await knexDataStore.insertNewComment(
       {
         ownerId: req.session.id,
         responseId,
         comment,
-        type: tables[type]
+        type: tables[table]
       },
-      type
+      table
     );
-    return res.redirect(`/question/${questionId}`);
+    return res.render(
+      'newComment', 
+      {
+        newComment, qd: {id: questionId},
+        userInfo: {id: req.session.id}
+      }
+    );
   } catch (error) {
     return res.status('400').send('bad request');
   }

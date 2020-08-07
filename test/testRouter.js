@@ -700,17 +700,29 @@ describe('-- post methods --', function () {
           type: 1
         },
         'questions'
-      ).returns();
+      ).returns([
+        {
+          id: 6,
+          ownerId: 58026024,
+          responseId: 1,
+          comment: 'test',
+          type: 1,
+          receivedAt: '2020-08-07 12:21:42',
+          modifiedAt: '2020-08-07 12:21:42',
+          username: 'unphydra'
+        }
+      ]);
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123 };
         next();
       });
       request(app)
-        .post('/postComment/1/1')
+        .post('/postComment')
         .set('content-type', 'application/json')
-        .send(JSON.stringify({ comment: 'test', responseId: 1}))
-        .expect('Location', '/question/1')
-        .expect(302, done);
+        .send(JSON.stringify(
+          { comment: 'test', responseId: 1, table: 'questions', questionId: 1}
+        ))
+        .expect(200, done);
     });
 
     it('should give the unauthorized error if id is absent', (done) => {
@@ -719,9 +731,11 @@ describe('-- post methods --', function () {
         next();
       });
       request(app)
-        .post('/postComment/1/questions')
+        .post('/postComment')
         .set('content-type', 'application/json')
-        .send(JSON.stringify({ comment: 'test comment' }))
+        .send(JSON.stringify(
+          { comment: 'test', responseId: 1, table: 'questions', questionId: 1}
+        ))
         .expect(401, done);
     });
 
@@ -740,9 +754,11 @@ describe('-- post methods --', function () {
         next();
       });
       request(app)
-        .post('/postComment/1/questions')
+        .post('/postComment/')
         .set('content-type', 'application/json')
-        .send(JSON.stringify({ comment: 'test', responseId: -1 }))
+        .send(JSON.stringify(
+          { comment: 'test', responseId: -1, table: 'questions', questionId: 1}
+        ))
         .expect(400, done);
     });
   });
