@@ -12,7 +12,7 @@ mixin getHeader(header)
           div(class="question")
             -const className=isAnsAccepted.some(a=>a.isAnsAccepted) ? "countName-ac" : ansCount > 0? "countName-a":"countName"
             div(class=`${className}`)
-              div(class="count")=`${ansCount}`
+              div(class="count")=`${ansCount || 0}`
                 div(class="ansCount") answers
             div(class="question-details")
               div(class="title" onClick=`window.location.href='/question/${id}'`)=title

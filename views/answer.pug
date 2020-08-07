@@ -1,5 +1,5 @@
 div(class="answers")
-      span=`${ansCount} Answers`
+      span=`${ansCount || 0} Answers`
       if(ansCount)
         each answer in qd.answers
           div(class="question-body")
