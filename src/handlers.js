@@ -154,12 +154,8 @@ const serveProfilePage = async function (req, res) {
     return res.status('400').send('no user found');
   }
   const [userInfo] = await knexDataStore.getUser(req.session.id);
-  try {
-    const [details] = await knexDataStore.getUser(id);
-    return res.render('profilePage', {details, userInfo});
-  }catch(error) {
-    res.status('400').send('no user found');
-  }
+  const [details] = await knexDataStore.getUser(id);
+  return res.render('profilePage', {details, userInfo});
 };
 
 const registerNewUser = async function (req, res) {
