@@ -13,7 +13,7 @@
             .up-arrow(onclick=`updateVote('/upVote','answers','${answer.id}',this)`)
             .countName.votes
               .count
-                span=answer.vote || 0
+                span=(answer.votes || 0)
                 .ansCount votes
             .down-arrow(onclick=`updateVote('/downVote','answers','${answer.id}',this)`)
       .flex-row      
