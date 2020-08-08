@@ -771,17 +771,27 @@ describe('-- post methods --', function () {
           ownerId: 123,
           comment: 'test',
         }
-      ).returns();
+      ).returns([
+        {
+          id: 2,
+          ownerId: 123,
+          responseId: 1,
+          comment: 'test',
+          type: 0,
+          receivedAt: '2020-08-07 12:21:42',
+          modifiedAt: '2020-08-07 12:21:42',
+          username: 'unphydra'
+        }
+      ]);
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123 };
         next();
       });
       request(app)
-        .post('/updateComment/1')
+        .post('/updateComment')
         .set('content-type', 'application/json')
         .send(JSON.stringify({ comment: 'test', commentId: 2 }))
-        .expect('Location', '/question/1')
-        .expect(302, done);
+        .expect(200, done);
     });
 
     it('should give the bad request error for wrong commentId', (done) => {
@@ -797,7 +807,7 @@ describe('-- post methods --', function () {
         next();
       });
       request(app)
-        .post('/updateComment/1')
+        .post('/updateComment')
         .set('content-type', 'application/json')
         .send(JSON.stringify({ comment: 'test', commentId: 2 }))
         .expect(400, done);

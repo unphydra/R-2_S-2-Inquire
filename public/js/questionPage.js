@@ -1,16 +1,20 @@
-const togglePopUp = (element, className, message) => {
-  message && (element.innerText = message);
-  element.classList.remove(className);
-  const seconds = 5000;
-  setTimeout(() => element.classList.add(className), seconds);
-};
-
 const getFetchOptions = (method, body) => {
   return {
     method,
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(body)
   };
+};
+
+const fetchReqText = (url, options) => {
+  return fetch(url, options).then(res => res.statusText === 'OK' && res.text());
+};
+
+const togglePopUp = (element, className, message) => {
+  message && (element.innerText = message);
+  element.classList.remove(className);
+  const seconds = 5000;
+  setTimeout(() => element.classList.add(className), seconds);
 };
 
 const postAnswer = function (user, qId, button) {
@@ -37,7 +41,7 @@ const toggleEditBtns = (editBtns) => {
 };
 
 const makeCommentEditable = (editBtn, commentId) => {
-  const comment = document.querySelector(`#${commentId}`);
+  const comment = document.querySelector(`#${commentId}`).firstChild;
   comment.setAttribute('contenteditable', true);
   toggleEditBtns(editBtn.parentElement);
   moveCursor(comment);
@@ -45,21 +49,24 @@ const makeCommentEditable = (editBtn, commentId) => {
 };
 
 const makeCommentUneditable = (cancelBtn, commentId) => {
-  const comment = document.querySelector(`#${commentId}`);
+  const comment = document.querySelector(`#${commentId}`).firstChild;
   comment.setAttribute('contenteditable', false);
   toggleEditBtns(cancelBtn.parentElement);
   comment.innerText = localStorage.getItem('oldComment');
   localStorage.removeItem('oldComment');
 };
 
-const updateComment = (commentId, questionId) => {
-  const comment = document.querySelector(`#${commentId}`);
-  const body = {comment: comment.innerText, commentId};
-  const options = getFetchOptions('POST', body);
-  fetch(`/updateComment/${questionId}`, options).then((res) => {
-    localStorage.removeItem('oldComment');
-    window.location.href = res.url;
-  });
+const updateComment = (commentId) => {
+  const comment = document.querySelector(`#c${commentId}`);
+  const body = {comment: comment.firstChild.innerText, commentId: +commentId};
+  return fetchReqText('/updateComment', getFetchOptions('POST', body))
+    .then(data => {
+      if (data) {
+        comment.innerHTML = data;
+        localStorage.removeItem('oldComment');
+        renderAllDates();
+      }
+    });
 };
 
 const makeAnswerEditable = (editBtn, boxId, answerId) => {
@@ -138,6 +145,13 @@ const updateAcceptAnswer = (qOwnerId, answerId, tickMark) => {
 const toggleCommentBox = (addComment) => 
   addComment.nextElementSibling.classList.toggle('hide');
 
+const toggleBox = (addComment, userInfo) => {
+  if(userInfo) {
+    return toggleCommentBox(addComment);
+  }
+  togglePopUp(addComment.lastChild, 'hide');
+};
+
 const moveCursor = (element) => {
   const range = document.createRange();
   const sel = window.getSelection();
@@ -146,12 +160,6 @@ const moveCursor = (element) => {
   sel.removeAllRanges();
   sel.addRange(range);
   element.focus();
-};
-
-const convertToHtml = function(text) {
-  const div = document.createElement('div');
-  div.innerHTML = text;
-  return Array.from(div.children);
 };
 
 const postComment = function(boxId, qId, resId, table) {
@@ -164,28 +172,23 @@ const postComment = function(boxId, qId, resId, table) {
     return togglePopUp(popup, 'hide', '*please enter at least ten character');
   }
   const body = {questionId: +qId, responseId: +resId, table, comment};
-  return fetch('/postComment', getFetchOptions('POST', body))
-    .then(res => {
-      if (res.statusText === 'OK') {
-        return res.text();
-      }
-    })
-    .then(text => {
-      if (text) {
-        convertToHtml(text).forEach(ele =>
-          commentBox.
-            parentElement.insertBefore(ele, commentBox.previousElementSibling)
-        );
+  return fetchReqText('/postComment', getFetchOptions('POST', body))
+    .then(data => {
+      if (data) {
+        const comments = document.querySelector(`#${table}_${resId}`);
+        comments.innerHTML += data;
         toggleCommentBox(commentBox.previousSibling);
-        renderDates('.q-comment-time');
-        renderDates('.a-comment-time');
+        renderAllDates();
       }
     });
 };
 
-const main = () => {
+const renderAllDates = () => {
   renderDates('.time');
   renderDates('.q-comment-time');
   renderDates('.a-comment-time');
+};
+
+const main = () => {
   renderEditor();
 };

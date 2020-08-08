@@ -46,10 +46,11 @@ html(lang='en')
                 span=vote||0
                 div(class="ansCount") votes
             div(class="down-arrow" onclick=`updateVote('/downVote','questions','${qd.id}',this)`)
-        div(class="comments") 
+        div(class="comments" id=`questions_${qd.id}`) 
           span Comments
           include comments
           +getComments(comments)
+        .q-post-comment
           include postComment
           +comments_editor(qd.id,'questions')
         include postAnswer

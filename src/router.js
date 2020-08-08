@@ -101,7 +101,6 @@ app.post(
     isLoggedIn, 
     checkOptions(
       ['comment', String], 
-      ['questionId', Number], 
       ['responseId', Number], 
       ['table', String]
     ), 
@@ -109,7 +108,7 @@ app.post(
   ]
 );
 app.post(
-  '/updateComment/:questionId', 
+  '/updateComment', 
   [
     isLoggedIn, 
     checkOptions(['comment', String], ['commentId', Number]), 

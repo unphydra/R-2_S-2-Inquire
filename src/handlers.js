@@ -225,7 +225,7 @@ const updateAnswer = async function(req, res) {
 };
 
 const postComment = async function (req, res) {
-  const {responseId, comment, questionId, table} = req.body;
+  const {responseId, comment, table} = req.body;
   const tables = { questions: 1, answers: 0 };
   try {
     const newComment = await knexDataStore.insertNewComment(
@@ -237,12 +237,8 @@ const postComment = async function (req, res) {
       },
       table
     );
-    return res.render(
-      'newComment', 
-      {
-        newComment, qd: {id: questionId},
-        userInfo: {id: req.session.id}
-      }
+    return res.render( 'newComment', 
+      { newComment, userInfo: {id: req.session.id} } 
     );
   } catch (error) {
     return res.status('400').send('bad request');
@@ -253,14 +249,16 @@ const postComment = async function (req, res) {
 const updateComment = async function(req, res) {
   const { comment, commentId } = req.body;
   try {
-    await knexDataStore.updateComment(
+    const updatedComment = await knexDataStore.updateComment(
       {
         id: commentId,
         ownerId: req.session.id,
         comment
       }
     );
-    return res.redirect(`/question/${req.params.questionId}`);
+    return res.render( 'updatedComment', 
+      { updatedComment, userInfo: {id: req.session.id} } 
+    );
   } catch (error) {
     res.status('400').send('bad request');
   }

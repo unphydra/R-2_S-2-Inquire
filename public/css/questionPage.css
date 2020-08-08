@@ -133,13 +133,18 @@ width: 80%;
   color: rgba(41, 41, 41, 0.9);
 }
 
-.answers > .comments {
+.a-post-comment {
   border-bottom: 1px solid rgba(41, 41, 41, 0.5);
+  margin-right: 4vw;
+  margin-left: 2vw;
 }
 
 .comments {
   margin: 2vh 4vw 2vh 0;
+}
+.q-post-comment{
   border-bottom: 2px solid rgba(41, 41, 41, 0.5);
+  margin-right: 4vw;
 }
 .comments > span {
   font-size: 20px;
@@ -154,6 +159,10 @@ width: 80%;
 }
 .comment:focus {
   outline: none;
+  border-bottom: solid 1px rgba(41, 41, 41, 0.5);
+  margin: 1vh 0;
+  margin-left: 2vw;
+  padding: 0;
 }
 .flex-row {
   width: 82%;
@@ -176,11 +185,18 @@ width: 80%;
 .edit-btns {
   display: flex;
   flex-direction: row;
+  width: 30%;
+  text-align: center;
+  margin-bottom: 1.5%;
+}
+
+.edit-btns > div {
+  margin-right: 1vw;
+  height: 3vh;
 }
 .edit-btns > div:hover, .edit-q-btn:hover {
   text-decoration: underline;
   cursor: pointer;
-  margin-right: 1vw;
 }
 
 .edit-btns > .answer-author {
@@ -197,6 +213,3 @@ width: 80%;
   cursor: pointer;
 }
 
-.comments div:last-child {
-  border: none;
-}

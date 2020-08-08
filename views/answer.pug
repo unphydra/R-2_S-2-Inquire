@@ -26,9 +26,11 @@
           div
             .author(onclick=`window.location.href='/viewProfile?id=${answer.ownerId}'`)=answer.username
             .time(time=answer.receivedAt)
-      .comments.a-comments 
+      .comments.a-comments(id=`answers_${answer.id}`)
         span Comments
         include comments
         +getComments(answer.comments)
+      .a-post-comment
         include postComment
-        +comments_editor(answer.id,'answers')
+        +comments_editor(answer.id,'answers').a-comments
+

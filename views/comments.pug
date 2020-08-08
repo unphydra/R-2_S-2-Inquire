@@ -1,13 +1,14 @@
 mixin getComments(comments)
   each Comment in comments
     -const {id,ownerId,responseId,comment,type,receivedAt,username} = Comment
-    div(class="comment" id=`${id}`)=comment
-    div(class="flex-row border")
-      div(class="edit-btns")
-        if(userInfo && userInfo.id==ownerId)
-          div(class="edit-btn" onclick=`makeCommentEditable(this,'${id}')`) edit
-          div(class="cancel-btn hide" onclick=`makeCommentUneditable(this,'${id}')`) cancel
-          div(class="save-btn hide" onclick=`updateComment('${id}', '${qd.id}')`) save
-      div(class="c-author")
-        span(onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=username
-        span(class='a-comment-time' time=`${receivedAt}`) ,&nbsp;
+    div(id=`c${id}`)
+      div(class="comment")=comment
+      div(class="flex-row border")
+        div(class="edit-btns")
+          if(userInfo && userInfo.id==ownerId)
+            div(class="edit-btn" onclick=`makeCommentEditable(this,'c${id}')`) edit
+            div(class="cancel-btn hide" onclick=`makeCommentUneditable(this,'c${id}')`) cancel
+            div(class="save-btn hide" onclick=`updateComment('${id}')`) save
+        div(class="c-author")
+          span(onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=username
+          span(class='a-comment-time' time=`${receivedAt}`) ,&nbsp;

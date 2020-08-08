@@ -333,6 +333,16 @@ const updateAnswer = function(answerEntries) {
   );
 };
 
+const getComment = (trx, id) =>
+  trx('comments')
+    .select('comments.*', 'username')
+    .leftJoin(
+      trx('users').as('users'),
+      'comments.ownerId',
+      'users.id'
+    )
+    .where('comments.id', id);
+
 const insertNewComment = function(commentEntries, table) {
   const {responseId} = commentEntries;
   return knex.transaction((trx) =>
@@ -344,17 +354,7 @@ const insertNewComment = function(commentEntries, table) {
         trx('comments')
           .insert(commentEntries)
       )
-      .then(([id]) =>
-        trx('comments')
-          .select('comments.*', 'username')
-          .leftJoin(
-            trx(users).as('users'),
-            'comments.ownerId',
-            'users.id'
-          )
-          .where('comments.id', id)
-      )
-  );
+      .then(([id]) => getComment(trx, id)));
 };
 
 const updateComment = function(commentEntries){
@@ -369,7 +369,7 @@ const updateComment = function(commentEntries){
           .update({comment})
           .where({id, ownerId})
       )
-  );
+      .then(() => getComment(trx, id)));
 };
 
 const updateAcceptAnswer = function(entries, answerId, reqOwner) {

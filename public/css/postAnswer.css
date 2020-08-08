@@ -1,5 +1,6 @@
 .post-answer {
   margin-right: 4vw;
+  margin-top: 2vh;
   border-bottom: solid 2px rgba(41,41,41,0.5);
 }
 .post-answer > span {
@@ -61,7 +62,7 @@ textarea {
   width: 80%;
   margin-bottom: 1.5%;
 }
-.formFooter > button {
+.formFooter > button, .cancel-btn, .save-btn {
   margin-right:5%;
   width: 30%;
   height: 5vh;
