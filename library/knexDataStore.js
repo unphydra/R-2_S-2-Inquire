@@ -111,7 +111,8 @@ const allQuestionColumn = [
   'username', 
   'users.avatar', 
   'ansCount.count as ansCount', 
-  'qVote.vote', 
+  'qVote.vote',
+  'type as type',
   'qtt.title as tag',
   'acceptedAns.isAccepted as isAnsAccepted'
 ];
@@ -152,12 +153,22 @@ const getYourQuestions = (userId) => {
     .then(data => NestHydrationJs.nest(data, definition()));
 };
 
-const getQuestionDetails = function(id) {
+const getQuestionDetails = function (id, reqOwner) {
   return allQuestionsData.clone()
     .select(allQuestionColumn)
     .where({'questions.id': id})
     .then(data => NestHydrationJs.nest(data, definition()))
     .then(([question]) => checkIfError(question, 'no question found'))
+    .then(question => {
+      return voteLog
+        .clone()
+        .select('vote as type')
+        .where({ 'ownerId': reqOwner, 'responseId': id, type: 1 })
+        .then(([type]) => {
+          question.type = type || { type: 0 };
+          return question;
+        });
+    })
     .then((question) => {
       return allComments
         .clone()
@@ -174,10 +185,20 @@ const getQuestionDetails = function(id) {
           return Promise.all(answers.map(answer => {
             return allComments
               .clone()
-              .where({'responseId': answer.id, type: 0})
+              .where({ 'responseId': answer.id, type: 0 })
               .then(comments => {
                 answer.comments = comments;
                 return answer;
+              })
+              .then(answer => {
+                return voteLog
+                  .clone()
+                  .select('vote as type')
+                  .where({ 'ownerId': reqOwner, 'responseId': id, type: 0 })
+                  .then(([type]) => {
+                    answer.type = type || { type: 0 };
+                    return answer;
+                  });
               });
           }));
         })

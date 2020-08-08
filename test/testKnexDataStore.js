@@ -122,7 +122,7 @@ describe('knexDataStore', () => {
 
   context('getQuestionDetails', () => {
     it('should give the question details of given id', async() => {
-      const actual = await knexDataStore.getQuestionDetails(2);
+      const actual = await knexDataStore.getQuestionDetails(2, 58027206);
       const expected = {
         id: 2,
         ownerId: 58027206,
@@ -134,6 +134,7 @@ describe('knexDataStore', () => {
         avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
         ansCount: 2,
         vote: -1,
+        type: { type: 0 },
         tags: [{ title: 'node' }, { title: 'node-net' }],
         isAnsAccepted: [{isAnsAccepted: 1}],
         comments: [
@@ -160,6 +161,7 @@ describe('knexDataStore', () => {
             username: 'unphydra',
             avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
             votes: null,
+            type: { type: 0 },
             comments: []
           },
           {
@@ -173,6 +175,7 @@ describe('knexDataStore', () => {
             username: 'unphydra',
             avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
             votes: -1,
+            type: { type: 0 },
             comments: [
               {
                 id: 4,

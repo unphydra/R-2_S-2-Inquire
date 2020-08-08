@@ -116,12 +116,11 @@ const serveQuestionPage = async (req, res) => {
   const { id } = req.params;
   const [userInfo] = await knexDataStore.getUser(req.session.id);
   try {
-    const questionDetails = await knexDataStore.getQuestionDetails(+id);
+    const questionDetails
+      = await knexDataStore.getQuestionDetails(+id, req.session.id);
     return res.render('questionPage', { userInfo, questionDetails });
   } catch (err) {
-    return res
-      .status('400')
-      .render('questionPage', { userInfo }); 
+    return res .status('400') .render('questionPage', { userInfo }); 
   }
 };
 
