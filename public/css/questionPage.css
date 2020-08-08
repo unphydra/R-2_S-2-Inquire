@@ -38,6 +38,14 @@
   cursor: pointer;
 }
 
+.highlightUpArrow {
+  border-bottom: 2.5vh solid #42B883;
+}
+
+.highlightDownArrow {
+  border-top: 2.5vh solid #42B883;
+}
+
 .question-title-h {
   word-break: break-all;
 
@@ -59,7 +67,6 @@
   border-radius: 50%;
   cursor: pointer;
   contain: content;
-  max-width: 10%;
   max-height: 100%;
   opacity: 0.9;
   max-width: 100%;

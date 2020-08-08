@@ -91,6 +91,21 @@ const makeQuestionEditable = (questionId) => {
   document.location = `/editQuestion/${questionId}`;
 };
 
+const updateHighlightVote = function (data, container) {
+  const parent = container.parentElement;
+  const [downArrow, upArrow] =
+    [parent.lastElementChild, parent.firstElementChild];
+  downArrow.classList.remove('highlightDownArrow');
+  upArrow.classList.remove('highlightUpArrow');
+  const upVote = 1, downVote = -1;
+  if (data.type === downVote) {
+    downArrow.classList.add('highlightDownArrow');
+  }
+  if (data.type === upVote) {
+    upArrow.classList.add('highlightUpArrow');
+  }
+};
+
 const updateVote = (url, table, responseId, container) => {
   const options = getFetchOptions('POST', { table, responseId: +responseId });
   fetch(url, options).then((res) => res.json()).then(data => {
@@ -102,6 +117,7 @@ const updateVote = (url, table, responseId, container) => {
         .firstChild
         .firstChild
         .innerText = data.vote || zero;
+      return updateHighlightVote(data, container, url);
     }
   });
 };
