@@ -268,14 +268,14 @@ const updateComment = async function(req, res) {
 };
 
 const acceptAnswer = async function(req, res) {
-  const { qOwnerId, answerId } = req.body;
+  const { answerId } = req.body;
   try {
     const isAccepted = await knexDataStore.updateAcceptAnswer(
       {
         isAccepted: 1
       },
       answerId,
-      qOwnerId
+      req.session.id
     );
     return res.json({isAccepted});
   } catch (error) {

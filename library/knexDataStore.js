@@ -351,7 +351,7 @@ const updateComment = function(commentEntries){
   );
 };
 
-const updateAcceptAnswer = function(entries, answerId, qOwnerId) {
+const updateAcceptAnswer = function(entries, answerId, reqOwner) {
   return knex.transaction((trx) =>
     trx('answers')
       .select()
@@ -360,7 +360,7 @@ const updateAcceptAnswer = function(entries, answerId, qOwnerId) {
       .then(answer =>
         trx('questions')
           .select()
-          .where({id: answer.questionId, ownerId: qOwnerId})
+          .where({id: answer.questionId, ownerId: reqOwner})
           .then(([question]) => checkIfError(question, 'no question found'))
       )
       .then(() => 
