@@ -1,14 +1,18 @@
+require('dotenv').config({ path: './.env' });
 const request = require('supertest');
 const nock = require('nock');
-require('dotenv').config({ path: './.env' });
 const sinon = require('sinon');
-const { app } = require('../src/router');
 const { assert } = require('chai');
-const knexDataStore = require('../library/knexDataStore');
-const statusCodes = { ok: 200, redirect: 302, badRequest: 400, notFound: 404 };
+const { app } = require('../src/router');
 const fakeDataStoreMethods = require('./testRouterStubMethods');
+const statusCodes = {
+  ok: 200,
+  redirect: 302,
+  badRequest: 400,
+  unauthorized: 401
+};
 
-describe('-- PUBLIC GET METHODS --', function() {
+describe('-- PUBLIC GET METHODS --', function () {
   before(() => {
     fakeDataStoreMethods.fakeGetAllQuestion();
     fakeDataStoreMethods.stubGetUser();
@@ -88,54 +92,54 @@ describe('-- PUBLIC GET METHODS --', function() {
     it('should redirect to new Profile when user is new', (done) => {
       nock('https://github.com')
         .post('/login/oauth/access_token')
-        .reply(200, { ['access_token']: '54321' });
+        .reply(statusCodes.ok, { ['access_token']: '54321' });
 
       nock('https://api.github.com')
         .get('/user')
-        .reply(200, { id: 12345, avatar: 'avatar' });
+        .reply(statusCodes.ok, { id: 12345, avatar: 'avatar' });
       request(app)
         .get('/user/auth')
         .expect('content-type', /text\/html/)
-        .expect(200, done);
+        .expect(statusCodes.ok, done);
     });
 
     it('should redirect to home page when user is registered', (done) => {
       nock('https://github.com')
         .post('/login/oauth/access_token')
-        .reply(200, { ['access_token']: '54321' });
+        .reply(statusCodes.ok, { ['access_token']: '54321' });
 
       nock('https://api.github.com')
         .get('/user')
-        .reply(200, { id: 123, avatar: 'avatar' });
+        .reply(statusCodes.ok, { id: 123, avatar: 'avatar' });
 
       request(app)
         .get('/user/auth')
         .expect('content-type', /text\/plain/)
-        .expect(302, done);
+        .expect(statusCodes.redirect, done);
     });
 
     it('should give bad request when req with bad code', (done) => {
       nock('https://github.com')
         .post('/login/oauth/access_token')
-        .reply(200, { ['access_token']: undefined });
+        .reply(statusCodes.ok, { ['access_token']: undefined });
 
       request(app)
         .get('/user/auth')
         .expect('content-type', /text\/html/)
-        .expect(400, done);
+        .expect(statusCodes.badRequest, done);
     });
 
     it('should give bad request when there is no user info', (done) => {
       nock('https://github.com')
         .post('/login/oauth/access_token')
-        .reply(200, { ['access_token']: '54321' });
+        .reply(statusCodes.ok, { ['access_token']: '54321' });
 
-      nock('https://api.github.com').get('/user').reply(200);
+      nock('https://api.github.com').get('/user').reply(statusCodes.ok);
 
       request(app)
         .get('/user/auth')
         .expect('content-type', /text\/html/)
-        .expect(400, done);
+        .expect(statusCodes.badRequest, done);
     });
 
     it('should give bad request when req for token', (done) => {
@@ -146,13 +150,13 @@ describe('-- PUBLIC GET METHODS --', function() {
       request(app)
         .get('/user/auth')
         .expect('content-type', /text\/html/)
-        .expect(400, done);
+        .expect(statusCodes.badRequest, done);
     });
 
     it('should give bad request when req for user info', (done) => {
       nock('https://github.com')
         .post('/login/oauth/access_token')
-        .reply(200, { ['access_token']: '54321' });
+        .reply(statusCodes.ok, { ['access_token']: '54321' });
 
       nock('https://api.github.com')
         .get('/user')
@@ -161,18 +165,18 @@ describe('-- PUBLIC GET METHODS --', function() {
       request(app)
         .get('/user/auth')
         .expect('content-type', /text\/html/)
-        .expect(400, done);
+        .expect(statusCodes.badRequest, done);
     });
   });
 
   context('serveLoginPage', function () {
     it('should give the login page', (done) => {
-      request(app).get('/loginPage').expect(200, done);
+      request(app).get('/loginPage').expect(statusCodes.ok, done);
     });
   });
 });
 
-describe('-- PRIVATE GET METHODS --', function() {
+describe('-- PRIVATE GET METHODS --', function () {
   before(() => {
     fakeDataStoreMethods.stubGetAllTags();
     fakeDataStoreMethods.stubGetYourQuestions();
@@ -197,7 +201,7 @@ describe('-- PRIVATE GET METHODS --', function() {
         .expect(/what is the most powerful thing in database\?/, done);
     });
   });
-  
+
   context('/yourAnswers', function () {
     it('should give the your answers page ', function (done) {
       request(app)
@@ -234,74 +238,38 @@ describe('-- PRIVATE GET METHODS --', function() {
   });
 });
 
-describe('-- post methods --', function () {
-  const fakeFunctions = {
-    addNewUser: sinon.fake.returns(),
-    getUser: sinon.stub(),
-    insertNewQuestion: sinon.fake.returns(3),
-    updateQuestion: sinon.stub(),
-    insertNewAnswer: sinon.stub(),
-    updateAnswer: sinon.stub(),
-    insertNewComment: sinon.stub(),
-    updateComment: sinon.stub(),
-    updateAcceptAnswer: sinon.stub(),
-    updateVote: sinon.stub()
-  };
-  beforeEach(() => {
-    fakeFunctions['getUser'].withArgs(123).returns(
-      Promise.resolve(
-        [{ name: 'test', username: 'test', avatar: 'test', id: '12345'}]
-      )
-    );
-    fakeFunctions['getUser'].withArgs().returns([]);
+describe('-- POST METHODS --', function () {
+  before(() => {
+    fakeDataStoreMethods.stubAddNewUser();
+    fakeDataStoreMethods.stubInsertNewQuestion();
+    fakeDataStoreMethods.stubUpdateQuestion();
+    fakeDataStoreMethods.stubInsertNewAnswer();
+    fakeDataStoreMethods.stubUpdateAnswer();
+    fakeDataStoreMethods.stubInsertNewComment();
+    fakeDataStoreMethods.stubUpdateComment();
+    fakeDataStoreMethods.stubUpdateAcceptAnswer();
+    fakeDataStoreMethods.stubUpdateVote();
 
-    sinon.replace(knexDataStore, 'addNewUser', fakeFunctions['addNewUser']);
-    sinon.replace(knexDataStore, 'getUser', fakeFunctions['getUser']);
-    sinon.replace(
-      knexDataStore, 'insertNewQuestion', fakeFunctions['insertNewQuestion']
-    );
-    sinon.replace(
-      knexDataStore, 'updateQuestion', fakeFunctions['updateQuestion']
-    );
-    sinon.replace(
-      knexDataStore, 'insertNewAnswer', fakeFunctions['insertNewAnswer']
-    );
-    sinon.replace(
-      knexDataStore, 'updateAnswer', fakeFunctions['updateAnswer']
-    );
-    sinon.replace(
-      knexDataStore, 'insertNewComment', fakeFunctions['insertNewComment']
-    );
-    sinon.replace(
-      knexDataStore, 'updateComment', fakeFunctions['updateComment']
-    );
-    sinon.replace(
-      knexDataStore, 'updateAcceptAnswer', fakeFunctions['updateAcceptAnswer']
-    );
-    sinon.replace( knexDataStore, 'updateVote', fakeFunctions['updateVote'] );
+    app.set('sessionMiddleware', (req, res, next) => {
+      req.session = { id: 123 };
+      next();
+    });
   });
 
-  afterEach(() => sinon.restore());
+  after(() => sinon.restore());
 
   context('registerNewUser', () => {
     it('should redirected to the home page when registered', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
       const body = JSON.stringify({ name: 'test', username: 'test' });
       request(app)
         .post('/newProfile')
         .set('content-type', 'application/json')
         .send(body)
+        .expect('Location', '/')
         .expect(statusCodes.redirect, done);
     });
 
     it('should give bad request when name & username is absent', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
       request(app)
         .post('/newProfile')
         .expect(statusCodes.badRequest, done);
@@ -310,8 +278,176 @@ describe('-- post methods --', function () {
 
   context('postQuestion', function () {
     it('should redirect to question page after insertion', (done) => {
+      const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
+      request(app)
+        .post('/postQuestion')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect('Location', '/question/3')
+        .expect(statusCodes.redirect, done);
+    });
+  });
+
+  context('updateQuestion', function () {
+    it('should give bad request error for  wrong questionId', (done) => {
+      const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
+      request(app)
+        .post('/updateQuestion/-1')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(statusCodes.badRequest, done);
+    });
+
+    it('should redirect to question page after update', (done) => {
+      const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
+      request(app)
+        .post('/updateQuestion/1')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect('Location', '/question/1')
+        .expect(statusCodes.redirect, done);
+    });
+  });
+
+  context('postAnswer', function () {
+    it('should redirect to question page after insertion', (done) => {
+      const body = { answer: 'test' };
+      request(app)
+        .post('/postAnswer/1')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect('Location', '/question/1')
+        .expect(statusCodes.redirect, done);
+    });
+
+    it('should give badRequest error if the question is absent', (done) => {
+      const body = { answer: 'test' };
+      request(app)
+        .post('/postAnswer/-1')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(statusCodes.badRequest, done);
+    });
+  });
+
+  context('updateAnswer', function () {
+    it('should redirect after update the answer', (done) => {
+      request(app)
+        .post('/updateAnswer')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ answer: 'test', answerId: 1, questionId: 1 }))
+        .expect('Location', '/question/1')
+        .expect(statusCodes.redirect, done);
+    });
+
+    it('should give the bad request error for wrong answerId', (done) => {
+      request(app)
+        .post('/updateAnswer')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ answer: 'test', answerId: -1, questionId: 1 }))
+        .expect(statusCodes.badRequest, done);
+    });
+  });
+
+  context('postComment', function () {
+    it('should redirect to the question page after insertion', (done) => {
+      const body = {
+        comment: 'test',
+        responseId: 1,
+        table: 'questions',
+        questionId: 1
+      };
+      request(app)
+        .post('/postComment')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(/test/)
+        .expect(statusCodes.ok, done);
+    });
+
+    it('should give bad request if response id is wrong', (done) => {
+      const body = {
+        comment: 'test',
+        responseId: -1,
+        table: 'questions',
+        questionId: 1
+      };
+      request(app)
+        .post('/postComment/')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(statusCodes.badRequest, done);
+    });
+  });
+
+  context('updateComment', function () {
+    it('should redirected to question page after update', (done) => {
+      request(app)
+        .post('/updateComment')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ comment: 'test', commentId: 2 }))
+        .expect(/test/)
+        .expect(statusCodes.ok, done);
+    });
+
+    it('should give the bad request error for wrong commentId', (done) => {
+      request(app)
+        .post('/updateComment')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ comment: 'test', commentId: -1 }))
+        .expect(statusCodes.badRequest, done);
+    });
+  });
+
+  context('acceptAnswer', function () {
+    it('should accept the answer for given answerId and questionId', (done) => {
+      request(app)
+        .post('/acceptAnswer')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ qOwnerId: 123, answerId: 1 }))
+        .expect('content-type', /application\/json/)
+        .expect(/"isAccepted":1/)
+        .expect(statusCodes.ok, done);
+    });
+
+    it('should give bad request error for wrong answerId', (done) => {
+      request(app)
+        .post('/acceptAnswer')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ qOwnerId: 123, answerId: -1 }))
+        .expect(statusCodes.badRequest, done);
+    });
+  });
+
+  context('Voting', () => {
+    it('should upVote a response', (done) => {
+      request(app)
+        .post('/upVote')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ table: 'answers', responseId: 1 }))
+        .expect('content-type', /application\/json/)
+        .expect(statusCodes.ok)
+        .expect(/{"vote":2,"type":1}/)
+        .then((res) => {
+          assert.deepStrictEqual(res.body, { vote: 2, type: 1 });
+          done();
+        });
+    });
+
+    it('should give bad request for wrong responseId', (done) => {
+      request(app)
+        .post('/upVote')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify({ table: 'answers', responseId: -1 }))
+        .expect('content-type', /text\/html/)
+        .expect(statusCodes.badRequest, done);
+    });
+  });
+
+  context('isLoggedIn', () => {
+    it('should give unauthorized error for not logged in user', (done) => {
       app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
+        req.session = {};
         next();
       });
       const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
@@ -319,327 +455,7 @@ describe('-- post methods --', function () {
         .post('/postQuestion')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
-        .expect(302, done);
-    });
-  });
-
-  context('updateQuestion', function () {
-    it('should give bad request error for  wrong questionId', (done) => {
-      fakeFunctions['updateQuestion'].withArgs({
-        id: -1, 
-        ownerId: 123, 
-        title: 'title', 
-        body: 'body'
-      },
-      ['js', 'java']
-      ).throws(new Error('error'));
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123};
-        next();
-      });
-      const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
-      request(app)
-        .post('/updateQuestion/-1')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify(body))
-        .expect(400, done);
-    });
-
-    it('should redirect to question page after update', (done) => {
-      fakeFunctions['updateQuestion'].withArgs({
-        id: 1, 
-        ownerId: 123, 
-        title: 'title', 
-        body: 'body'
-      },
-      ['js', 'java']
-      ).returns();
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
-      const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
-      request(app)
-        .post('/updateQuestion/1')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify(body))
-        .expect(302, done);
-    });
-  });
-
-  context('postAnswer', function () {
-
-    it('should redirect to question page after insertion', (done) => {
-      fakeFunctions['insertNewAnswer'].withArgs({ 
-        ownerId: 123, 
-        questionId: 1,
-        answer: 'test'
-      }).returns();
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
-      const body = {answer: 'test'};
-      request(app)
-        .post('/postAnswer/1')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify(body))
-        .expect(302, done);
-    });
-
-    it('should give badRequest error if the question is absent', (done) => {
-      fakeFunctions['insertNewAnswer'].withArgs({ 
-        ownerId: 123, 
-        questionId: -1,
-        answer: 'test'
-      }).throws(new Error('error'));
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
-      const body = { answer: 'test' };
-      request(app)
-        .post('/postAnswer/-1')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify(body))
-        .expect(400, done);
-    });
-  });
-
-  context('updateAnswer', function () {
-    it('should redirect after update the answer', (done) => {
-      fakeFunctions['updateAnswer'].withArgs({ 
-        id: 1,
-        ownerId: 123, 
-        answer: 'test'
-      }).returns();
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
-      request(app)
-        .post('/updateAnswer')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify({ answer: 'test', answerId: 1, questionId: 1 }))
-        .expect('Location', '/question/1')
-        .expect(302, done);
-    });
-
-    it('should give the bad request error for wrong answerId', (done) => {
-      fakeFunctions['updateAnswer'].withArgs({ 
-        id: -1,
-        ownerId: 123, 
-        answer: 'test'
-      }).throws(new Error('error'));
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123};
-        next();
-      });
-      request(app)
-        .post('/updateAnswer')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify({ answer: 'test', answerId: -1, questionId: 1 }))
-        .expect(400, done);
-    });
-  });
-
-  context('postComment', function () {
-    it('should redirect to the question page after insertion', (done) => {
-      fakeFunctions['insertNewComment'].withArgs(
-        {
-          ownerId: 123,
-          responseId: 1,
-          comment: 'test',
-          type: 1
-        },
-        'questions'
-      ).returns([
-        {
-          id: 6,
-          ownerId: 58026024,
-          responseId: 1,
-          comment: 'test',
-          type: 1,
-          receivedAt: '2020-08-07 12:21:42',
-          modifiedAt: '2020-08-07 12:21:42',
-          username: 'unphydra'
-        }
-      ]);
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
-      request(app)
-        .post('/postComment')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify(
-          { comment: 'test', responseId: 1, table: 'questions', questionId: 1}
-        ))
-        .expect(200, done);
-    });
-
-    it('should give bad request if response id is wrong', (done) => {
-      fakeFunctions['insertNewComment'].withArgs(
-        {
-          ownerId: 123,
-          responseId: -1,
-          comment: 'test',
-          type: 1
-        },
-        'questions'
-      ).throws(new Error('error'));
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
-      request(app)
-        .post('/postComment/')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify(
-          { comment: 'test', responseId: -1, table: 'questions', questionId: 1}
-        ))
-        .expect(400, done);
-    });
-  });
-
-  context('updateComment', function () {
-    it('should redirected to question page after update', (done) => {
-      fakeFunctions['updateComment'].withArgs(
-        {
-          id: 2,
-          ownerId: 123,
-          comment: 'test',
-        }
-      ).returns([
-        {
-          id: 2,
-          ownerId: 123,
-          responseId: 1,
-          comment: 'test',
-          type: 0,
-          receivedAt: '2020-08-07 12:21:42',
-          modifiedAt: '2020-08-07 12:21:42',
-          username: 'unphydra'
-        }
-      ]);
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
-      request(app)
-        .post('/updateComment')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify({ comment: 'test', commentId: 2 }))
-        .expect(200, done);
-    });
-
-    it('should give the bad request error for wrong commentId', (done) => {
-      fakeFunctions['updateComment'].withArgs(
-        {
-          id: 2,
-          ownerId: 123,
-          comment: 'test',
-        }
-      ).throws(new Error('error'));
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123};
-        next();
-      });
-      request(app)
-        .post('/updateComment')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify({ comment: 'test', commentId: 2 }))
-        .expect(400, done);
-    });
-  });
-
-  context('acceptAnswer', function () {
-    it('should accept the answer for given answerId and questionId', (done) => {
-      fakeFunctions['updateAcceptAnswer'].withArgs(
-        {
-          isAccepted: 1
-        },
-        1,
-        123
-      ).returns();
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
-      request(app)
-        .post('/acceptAnswer')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify({ qOwnerId: 123, answerId: 1 }))
-        .expect(200)
-        .expect('content-type', /application\/json/, done);
-    });
-
-    it('should give bad request error for wrong answerId', (done) => {
-      fakeFunctions['updateAcceptAnswer'].withArgs(
-        {
-          isAccepted: 1
-        },
-        -1,
-        123
-      ).throws(new Error('error'));
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
-      request(app)
-        .post('/acceptAnswer')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify({ qOwnerId: 123, answerId: -1 }))
-        .expect(400, done);
-    });
-  });
-
-  context('Voting', () => {
-    it('should upVote a response', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 58027208 };
-        next();
-      });
-      fakeFunctions.updateVote.withArgs({
-        ownerId: 58027208,
-        responseId: 1,
-        type: 0,
-        vote: 1
-      }, 'answers').returns({ vote: 2, type: 1});
-
-      request(app)
-        .post('/upVote')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify({table: 'answers', responseId: 1 }))
-        .end((err, res) => {
-          assert.deepStrictEqual(
-            res.headers['content-type'], 
-            'application/json; charset=utf-8'
-          );
-          assert.deepStrictEqual(res.status, 200);
-          assert.deepStrictEqual(res.body, {vote: 2, type: 1});
-          assert.ifError(err);
-          done();
-        });
-    });
-
-    it('should give bad request if type is given wrong', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 58027206 };
-        next();
-      });
-      fakeFunctions.updateVote.withArgs({
-        ownerId: 58027206,
-        responseId: 1,
-        type: 0,
-        vote: 1
-      }, 'answers').throws(new Error('error'));
-      request(app)
-        .post('/upVote')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify({ table: 'answers', responseId: 1 }))
-        .expect('content-type', /text\/html/)
-        .expect(400, done);
+        .expect(statusCodes.unauthorized, done);
     });
   });
 });
