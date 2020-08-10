@@ -6,131 +6,24 @@ const { app } = require('../src/router');
 const { assert } = require('chai');
 const knexDataStore = require('../library/knexDataStore');
 const statusCodes = { ok: 200, redirect: 302, badRequest: 400, notFound: 404 };
+const fakeDataStoreMethods = require('./testRouterStubMethods');
 
-describe('-- Public get methods --', function() {
-  beforeEach(() => {
-    sinon.replace(knexDataStore, 'getAllQuestions', sinon.fake.returns(
-      [
-        {
-          id: 2,
-          ownerId: 58027206,
-          title: 'what is the most powerful thing in database?',
-          body: 'i want to know it',
-          receivedAt: '2020-08-03 15:35:15',
-          modifiedAt: '2020-08-03 15:35:15',
-          username: 'satheesh-chandran',
-          avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
-          ansCount: 2,
-          vote: -1,
-          isAnsAccepted: [{isAnsAccepted: 1}],
-          tags: [{ title: 'node' }, { title: 'node-net' }]
-        }
-      ]
-    ));
-    const stubGetUser = sinon.stub();
-    sinon.replace(knexDataStore, 'getUser', stubGetUser);
-    stubGetUser.withArgs(123)
-      .returns(
-        Promise.resolve(
-          [{ name: 'test', username: 'test', avatar: 'test', id: '12345'}]
-        )
-      );
-    stubGetUser.withArgs().returns([]);
-    stubGetUser.withArgs(12345).returns([]);
-
-    const fakeGetQuestion = sinon.stub();
-    fakeGetQuestion.withArgs(-1).throws(new Error('error'));
-    fakeGetQuestion.withArgs(1)
-      .returns(Promise.resolve({
-        id: 2,
-        ownerId: 58027206,
-        title: 'what is the most powerful thing in database?',
-        body: 'i want to know it',
-        receivedAt: '2020-08-03 15:35:15',
-        modifiedAt: '2020-08-03 15:35:15',
-        username: 'satheesh-chandran',
-        avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
-        ansCount: 2,
-        vote: -1,
-        tags: [{ title: 'node' }, { title: 'node-net' }],
-        isAnsAccepted: [{isAnsAccepted: 1}],
-        comments: [
-          {
-            id: 3,
-            ownerId: 58026024,
-            responseId: 2,
-            comment: 'It is wrong',
-            type: 1,
-            receivedAt: '2020-08-03 15:31:15',
-            modifiedAt: '2020-08-03 15:31:15',
-            username: 'unphydra'
-          }
-        ],
-        answers: [
-          {
-            id: 3,
-            questionId: 2,
-            ownerId: 58026024,
-            answer: 'database itself 2nd',
-            isAccepted: 1,
-            receivedAt: '2020-08-03 15:35:15',
-            modifiedAt: '2020-08-03 15:35:15',
-            username: 'unphydra',
-            avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
-            votes: null,
-            comments: []
-          },
-          {
-            id: 2,
-            questionId: 2,
-            ownerId: 58026024,
-            answer: 'database itself',
-            isAccepted: null,
-            receivedAt: '2020-08-03 15:31:15',
-            modifiedAt: '2020-08-03 15:31:15',
-            username: 'unphydra',
-            avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
-            votes: -1,
-            comments: [
-              {
-                id: 4,
-                ownerId: 58027206,
-                responseId: 2,
-                comment: 'you are wrong',
-                type: 0,
-                receivedAt: '2020-08-03 15:31:15',
-                modifiedAt: '2020-08-03 15:31:15',
-                username: 'satheesh-chandran'
-              },
-              {
-                id: 5,
-                ownerId: 58027206,
-                responseId: 2,
-                comment: 'you are wrong 2nd',
-                type: 0,
-                receivedAt: '2020-08-03 15:35:15',
-                modifiedAt: '2020-08-03 15:35:15',
-                username: 'satheesh-chandran'
-              }
-            ]
-          }
-        ]
-      }));
-      
-    sinon.replace(knexDataStore, 'getQuestionDetails', fakeGetQuestion);
-    sinon.replace(knexDataStore, 'addNewUser', sinon.mock().returns());
+describe('-- PUBLIC GET METHODS --', function() {
+  before(() => {
+    fakeDataStoreMethods.fakeGetAllQuestion();
+    fakeDataStoreMethods.stubGetUser();
+    fakeDataStoreMethods.stubGetQuestion();
   });
 
-  afterEach(() => sinon.restore());
+  after(() => sinon.restore());
 
   context('home', function () {
     it('should give the home.html page ', function (done) {
-      this.timeout(5000);
       request(app)
         .get('/home')
         .expect(statusCodes.ok)
         .expect('Content-Type', /text\/html/)
-        .expect(/Your Questions/, done);
+        .expect(/Home/, done);
     });
   });
 
@@ -168,10 +61,6 @@ describe('-- Public get methods --', function() {
 
   context('serveQuestionPage', () => {
     it('should get the question page', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = {id: 123};
-        next();
-      });
       request(app)
         .get('/question/1')
         .expect(statusCodes.ok)
@@ -179,10 +68,6 @@ describe('-- Public get methods --', function() {
     });
 
     it('should give not found when question id invalid', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = {};
-        next();
-      });
       request(app)
         .get('/question/-1')
         .expect(statusCodes.badRequest)
@@ -288,8 +173,6 @@ describe('-- Public get methods --', function() {
 });
 
 describe('-- Private get methods --', function() {
-  
-  const stubGetAllQuestions = sinon.stub();
   const stubGetAllTags = sinon.stub();
   const stubGetYourQuestions = sinon.stub();
   const stubAllQuestionsYouAnswered = sinon.stub();
@@ -297,8 +180,6 @@ describe('-- Private get methods --', function() {
   const stubGetYourQuestionDetails = sinon.stub();
   
   before(() => {
-
-    sinon.replace(knexDataStore, 'getAllQuestions', stubGetAllQuestions);
     sinon.replace(knexDataStore, 'getAllTags', stubGetAllTags);
     sinon.replace(knexDataStore, 'getYourQuestions', stubGetYourQuestions);
     sinon.replace(
@@ -309,23 +190,6 @@ describe('-- Private get methods --', function() {
       knexDataStore, 'getYourQuestionDetails', stubGetYourQuestionDetails
     );
     
-    stubGetAllQuestions.withArgs().returns([
-      {
-        id: 2,
-        ownerId: 58027206,
-        title: 'what is the most powerful thing in database?',
-        body: 'i want to know it',
-        receivedAt: '2020-08-03 15:35:15',
-        modifiedAt: '2020-08-03 15:35:15',
-        username: 'satheesh-chandran',
-        avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
-        ansCount: 2,
-        vote: -1,
-        isAnsAccepted: [{isAnsAccepted: 1}],
-        tags: [{ title: 'node' }, { title: 'node-net' }]
-      }
-    ]);
-
     stubGetUser.withArgs(123)
       .returns(
         Promise.resolve(
@@ -531,19 +395,6 @@ describe('-- post methods --', function () {
   });
 
   context('postQuestion', function () {
-    it('should give unauthorized error if session id is absent', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = {};
-        next();
-      });
-      const body = { title: 'title', body: 'body', tags: ['js', 'java'] };
-      request(app)
-        .post('/postQuestion')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify(body))
-        .expect(401, done);
-    });
-
     it('should redirect to question page after insertion', (done) => {
       app.set('sessionMiddleware', (req, res, next) => {
         req.session = { id: 123 };
@@ -603,18 +454,6 @@ describe('-- post methods --', function () {
   });
 
   context('postAnswer', function () {
-    it('should give unauthorized error if session id is absent', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = {};
-        next();
-      });
-      const body = {};
-      request(app)
-        .post('/postAnswer/1')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify(body))
-        .expect(401, done);
-    });
 
     it('should redirect to question page after insertion', (done) => {
       fakeFunctions['insertNewAnswer'].withArgs({ 
@@ -723,20 +562,6 @@ describe('-- post methods --', function () {
           { comment: 'test', responseId: 1, table: 'questions', questionId: 1}
         ))
         .expect(200, done);
-    });
-
-    it('should give the unauthorized error if id is absent', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = {};
-        next();
-      });
-      request(app)
-        .post('/postComment')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify(
-          { comment: 'test', responseId: 1, table: 'questions', questionId: 1}
-        ))
-        .expect(401, done);
     });
 
     it('should give bad request if response id is wrong', (done) => {
