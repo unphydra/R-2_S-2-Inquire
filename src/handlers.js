@@ -120,7 +120,7 @@ const serveQuestionPage = async (req, res) => {
       = await knexDataStore.getQuestionDetails(+id, req.session.id);
     return res.render('questionPage', { userInfo, questionDetails });
   } catch (err) {
-    return res .status('400') .render('questionPage', { userInfo }); 
+    return res.status('400').render('questionPage', { userInfo }); 
   }
 };
 

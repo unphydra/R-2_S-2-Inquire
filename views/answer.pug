@@ -7,8 +7,8 @@
         .question-body-c(id=`a${answer.id}_0`)!=answer.answer
         .sidebar 
           .tickmark
-              -const color=answer.isAccepted ? "#42B883" : "#ddd"
-              include tickSvg
+            -const color=answer.isAccepted ? "#42B883" : "#ddd"
+            include tickSvg
           .vote-box
             .up-arrow(onclick=`updateVote('/upVote','answers','${answer.id}',this)`)
             .countName.votes
@@ -33,4 +33,3 @@
       .a-post-comment
         include postComment
         +comments_editor(answer.id,'answers').a-comments
-

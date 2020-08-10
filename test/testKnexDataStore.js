@@ -203,6 +203,89 @@ describe('knexDataStore', () => {
       };
       assert.deepStrictEqual(actual, expected);
     });
+
+    it('should give question details & type 0 for invalid userId', async() => {
+      const actual = await knexDataStore.getQuestionDetails(2, undefined);
+      const expected = {
+        id: 2,
+        ownerId: 58027206,
+        title: 'what is the most powerful thing in database?',
+        body: 'i want to know it',
+        receivedAt: '2020-08-03 15:35:15',
+        modifiedAt: '2020-08-03 15:35:15',
+        username: 'satheesh-chandran',
+        avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+        ansCount: 2,
+        vote: -1,
+        type: { type: 0 },
+        tags: [{ title: 'node' }, { title: 'node-net' }],
+        isAnsAccepted: [{isAnsAccepted: 1}],
+        comments: [
+          {
+            id: 3,
+            ownerId: 58026024,
+            responseId: 2,
+            comment: 'It is wrong',
+            type: 1,
+            receivedAt: '2020-08-03 15:31:15',
+            modifiedAt: '2020-08-03 15:31:15',
+            username: 'unphydra'
+          }
+        ],
+        answers: [
+          {
+            id: 3,
+            questionId: 2,
+            ownerId: 58026024,
+            answer: 'database itself 2nd',
+            isAccepted: 1,
+            receivedAt: '2020-08-03 15:35:15',
+            modifiedAt: '2020-08-03 15:35:15',
+            username: 'unphydra',
+            avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
+            votes: null,
+            type: { type: 0 },
+            comments: []
+          },
+          {
+            id: 2,
+            questionId: 2,
+            ownerId: 58026024,
+            answer: 'database itself',
+            isAccepted: null,
+            receivedAt: '2020-08-03 15:31:15',
+            modifiedAt: '2020-08-03 15:31:15',
+            username: 'unphydra',
+            avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
+            votes: -1,
+            type: { type: 0 },
+            comments: [
+              {
+                id: 4,
+                ownerId: 58027206,
+                responseId: 2,
+                comment: 'you are wrong',
+                type: 0,
+                receivedAt: '2020-08-03 15:31:15',
+                modifiedAt: '2020-08-03 15:31:15',
+                username: 'satheesh-chandran'
+              },
+              {
+                id: 5,
+                ownerId: 58027206,
+                responseId: 2,
+                comment: 'you are wrong 2nd',
+                type: 0,
+                receivedAt: '2020-08-03 15:35:15',
+                modifiedAt: '2020-08-03 15:35:15',
+                username: 'satheesh-chandran'
+              }
+            ]
+          }
+        ]
+      };
+      assert.deepStrictEqual(actual, expected);
+    });
   });
 
   context('allQuestionYouAnswered', () => {

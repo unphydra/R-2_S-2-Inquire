@@ -3,9 +3,9 @@ const morgan = require('morgan');
 const cookeSession = require('cookie-session');
 const app = express();
 
+const { authRoute } = require('./userRouter');
 const {
   isLoggedIn,
-  checkOptions,
   serveLoginPage,
   reqLogin,
   fetchUserDetails,
@@ -13,21 +13,8 @@ const {
   cancelRegistration,
   serveQuestions,
   serveHomepage,
-  serveYourQuestionsPage,
-  serveYourAnswersPage,
   serveQuestionPage,
-  servePostQuestionPage,
-  serveEditQuestionPage,
   serveProfilePage,
-  registerNewUser,
-  postQuestion,
-  updateQuestion,
-  postAnswer,
-  updateAnswer,
-  postComment,
-  updateComment,
-  acceptAnswer,
-  updateVote
 } = require('./handlers');
 
 const { env } = process;
@@ -50,83 +37,9 @@ app.get('/login', reqLogin);
 app.get('/cancel', cancelRegistration);
 
 app.get(['/', '/home'], serveHomepage, serveQuestions);
-app.get('/yourQuestions', isLoggedIn, serveYourQuestionsPage, serveQuestions);
-app.get('/yourAnswers', isLoggedIn, serveYourAnswersPage, serveQuestions);
 app.get('/question/:id', serveQuestionPage);
-app.get('/askQuestion', isLoggedIn, servePostQuestionPage);
-app.get('/editQuestion/:questionId', isLoggedIn, serveEditQuestionPage);
 app.get('/viewProfile', serveProfilePage);
 
-app.post(
-  '/newProfile', 
-  [
-    isLoggedIn, 
-    checkOptions(['name', String], ['username', String]), 
-    registerNewUser
-  ]
-);
-app.post(
-  '/postQuestion', 
-  [
-    isLoggedIn, 
-    checkOptions(['title', String], ['body', String], ['tags', Array]), 
-    postQuestion
-  ]
-);
-app.post(
-  '/updateQuestion/:questionId', 
-  [
-    isLoggedIn, 
-    checkOptions(['title', String], ['body', String], ['tags', Array]), 
-    updateQuestion
-  ]
-);
-app.post(
-  '/postAnswer/:questionId',
-  [isLoggedIn, checkOptions(['answer', String]), postAnswer]
-);
-app.post(
-  '/updateAnswer', 
-  [
-    isLoggedIn, 
-    checkOptions(
-      ['answer', String], ['answerId', Number], ['questionId', Number]
-    ), 
-    updateAnswer
-  ]
-);
-app.post(
-  '/postComment', 
-  [
-    isLoggedIn, 
-    checkOptions(
-      ['comment', String], 
-      ['responseId', Number], 
-      ['table', String]
-    ), 
-    postComment
-  ]
-);
-app.post(
-  '/updateComment', 
-  [
-    isLoggedIn, 
-    checkOptions(['comment', String], ['commentId', Number]), 
-    updateComment
-  ]
-);
-app.post(
-  '/acceptAnswer', 
-  [
-    isLoggedIn, 
-    checkOptions(['qOwnerId', Number], ['answerId', Number]),
-    acceptAnswer
-  ]
-);
-app.post(
-  ['/upVote', '/downVote'],
-  checkOptions(['table', String], ['responseId', Number]),
-  [isLoggedIn, updateVote]
-);
+app.use(isLoggedIn, authRoute);
 
 module.exports = { app };

@@ -190,5 +190,6 @@ const renderAllDates = () => {
 };
 
 const main = () => {
+  renderAllDates();
   renderEditor();
 };

@@ -153,7 +153,7 @@ const getYourQuestions = (userId) => {
     .then(data => NestHydrationJs.nest(data, definition()));
 };
 
-const getQuestionDetails = function (id, reqOwner) {
+const getQuestionDetails = function (id, reqOwner = +'0') {
   return allQuestionsData.clone()
     .select(allQuestionColumn)
     .where({'questions.id': id})
