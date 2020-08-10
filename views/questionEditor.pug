@@ -14,28 +14,28 @@ html
   body(onload="renderEditor()")
     include titleBar
     mixin getlisteners(listener, location, title, tags, body)
-      div(id="container")
+      #container
         p(class="pageHeading") Post Your Question
-        div(class='editor-box')
-          div(id='title-error' class="blind") Please enter the title atleast of 20 characters
+        .editor-box
+          .blind#title-error Please enter the title atleast of 20 characters
           label Title :
           input(type="text" name="title" placeholder="Enter title ..." autofocus value=`${title ? title : ''}`)
-          div(id='body-error' class="blind") Please enter the body atleast of 30 characters
+          .blind#body-error Please enter the body atleast of 30 characters
           label Body :
-          div(id='editor')!=body
-          div(id='tag-error' class="blind") Please enter the tags atleast of 2 tags
+          #editor!=body
+          .blind#tag-error Please enter the tags atleast of 2 tags
           label Tags :
-          div(class="tags-list")
+          .tags-list
             span(class="tags")
               if(tags)
                 each tag in tags
-                  div(class="tag")
+                  .tag
                     span=tag.title
                     span(class="cross-btn" onclick="removeTag(this)") X
             input(type="text" name="tags" placeholder="Enter tags ..." onkeyup="addTag(this)")
-          div(class="tag-suggestions")
+          .tag-suggestions
             each tag in allTags
               span(class="tag" onclick=`selectTag('${tag.title}')`)=tag.title
-          div(id="formFooter")
+          #formFooter
             button(onclick=`postQuestion(this, '${listener}')`) Submit
             a(href=location id="cancelButton") Cancel

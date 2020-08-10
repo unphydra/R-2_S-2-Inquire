@@ -6,11 +6,11 @@ html(lang='en')
     style
       include ../public/css/login.css
   body
-    div(id="container")
-      div(class="quote") Inquire helps you to learn and share your 
-      div(class="quote") programming knowledge as well as clear your doubts.
-      div(class="box")
-        div(id="formFooter")
-          div(class="legend") Inquire
+    #container
+      .quote Inquire helps you to learn and share your 
+      .quote programming knowledge as well as clear your doubts.
+      .box
+        #formFooter
+          .legend Inquire
           button(onclick="(window.location.href='/login')") Login With Github
           button(onclick="(window.location.href='/')") Continue Without Login

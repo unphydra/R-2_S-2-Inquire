@@ -6,7 +6,7 @@ html(lang='en')
     style
       include ../public/css/newProfile.css
   body(style="margin:0")
-    div(id="container")
+    #container
       form(action="/newProfile", method="post")
         legend Welcome to Inquire!
         legend Fill the Form to continue
@@ -20,6 +20,6 @@ html(lang='en')
           input(type="text" name="company")
         label Bio
         textarea(name="bio" id="bio")
-        div(id="formFooter")
+        #formFooter
           button Submit
           a(href="/cancel" id="cancelButton") Cancel

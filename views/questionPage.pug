@@ -17,36 +17,36 @@ html(lang='en')
   body(onload="main()")
     include titleBar
     include menuBar
-    div(class="container")
+    .container
       if !questionDetails
         div not found
       else
         -const {ownerId,title,body,receivedAt,ansCount,vote,tags,comments} = questionDetails
         -const qd = questionDetails
-        div(class="container-h")
-          div(class="question-title")
-            div(class="question-title-h")=title
-            div(class="question-title-b")
-              div(class="avatar-div")
+        .container-h
+          .question-title
+            .question-title-h=title
+            .question-title-b
+              .avatar-div
                 img(class="author-avatar" src=`${qd.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${ownerId}'`)
               div
-                div(class="author" onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=qd.username
-                div(class="time" time=`${receivedAt}`)
+                .author(onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=qd.username
+                .time(time=`${receivedAt}`)
             if(userInfo && userInfo.id == ownerId)
-              div(class="edit-q-btn" onclick=`makeQuestionEditable('${qd.id}')`) edit
-        div(class="question-body")
-          div(class="question-body-c")!=body
-            div(class="tags" style="margin-left:0")
+              .edit-q-btn(onclick=`makeQuestionEditable('${qd.id}')`) edit
+        .question-body
+          .question-body-c!=body
+            .tags(style="margin-left:0")
               each tag in tags
-                div(class="tag q-tag")=tag.title
-          div(class="vote-container")
-            div(class="up-arrow" onclick=`updateVote('/upVote','questions','${qd.id}',this)`)
-            div(class="countName votes")
-              div(class="count")
+                .tag.q-tag=tag.title
+          .vote-container
+            .up-arrow(onclick=`updateVote('/upVote','questions','${qd.id}',this)`)
+            .countName.votes
+              .count
                 span=vote||0
-                div(class="ansCount") votes
-            div(class="down-arrow" onclick=`updateVote('/downVote','questions','${qd.id}',this)`)
-        div(class="comments" id=`questions_${qd.id}`) 
+                .ansCount votes
+            .down-arrow(onclick=`updateVote('/downVote','questions','${qd.id}',this)`)
+        .comments(id=`questions_${qd.id}`) 
           span Comments
           include comments
           +getComments(comments)

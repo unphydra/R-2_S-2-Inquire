@@ -2,13 +2,13 @@ style
   include ../public/css/postAnswer.css
 script(src="/js/editor.js")
 mixin getQuestionId(qId)
-  div(class="post-answer")
+  .post-answer
     span Post Your Answer
-    div(class='editor-box')
-      div(id='toolbar')
-      div(id='editor')
-      div(class="formFooter" class="edit-answer-btns")
+    .editor-box
+      #toolbar
+      #editor
+      .formFooter.edit-answer-btns
         button(onclick=`postAnswer('${userInfo && userInfo.id}','${qId}',this)`) Post Answer
         button(class="cancel-btn hide" onclick=`makeAnswerUneditable('${qId}')`) Cancel
         button(class="save-btn hide" onclick=`updateAnswer('${qId}')`) Save
-        div(class="popUp hide") abcd
+        .popUp.hide abcd

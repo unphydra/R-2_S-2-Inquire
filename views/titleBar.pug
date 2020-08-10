@@ -3,13 +3,13 @@ script.
     const popup = document.querySelector('.popUp-text');
     popup.classList.toggle('show');
   }
-div(class="titleBar")
-  div(class="logo" onClick="window.location.href='/'") Inquire
-  div(class="userInfo")
+.titleBar
+  .logo(onClick="window.location.href='/'") Inquire
+  .userInfo
     if userInfo
       -const {id,username,avatar} = userInfo
-      div(class="userName")=username
-      div(class="avatar")
+      .userName=username
+      .avatar
         img( src=`${avatar}`, alt="alt" onclick="toggleShow()" )
         span(class="popUp-text" )
           button(class="profile-options" onClick=`window.location.href='/viewProfile?id=${id}'`) ViewProfile
