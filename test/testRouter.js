@@ -172,150 +172,64 @@ describe('-- PUBLIC GET METHODS --', function() {
   });
 });
 
-describe('-- Private get methods --', function() {
-  const stubGetAllTags = sinon.stub();
-  const stubGetYourQuestions = sinon.stub();
-  const stubAllQuestionsYouAnswered = sinon.stub();
-  const stubGetUser = sinon.stub();
-  const stubGetYourQuestionDetails = sinon.stub();
-  
+describe('-- PRIVATE GET METHODS --', function() {
   before(() => {
-    sinon.replace(knexDataStore, 'getAllTags', stubGetAllTags);
-    sinon.replace(knexDataStore, 'getYourQuestions', stubGetYourQuestions);
-    sinon.replace(
-      knexDataStore, 'allQuestionsYouAnswered', stubAllQuestionsYouAnswered
-    );
-    sinon.replace(knexDataStore, 'getUser', stubGetUser);
-    sinon.replace(
-      knexDataStore, 'getYourQuestionDetails', stubGetYourQuestionDetails
-    );
-    
-    stubGetUser.withArgs(123)
-      .returns(
-        Promise.resolve(
-          [{ name: 'test', username: 'test', avatar: 'test', id: '12345'}]
-        )
-      );
-    stubGetUser.withArgs().returns([]);
-    stubGetUser.withArgs(12345).returns([]);
+    fakeDataStoreMethods.stubGetAllTags();
+    fakeDataStoreMethods.stubGetYourQuestions();
+    fakeDataStoreMethods.stubAllQuestionsYouAnswered();
+    fakeDataStoreMethods.stubGetUser();
+    fakeDataStoreMethods.stubGetYourQuestionDetails();
 
-    stubGetYourQuestionDetails.withArgs(1).returns(
-      [
-        {
-          id: 2,
-          ownerId: 58027206,
-          title: 'what is the most powerful thing in database?',
-          body: 'i want to know it',
-          receivedAt: '2020-08-03 15:35:15',
-          modifiedAt: '2020-08-03 15:35:15',
-          username: 'satheesh-chandran',
-          avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
-          ansCount: 2,
-          vote: -1,
-          tags: [{ title: 'node' }, { title: 'node-net' }],
-          isAnsAccepted: [{isAnsAccepted: 1}]
-        }
-      ]
-    );
-    stubGetAllTags.withArgs().returns(['abc']);
-    stubGetYourQuestions.withArgs(123).returns([
-      {
-        id: 2,
-        ownerId: 123,
-        title: 'what is the most powerful thing in database?',
-        body: 'i want to know it',
-        receivedAt: '2020-08-03 15:35:15',
-        modifiedAt: '2020-08-03 15:35:15',
-        username: 'satheesh-chandran',
-        avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
-        ansCount: 2,
-        vote: -1,
-        isAnsAccepted: [{isAnsAccepted: 1}],
-        tags: [{ title: 'node' }, { title: 'node-net' }]
-      }
-    ]);
-
-    stubAllQuestionsYouAnswered.withArgs(123).returns([
-      {
-        id: 2,
-        ownerId: 123,
-        title: 'what is the most powerful thing in database?',
-        body: 'i want to know it',
-        receivedAt: '2020-08-03 15:35:15',
-        modifiedAt: '2020-08-03 15:35:15',
-        username: 'satheesh-chandran',
-        avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
-        ansCount: 2,
-        vote: -1,
-        isAnsAccepted: [{isAnsAccepted: 1}],
-        tags: [{ title: 'node' }, { title: 'node-net' }]
-      }
-    ]);
+    app.set('sessionMiddleware', (req, res, next) => {
+      req.session = { id: 123 };
+      next();
+    });
   });
 
   after(() => sinon.restore());
 
   context('/yourQuestions', function () {
     it('should give the yourQuestion page ', function (done) {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
       request(app)
         .get('/yourQuestions')
         .expect(statusCodes.ok)
         .expect('Content-Type', /text\/html/)
-        .expect(/Your Questions/, done);
+        .expect(/what is the most powerful thing in database\?/, done);
     });
   });
   
   context('/yourAnswers', function () {
     it('should give the your answers page ', function (done) {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
       request(app)
         .get('/yourAnswers')
         .expect(statusCodes.ok)
         .expect('Content-Type', /text\/html/)
-        .expect(/Your Answers/, done);
+        .expect(/what is the most powerful thing in database\?/, done);
     });
   });
 
   context('/askQuestion', function () {
     it('should give the postQuestion Page', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
       request(app)
         .get('/askQuestion')
-        .expect(200, done);
+        .expect(/abc/)
+        .expect(statusCodes.ok, done);
     });
   });
 
   context('/editQuestion', function () {
     it('should give the editQuestion Page', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
       request(app)
         .get('/editQuestion/1')
-        .expect(200)
-        .expect(/question/, done);
+        .expect(/what is the most powerful thing in database\?/)
+        .expect(statusCodes.ok, done);
     });
 
     it('should give error for wrong questionId', (done) => {
-      app.set('sessionMiddleware', (req, res, next) => {
-        req.session = { id: 123 };
-        next();
-      });
       request(app)
         .get('/editQuestion/-1')
-        .expect(400)
-        .expect(/bad request/, done);
+        .expect(/bad request/)
+        .expect(statusCodes.badRequest, done);
     });
   });
 });

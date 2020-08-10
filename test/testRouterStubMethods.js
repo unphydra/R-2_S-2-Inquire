@@ -1,26 +1,30 @@
 const sinon = require('sinon');
 const knexDataStore = require('../library/knexDataStore');
 
+const aQuestionDetails = [
+  {
+    id: 2,
+    ownerId: 123,
+    title: 'what is the most powerful thing in database?',
+    body: 'i want to know it',
+    receivedAt: '2020-08-03 15:35:15',
+    modifiedAt: '2020-08-03 15:35:15',
+    username: 'satheesh-chandran',
+    avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
+    ansCount: 2,
+    vote: -1,
+    isAnsAccepted: [{ isAnsAccepted: 1 }],
+    tags: [{ title: 'node' }, { title: 'node-net' }]
+  }
+];
+
 module.exports = {
   fakeGetAllQuestion: () => {
-    sinon.replace(knexDataStore, 'getAllQuestions', sinon.fake.returns(
-      [
-        {
-          id: 2,
-          ownerId: 58027206,
-          title: 'what is the most powerful thing in database?',
-          body: 'i want to know it',
-          receivedAt: '2020-08-03 15:35:15',
-          modifiedAt: '2020-08-03 15:35:15',
-          username: 'satheesh-chandran',
-          avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
-          ansCount: 2,
-          vote: -1,
-          isAnsAccepted: [{ isAnsAccepted: 1 }],
-          tags: [{ title: 'node' }, { title: 'node-net' }]
-        }
-      ]
-    ));
+    sinon.replace(
+      knexDataStore,
+      'getAllQuestions',
+      sinon.fake.returns( aQuestionDetails )
+    );
   },
   stubGetUser: () => {
     const stubGetUser = sinon.stub();
@@ -117,5 +121,29 @@ module.exports = {
         ]
       }));
     sinon.replace(knexDataStore, 'getQuestionDetails', fakeGetQuestion);
+  },
+  stubGetAllTags: () => {
+    const fakeGetAllTags = sinon.stub();
+    fakeGetAllTags.withArgs().returns([{ id: 1, title: 'abc' }]);
+    sinon.replace(knexDataStore, 'getAllTags', fakeGetAllTags);
+  },
+  stubGetYourQuestions: () => {
+    const fakeGetYourQuestions = sinon.stub();
+    fakeGetYourQuestions.withArgs(123).returns(aQuestionDetails);
+    sinon.replace(knexDataStore, 'getYourQuestions', fakeGetYourQuestions);
+  },
+  stubAllQuestionsYouAnswered: () => {
+    const fakeAllQuestionsYouAnswered = sinon.stub();
+    fakeAllQuestionsYouAnswered.withArgs(123).returns(aQuestionDetails);
+    sinon.replace(
+      knexDataStore, 'allQuestionsYouAnswered', fakeAllQuestionsYouAnswered
+    );
+  },
+  stubGetYourQuestionDetails: () => {
+    const fakeGetYourQuestionDetails = sinon.stub();
+    fakeGetYourQuestionDetails.withArgs(1, 123).returns(aQuestionDetails);
+    sinon.replace(
+      knexDataStore, 'getYourQuestionDetails', fakeGetYourQuestionDetails
+    );
   }
 };
