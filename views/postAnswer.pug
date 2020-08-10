@@ -1,5 +1,4 @@
-style
-  include ../public/css/postAnswer.css
+link(rel="stylesheet", href="/css/postAnswer.css")
 script(src="/js/editor.js")
 mixin getQuestionId(qId)
   .post-answer
@@ -9,6 +8,6 @@ mixin getQuestionId(qId)
       #editor
       .formFooter.edit-answer-btns
         button(onclick=`postAnswer('${userInfo && userInfo.id}','${qId}',this)`) Post Answer
-        button(class="cancel-btn hide" onclick=`makeAnswerUneditable('${qId}')`) Cancel
-        button(class="save-btn hide" onclick=`updateAnswer('${qId}')`) Save
+        button.cancel-btn.hide(onclick=`makeAnswerUneditable('${qId}')`) Cancel
+        button.save-btn.hide(onclick=`updateAnswer('${qId}')`) Save
         .popUp.hide abcd

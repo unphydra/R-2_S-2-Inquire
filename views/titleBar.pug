@@ -12,7 +12,7 @@ script.
       .avatar
         img( src=`${avatar}`, alt="alt" onclick="toggleShow()" )
         span(class="popUp-text" )
-          button(class="profile-options" onClick=`window.location.href='/viewProfile?id=${id}'`) ViewProfile
-          button(class="profile-options margin-auto" onClick="window.location.href='/cancel'") Logout
+          button.profile-options(onClick=`window.location.href='/viewProfile?id=${id}'`) ViewProfile
+          button.profile-options.margin-auto(onClick="window.location.href='/cancel'") Logout
     else
-      button(class="pageBtn" onClick="window.location.href='/loginPage'") Login
+      button.pageBtn(onClick="window.location.href='/loginPage'") Login

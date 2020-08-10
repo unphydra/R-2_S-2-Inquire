@@ -11,4 +11,4 @@ mixin getComments(comments)
             .save-btn.hide(onclick=`updateComment('${id}')`) save
         .c-author
           span(onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=username
-          span(class='a-comment-time' time=`${receivedAt}`) ,&nbsp;
+          span.a-comment-time(time=`${receivedAt}`) ,&nbsp;

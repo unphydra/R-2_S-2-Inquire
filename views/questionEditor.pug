@@ -1,9 +1,8 @@
 html
   head
     title Inquire
-    style
-      include ../public/css/home.css
-      include ../public/css/postQuestion.css
+    link(rel="stylesheet", href="/css/home.css")
+    link(rel="stylesheet", href="/css/postQuestion.css")
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/hopscotch.min.css")
     link(rel="stylesheet", href="https://cdn.quilljs.com/1.3.6/quill.snow.css")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js")
@@ -15,7 +14,7 @@ html
     include titleBar
     mixin getlisteners(listener, location, title, tags, body)
       #container
-        p(class="pageHeading") Post Your Question
+        p.pageHeading Post Your Question
         .editor-box
           .blind#title-error Please enter the title atleast of 20 characters
           label Title :
@@ -26,7 +25,7 @@ html
           .blind#tag-error Please enter the tags atleast of 2 tags
           label Tags :
           .tags-list
-            span(class="tags")
+            span.tags
               if(tags)
                 each tag in tags
                   .tag
@@ -35,7 +34,7 @@ html
             input(type="text" name="tags" placeholder="Enter tags ..." onkeyup="addTag(this)")
           .tag-suggestions
             each tag in allTags
-              span(class="tag" onclick=`selectTag('${tag.title}')`)=tag.title
+              span.tag(onclick=`selectTag('${tag.title}')`)=tag.title
           #formFooter
             button(onclick=`postQuestion(this, '${listener}')`) Submit
             a(href=location id="cancelButton") Cancel

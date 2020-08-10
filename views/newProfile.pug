@@ -3,8 +3,7 @@ html(lang='en')
   head
     meta(charset='utf-8')
     title New Profile
-    style
-      include ../public/css/newProfile.css
+    link(rel="stylesheet", href="/css/newProfile.css")
   body(style="margin:0")
     #container
       form(action="/newProfile", method="post")
