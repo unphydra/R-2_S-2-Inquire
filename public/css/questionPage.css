@@ -2,24 +2,20 @@
   font-size: xx-large;
 }
 
-.votes {
-  margin-left: 0;
-}
 .sidebar {
   margin: 1vh 6vw 1vh 1vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
+
+.votes {
+  margin-left: 0;
+}
+
 .tickmark > svg{
   cursor: pointer;
   margin-bottom: 2vh;
-}
-.vote-container{
-  margin: 3vh 6vw 3vh 1vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .up-arrow{

@@ -39,13 +39,9 @@ html(lang='en')
             .tags(style="margin-left:0")
               each tag in tags
                 .tag.q-tag=tag.title
-          .vote-container
-            .up-arrow(onclick=`updateVote('/upVote','questions','${qd.id}',this)`)
-            .countName.votes
-              .count
-                span=vote||0
-                .ansCount votes
-            .down-arrow(onclick=`updateVote('/downVote','questions','${qd.id}',this)`)
+          .sidebar
+            include votes
+            +getVoteBox(qd.id, vote, 'questions')
         .comments(id=`questions_${qd.id}`) 
           span Comments
           include comments

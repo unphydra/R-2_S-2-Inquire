@@ -1,0 +1,7 @@
+mixin getVoteBox(resId, voteCount, type)
+  .up-arrow(onclick=`updateVote('/upVote','${type}','${resId}',this)`)
+  .countName.votes
+    .count
+      span=voteCount||0
+      .ansCount votes
+  .down-arrow(onclick=`updateVote('/downVote','${type}','${resId}',this)`)

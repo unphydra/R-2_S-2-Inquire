@@ -5,17 +5,13 @@
     each answer in qd.answers
       .question-body
         .question-body-c(id=`a${answer.id}_0`)!=answer.answer
-        .sidebar 
+        .sidebar
           .tickmark
             -const color=answer.isAccepted ? "#42B883" : "#ddd"
             include tickSvg
           .vote-box
-            .up-arrow(onclick=`updateVote('/upVote','answers','${answer.id}',this)`)
-            .countName.votes
-              .count
-                span=(answer.votes || 0)
-                .ansCount votes
-            .down-arrow(onclick=`updateVote('/downVote','answers','${answer.id}',this)`)
+            include votes
+            +getVoteBox(answer.id, answer.votes, 'answers')
       .flex-row      
         .edit-btns
           if(userInfo && answer.ownerId == userInfo.id)
@@ -33,3 +29,5 @@
       .a-post-comment
         include postComment
         +comments_editor(answer.id,'answers').a-comments
+  else 
+    p No Answers
