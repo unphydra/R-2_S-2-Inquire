@@ -10,7 +10,7 @@
             include tickSvg
           .vote-box
             include votes
-            +getVoteBox(answer.id, answer.votes, 'answers')
+            +getVoteBox(answer.id, answer.votes, answer.voteDetails, 'answers')
       .flex-row      
         .edit-btns
           if(userInfo && answer.ownerId == userInfo.id)

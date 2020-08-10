@@ -1,7 +1,7 @@
-mixin getVoteBox(resId, voteCount, type)
-  .up-arrow(onclick=`updateVote('/upVote','${type}','${resId}',this)`)
+mixin getVoteBox(resId, voteCount, voteDetails, type)
+  .up-arrow(onclick=`updateVote('/upVote','${type}','${resId}',this)` class=voteDetails.voteType==1?'highlightUpArrow':'')
   .countName.votes
     .count
       span=voteCount||0
       .ansCount votes
-  .down-arrow(onclick=`updateVote('/downVote','${type}','${resId}',this)`)
+  .down-arrow(onclick=`updateVote('/downVote','${type}','${resId}',this)` class=voteDetails.voteType==-1?'highlightDownArrow':'')

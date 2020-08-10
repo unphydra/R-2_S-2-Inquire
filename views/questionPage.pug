@@ -21,7 +21,7 @@ html(lang='en')
       if !questionDetails
         div not found
       else
-        -const {ownerId,title,body,receivedAt,ansCount,vote,tags,comments} = questionDetails
+        -const {ownerId,title,body,receivedAt,ansCount,vote,tags,comments,voteDetails} = questionDetails
         -const qd = questionDetails
         .container-h
           .question-title
@@ -41,7 +41,7 @@ html(lang='en')
                 .tag.q-tag=tag.title
           .sidebar
             include votes
-            +getVoteBox(qd.id, vote, 'questions')
+            +getVoteBox(qd.id, vote, voteDetails, 'questions')
         .comments(id=`questions_${qd.id}`) 
           span Comments
           include comments

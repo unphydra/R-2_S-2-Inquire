@@ -287,7 +287,7 @@ const updateVote = async function (req, res) {
   const types = { answers: 0, questions: 1 };
   const entries = {
     ownerId: req.session.id,
-    responseId: +responseId,
+    responseId,
     type: types[table],
     vote: delta[action]
   };

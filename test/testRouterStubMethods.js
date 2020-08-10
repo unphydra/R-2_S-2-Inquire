@@ -63,7 +63,7 @@ module.exports = {
         avatar: 'https://avatars3.githubusercontent.com/u/58027206?v=4',
         ansCount: 2,
         vote: -1,
-        type: { type: 0 },
+        voteDetails: { voteType: 0 },
         tags: [{ title: 'node' }, { title: 'node-net' }],
         isAnsAccepted: [{ isAnsAccepted: 1 }],
         comments: [
@@ -90,7 +90,7 @@ module.exports = {
             username: 'unphydra',
             avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
             votes: null,
-            type: { type: 0 },
+            voteDetails: { voteType: 0 },
             comments: []
           },
           {
@@ -104,7 +104,7 @@ module.exports = {
             username: 'unphydra',
             avatar: 'https://avatars3.githubusercontent.com/u/58026024?v=4',
             votes: -1,
-            type: { type: 0 },
+            voteDetails: { voteType: 0 },
             comments: [
               {
                 id: 4,

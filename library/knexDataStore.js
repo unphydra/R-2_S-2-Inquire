@@ -153,54 +153,41 @@ const getYourQuestions = (userId) => {
     .then(data => NestHydrationJs.nest(data, definition()));
 };
 
+const updateVoteDetails = (res, ownerId, responseId, type) =>
+  voteLog
+    .clone()
+    .select('vote as voteType')
+    .where({ ownerId, responseId, type: +type})
+    .then(([voteDetails]) => {
+      res.voteDetails = voteDetails || { voteType: 0 };
+      return res;
+    });
+
+const includeComments = (res, responseId, type) =>
+  allComments
+    .clone()
+    .where({responseId, type: +type})
+    .then(comments => {
+      res.comments = comments;
+      return res;
+    });
+
 const getQuestionDetails = function (id, reqOwner = +'0') {
   return allQuestionsData.clone()
     .select(allQuestionColumn)
     .where({'questions.id': id})
     .then(data => NestHydrationJs.nest(data, definition()))
     .then(([question]) => checkIfError(question, 'no question found'))
-    .then(question => {
-      return voteLog
-        .clone()
-        .select('vote as type')
-        .where({ 'ownerId': reqOwner, 'responseId': id, type: 1 })
-        .then(([type]) => {
-          question.type = type || { type: 0 };
-          return question;
-        });
-    })
-    .then((question) => {
-      return allComments
-        .clone()
-        .where({'responseId': question.id, type: 1})
-        .then(comments => {
-          question.comments = comments;
-          return question;
-        });
-    })
+    .then(question => updateVoteDetails(question, reqOwner, id, '1'))
+    .then(question => includeComments(question, question.id, '1'))
     .then(question => {
       return allAnswers.clone()
         .where('questionId', id)
         .then(answers => {
-          return Promise.all(answers.map(answer => {
-            return allComments
-              .clone()
-              .where({ 'responseId': answer.id, type: 0 })
-              .then(comments => {
-                answer.comments = comments;
-                return answer;
-              })
-              .then(answer => {
-                return voteLog
-                  .clone()
-                  .select('vote as type')
-                  .where({ 'ownerId': reqOwner, 'responseId': id, type: 0 })
-                  .then(([type]) => {
-                    answer.type = type || { type: 0 };
-                    return answer;
-                  });
-              });
-          }));
+          return Promise.all(answers.map(answer => 
+            includeComments(answer, answer.id, '0')
+              .then(ans => updateVoteDetails(ans, reqOwner, ans.id, '0'))
+          ));
         })
         .then(answers => {
           question.answers = answers;

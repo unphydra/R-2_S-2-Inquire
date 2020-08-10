@@ -116,13 +116,11 @@ const updateHighlightVote = function (data, container) {
 const updateVote = (url, table, responseId, container) => {
   const options = getFetchOptions('POST', { table, responseId: +responseId });
   fetch(url, options).then((res) => res.json()).then(data => {
-    const ONE = 1, zero = 0;
+    const zero = 0;
     if(data && 'vote' in data){
       container
         .parentElement
-        .children[ONE]
-        .firstChild
-        .firstChild
+        .querySelector('span')
         .innerText = data.vote || zero;
       return updateHighlightVote(data, container, url);
     }
