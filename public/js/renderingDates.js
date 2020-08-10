@@ -1,6 +1,6 @@
 
 const renderDate = (element) => {
-  const date = moment(element.getAttribute('time'));
+  const date = moment.utc(element.getAttribute('time')).local();
   element.innerText = ` ${date.startOf('min').fromNow()}`;
 };
 

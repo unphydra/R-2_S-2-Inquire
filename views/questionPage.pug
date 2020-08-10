@@ -28,7 +28,7 @@ html(lang='en')
             .question-title-h=title
             .question-title-b
               .avatar-div
-                img(class="author-avatar" src=`${qd.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${ownerId}'`)
+                img.author-avatar(src=`${qd.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${ownerId}'`)
               div
                 .author(onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=qd.username
                 .time(time=`${receivedAt}`)

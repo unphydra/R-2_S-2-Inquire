@@ -192,4 +192,8 @@ const renderAllDates = () => {
 const main = () => {
   renderAllDates();
   renderEditor();
+  const seconds = 60000;
+  setInterval(() => {
+    renderAllDates();
+  }, seconds);
 };

@@ -81,6 +81,10 @@
   font-size: small;
 }
 
+.q-comment-time, .a-comment-time {
+  font-size: smaller;
+}
+
 .question-body {
   font-size: large;
   margin-left: 2vw;

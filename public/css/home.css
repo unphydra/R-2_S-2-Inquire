@@ -284,12 +284,16 @@ body {
 }
 
 .q-author {
+  font-size: medium;
   font-weight: 400;
   padding-bottom: 1vh;
   text-align: right;
   color: #f48024;
 }
 
+.q-author > .date-time {
+  font-size: small;
+}
 .q-author-name:hover {
   text-decoration: underline;
   cursor: pointer;
