@@ -4,7 +4,6 @@ mixin getQuestionId(qId)
   .post-answer
     span Post Your Answer
     .editor-box
-      #toolbar
       #editor
       .formFooter.edit-answer-btns
         button(onclick=`postAnswer('${userInfo && userInfo.id}','${qId}',this)`) Post Answer

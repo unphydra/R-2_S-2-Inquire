@@ -122,7 +122,7 @@ const updateVote = (url, table, responseId, container) => {
         .parentElement
         .querySelector('span')
         .innerText = data.vote || zero;
-      return updateHighlightVote(data, container, url);
+      return updateHighlightVote(data, container);
     }
   });
 };

@@ -8,11 +8,14 @@
   color: #f48024;
 }
 
+.post-answer > .editor-box {
+  margin:1% 0vw 0% 2vw;
+}
+
 .editor-box {
   align-self: center;
   width: 80%;
   text-align: left;
-  margin:1% 0vw 0% 2vw;
 }
 
 #editor {

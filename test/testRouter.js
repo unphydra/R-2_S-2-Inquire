@@ -134,7 +134,9 @@ describe('-- PUBLIC GET METHODS --', function () {
         .post('/login/oauth/access_token')
         .reply(statusCodes.ok, { ['access_token']: '54321' });
 
-      nock('https://api.github.com').get('/user').reply(statusCodes.ok);
+      nock('https://api.github.com')
+        .get('/user')
+        .replyWithError(new Error('bad'));
 
       request(app)
         .get('/user/auth')
