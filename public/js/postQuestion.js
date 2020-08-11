@@ -1,3 +1,5 @@
+let quill;
+
 const showError = function(id) {
   const error = document.getElementById(id);
   error.classList.remove('blind');
@@ -81,3 +83,7 @@ const postQuestion = function(button, url) {
     window.location.href = res.url;
   });
 }; 
+
+window.onload = () => {
+  quill = renderEditor('#editor');
+};
