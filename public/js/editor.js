@@ -1,5 +1,4 @@
-let quill;
-const renderEditor = function() {
+const renderEditor = function(editorId) {
   const toolbarOptions = [
     ['bold', 'italic', 'underline'], 
     ['code-block', 'link'],
@@ -7,10 +6,10 @@ const renderEditor = function() {
     [{ color: [] }], 
     [{ align: [] }],
   ];
-  quill = new Quill('#editor', {
+  return new Quill(editorId, {
     modules: {
       syntax: true,
-      toolbar: toolbarOptions,
+      toolbar: toolbarOptions
     },
     theme: 'snow',
   });

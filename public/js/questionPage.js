@@ -34,8 +34,8 @@ const postAnswer = function (user, qId, button) {
   });
 };
 
-const toggleEditBtns = (editBtns) => {
-  Array.from(editBtns.children).forEach((btn) => {
+const toggleHide = (elements) => {
+  elements.forEach((btn) => {
     btn.classList.toggle('hide');
   });
 };
@@ -43,7 +43,7 @@ const toggleEditBtns = (editBtns) => {
 const makeCommentEditable = (editBtn, commentId) => {
   const comment = document.querySelector(`#${commentId}`).firstChild;
   comment.setAttribute('contenteditable', true);
-  toggleEditBtns(editBtn.parentElement);
+  toggleHide(Array.from(editBtn.parentElement.children));
   moveCursor(comment);
   localStorage.setItem('oldComment', comment.innerText);
 };
@@ -51,7 +51,7 @@ const makeCommentEditable = (editBtn, commentId) => {
 const makeCommentUneditable = (cancelBtn, commentId) => {
   const comment = document.querySelector(`#${commentId}`).firstChild;
   comment.setAttribute('contenteditable', false);
-  toggleEditBtns(cancelBtn.parentElement);
+  toggleHide(Array.from(cancelBtn.parentElement.children));
   comment.innerText = localStorage.getItem('oldComment');
   localStorage.removeItem('oldComment');
 };
@@ -69,24 +69,28 @@ const updateComment = (commentId) => {
     });
 };
 
-const makeAnswerEditable = (editBtn, boxId, answerId) => {
-  const answer = document.querySelector(`#${boxId}`);
-  const formFooter = document.querySelector('.edit-answer-btns');
-  editBtn.classList.add('hide');
-  toggleEditBtns(formFooter);
-  quill.root.innerHTML = answer.innerHTML;
-  localStorage.setItem('answerId', answerId);
+const makeAnswerEditable = (editBtn, answerId) => {
+  const answerBox = document.querySelector(`#a${answerId}`);
+  const editorBox = answerBox.firstChild;
+  const answer = editorBox.nextElementSibling;
+  toggleHide([editBtn, editorBox, answer]);
+  const answerQuill = renderEditor(`#a${answerId}e`);
+  answerQuill.root.innerHTML = answer.innerHTML;
 };
 
-const makeAnswerUneditable = (questionId) => {
-  document.location = `/question/${questionId}`;
+const makeAnswerUneditable = (ansDivId) => {
+  const answerBox = document.querySelector(`#${ansDivId}`);
+  const editorBox = answerBox.firstChild;
+  const answer = editorBox.nextElementSibling;
+  const editBtn = answerBox.nextSibling.querySelector('.edit-btn');
+  toggleHide([editBtn, editorBox, answer]);
+  editorBox.removeChild(editorBox.firstChild);
 };
 
-const updateAnswer = (questionId) => {
-  const answerId = localStorage.getItem('answerId');
-  localStorage.removeItem('answerId');
+const updateAnswer = (questionId, answerId) => {
+  const editorBox = document.querySelector(`#a${answerId}e`).firstChild;
   const body = {
-    answer: quill.root.innerHTML, answerId: +answerId, questionId: +questionId
+    answer: editorBox.innerHTML, answerId: +answerId, questionId: +questionId
   };
   const options = getFetchOptions('POST', body);
   fetch('/updateAnswer', options).then((res) => {
@@ -187,9 +191,10 @@ const renderAllDates = () => {
   renderDates('.a-comment-time');
 };
 
+let quill;
 const main = () => {
   renderAllDates();
-  renderEditor();
+  quill = renderEditor('#editor');
   const seconds = 60000;
   setInterval(() => {
     renderAllDates();

@@ -2,8 +2,14 @@
   span=`${ansCount || 0} Answers`
   if(ansCount)
     each answer in qd.answers
-      .question-body
-        .question-body-c(id=`a${answer.id}_0`)!=answer.answer
+      -const ansDivId = `a${answer.id}`
+      .question-body(id=ansDivId)
+        .editor-box.hide
+          .editor-style(id=`${ansDivId}e`)
+          .formFooter.edit-answer-btns
+            button.cancel-btn(onclick=`makeAnswerUneditable('${ansDivId}')`) Cancel
+            button.save-btn(onclick=`updateAnswer('${qd.id}','${answer.id}')`) Save
+        .question-body-c!=answer.answer
         .sidebar
           .tickmark
             -const color=answer.isAccepted ? "#42B883" : "#ddd"
@@ -14,7 +20,7 @@
       .footer     
         .edit-btns
           if(userInfo && answer.ownerId == userInfo.id)
-            .edit-btn(onclick=`makeAnswerEditable(this,'a${answer.id}_0','${answer.id}')`) edit
+            .edit-btn(onclick=`makeAnswerEditable(this,'${answer.id}')`) edit
         .question-title-b.answer-author
           .avatar-div
             img.author-avatar(src=`${answer.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${answer.ownerId}'`)

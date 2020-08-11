@@ -14,12 +14,12 @@
 
 .editor-box {
   align-self: center;
-  width: 80%;
+  width: 82.25%;
   text-align: left;
 }
 
-#editor {
-  height: 25vh;
+.editor-style {
+  min-height: 25vh;
   margin-bottom: 2%;
 }
 

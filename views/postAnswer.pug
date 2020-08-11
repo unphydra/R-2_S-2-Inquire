@@ -1,12 +1,10 @@
 link(rel="stylesheet", href="/css/postAnswer.css")
 script(src="/js/editor.js")
-mixin getQuestionId(qId)
+mixin getPostAnswer(qId)
   .post-answer
     span Post Your Answer
     .editor-box
-      #editor
+      #editor.editor-style
       .formFooter.edit-answer-btns
         button(onclick=`postAnswer('${userInfo && userInfo.id}','${qId}',this)`) Post Answer
-        button.cancel-btn.hide(onclick=`makeAnswerUneditable('${qId}')`) Cancel
-        button.save-btn.hide(onclick=`updateAnswer('${qId}')`) Save
         .popUp.hide
