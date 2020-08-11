@@ -3,8 +3,8 @@ mixin getComments(comments)
     -const {id,ownerId,responseId,comment,type,receivedAt,username} = Comment
     div(id=`c${id}`)
       .comment=comment
-      .footer.border
-        .edit-btns
+      .footer.flex-row.border
+        .edit-btns.flex-row
           if(userInfo && userInfo.id==ownerId)
             .edit-btn(onclick=`makeCommentEditable(this,'c${id}')`) edit
             .cancel-btn.hide(onclick=`makeCommentUneditable(this,'c${id}')`) cancel

@@ -28,7 +28,7 @@ html(lang='en')
         .container-h.flex-row
           .question-title
             .question-title-h=title
-            .question-title-b
+            .question-title-b.flex-row
               .avatar-div
                 img.author-avatar(src=`${qd.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${ownerId}'`)
               div

@@ -4,8 +4,6 @@
 
 .sidebar {
   margin: 1vh 6vw 1vh 1vw;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
 }
 
@@ -18,20 +16,19 @@
   margin-bottom: 2vh;
 }
 
-.up-arrow{
+.up-arrow, .down-arrow {
   border-left: 2vw solid transparent;
-  border-bottom: 2.5vh solid rgba(41,41,41,0.6);
   border-right: 2vw solid transparent;
-  margin-bottom: 0.3vh;
   cursor: pointer;
+}
+.up-arrow{
+  border-bottom: 2.5vh solid rgba(41,41,41,0.6);
+  margin-bottom: 0.3vh;
 }
 
 .down-arrow{
-  border-left: 2vw solid transparent;
   border-top: 2.5vh solid rgba(41,41,41,0.6);
-  border-right: 2vw solid transparent;
   margin-top: 0.3vh;
-  cursor: pointer;
 }
 
 .highlightUpArrow {
@@ -43,13 +40,10 @@
 }
 
 .question-title-h {
-  word-break: break-all;
-
+  word-break: break-word;
 }
 
 .question-title-b {
-  display: flex;
-  flex-direction: row;
   margin-top: 3vh;
   justify-content: flex-start;
 }
@@ -64,17 +58,11 @@
   cursor: pointer;
   contain: content;
   max-height: 100%;
-  opacity: 0.9;
   max-width: 100%;
 }
 
 .author {
   font-size: medium;
-  cursor: pointer;
-}
-
-.author:hover {
-  text-decoration: underline;
 }
 
 .time {
@@ -94,8 +82,8 @@
   padding-top: 2vh;
 }
 .question-body-c {
-line-height: 3.5vh;
-width: 80%;
+  line-height: 3.5vh;
+  width: 80%;
 }
 
 .q-tag {
@@ -103,18 +91,11 @@ width: 80%;
   padding-bottom: 0vh ;
 }
 
-.q-tag::before {
-  top: 1.4vh;
-}
-.q-tag::after {
-  border-top: 1.7vh solid transparent;
-}
-
 .answers {
   margin-top: 2vh;
 }
 
-.answers > span{
+.answers > span, .comments > span{
   font-size: 20px;
   color: #f48024;
 }
@@ -129,8 +110,9 @@ width: 80%;
   padding: 0 2vw
 }
 
-.a-comments >span {
-  color: rgba(41, 41, 41, 0.9);
+.q-post-comment{
+  border-bottom: 2px solid rgba(41, 41, 41, 0.5);
+  margin-right: 4vw;
 }
 
 .a-post-comment {
@@ -142,14 +124,7 @@ width: 80%;
 .comments {
   margin: 2vh 4vw 2vh 0;
 }
-.q-post-comment{
-  border-bottom: 2px solid rgba(41, 41, 41, 0.5);
-  margin-right: 4vw;
-}
-.comments > span {
-  font-size: 20px;
-  color: #f48024;
-}
+
 .comment {
   line-height: 3vh;
   font-size: 14px;
@@ -166,8 +141,6 @@ width: 80%;
 }
 .footer {
   width: 82%;
-  display: flex;
-  flex-direction: row;
   justify-content: space-between;
   margin-left: 2vw;
   color: #f48024;
@@ -183,8 +156,6 @@ width: 80%;
   margin-left: 3vw;
 }
 .edit-btns {
-  display: flex;
-  flex-direction: row;
   width: 30%;
   text-align: center;
   margin-bottom: 1.5%;
@@ -194,7 +165,7 @@ width: 80%;
   margin-right: 1vw;
   height: 3vh;
 }
-.edit-btns > div:hover, .edit-q-btn:hover {
+.author:hover, .edit-btns > div:hover, .edit-q-btn:hover, .c-author span:first-child:hover {
   text-decoration: underline;
   cursor: pointer;
 }
@@ -207,9 +178,3 @@ width: 80%;
   padding-bottom: 1vh;
   margin-left: 2vw;
 }
-
-.c-author span:first-child:hover {
-  text-decoration: underline;
-  cursor: pointer;
-}
-
