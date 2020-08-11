@@ -50,8 +50,8 @@ authRoute.post(
   ]
 );
 authRoute.post(
-  '/postAnswer/:questionId',
-  [checkOptions(['answer', String]), postAnswer]
+  '/postAnswer',
+  [checkOptions(['answer', String], ['questionId', Number]), postAnswer]
 );
 authRoute.post(
   '/updateAnswer', 

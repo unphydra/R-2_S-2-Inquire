@@ -28,8 +28,8 @@ const postAnswer = function (user, qId, button) {
     const message = '* please explain in brief';
     return togglePopUp(popUp, 'hide', message);
   }
-  const body = {answer: quill.root.innerHTML};
-  fetch(`/postAnswer/${qId}`, getFetchOptions('POST', body)).then(res => {
+  const body = {answer: quill.root.innerHTML, questionId: +qId};
+  fetch('/postAnswer', getFetchOptions('POST', body)).then(res => {
     window.location.href = res.url;
   });
 };

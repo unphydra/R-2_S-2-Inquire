@@ -333,9 +333,9 @@ describe('-- POST METHODS --', function () {
 
   context('postAnswer', function () {
     it('should redirect to question page after insertion', (done) => {
-      const body = { answer: 'test' };
+      const body = { answer: 'test', questionId: 1 };
       request(app)
-        .post('/postAnswer/1')
+        .post('/postAnswer')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
         .expect('Location', '/question/1')
@@ -343,9 +343,9 @@ describe('-- POST METHODS --', function () {
     });
 
     it('should give badRequest error if the question is absent', (done) => {
-      const body = { answer: 'test' };
+      const body = { answer: 'test', questionId: -1};
       request(app)
-        .post('/postAnswer/-1')
+        .post('/postAnswer')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
         .expect(statusCodes.badRequest, done);

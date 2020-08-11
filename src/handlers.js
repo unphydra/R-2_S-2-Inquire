@@ -197,15 +197,16 @@ const updateQuestion = async function(req, res) {
 };
 
 const postAnswer = async function (req, res) {
+  const {answer, questionId} = req.body;
   try {
     await knexDataStore.insertNewAnswer(
       {
         ownerId: req.session.id,
-        questionId: +req.params.questionId,
-        answer: formatBody(req.body.answer)
+        questionId,
+        answer: formatBody(answer)
       }
     );
-    return res.redirect(`/question/${req.params.questionId}`);
+    return res.redirect(`/question/${questionId}`);
   } catch (error) {
     res.status('400').send('not found');
   }
