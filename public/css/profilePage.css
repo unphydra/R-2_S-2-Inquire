@@ -1,8 +1,3 @@
-#sideContainer {
-  width: 78vw;
-  padding: 15px 10px;
-}
-
 .topBox {
   display: flex;
   margin: 5vh 3vw;
@@ -11,13 +6,12 @@
 .bigAvatar {
   height: 30vh;
   border-radius: 50%;
-  margin-left: 2vh 2vw;
   overflow: hidden;
 }
 
 .bigAvatar > img {
   width: 17vw;
-  height: 30vh;
+  height: inherit;
 }
 
 .details {
