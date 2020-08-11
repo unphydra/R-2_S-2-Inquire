@@ -5,6 +5,6 @@ mixin getPostAnswer(qId)
     span Post Your Answer
     .editor-box
       #editor.editor-style
-      .formFooter.edit-answer-btns
+      .formFooter.flex-row.edit-answer-btns
         button(onclick=`postAnswer('${userInfo && userInfo.id}','${qId}',this)`) Post Answer
         .popUp.hide

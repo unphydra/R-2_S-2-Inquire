@@ -1,7 +1,7 @@
 mixin comments_editor(resId,table)
   -const mainId= `m${resId}_${table}`
-  .add-comment(onclick=`toggleBox(this, ${userInfo && userInfo.id})`)
-    span add comment
+  .add-comment
+    span(onclick=`toggleBox(this.parentElement, ${userInfo && userInfo.id})`) add comment
     span.popUp.hide &nbsp;&nbsp;*please login before add a comment
   .hide.new_comment_box(id=mainId)
     input(type="text",placeholder="Enter comment...")
