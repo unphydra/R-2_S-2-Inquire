@@ -92,14 +92,8 @@ const makeAnswerUneditable = (ansDivId) => {
   editorBox.removeChild(editorBox.firstChild);
 };
 
-const updateAnswer = (btn, questionId, answerId) => {
+const updateAnswer = (questionId, answerId) => {
   const editorBox = document.querySelector(`#a${answerId}e`).firstChild;
-  const length = editorBox.innerText.length;
-  const BL = 30;
-  if (length < BL) {
-    const message = '* please explain in brief';
-    return togglePopUp(btn.nextSibling, 'hide', message);
-  }
   const body = {
     answer: editorBox.innerHTML, answerId: +answerId, questionId: +questionId
   };
