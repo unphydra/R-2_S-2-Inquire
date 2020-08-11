@@ -185,6 +185,7 @@ describe('-- PRIVATE GET METHODS --', function () {
     fakeDataStoreMethods.stubAllQuestionsYouAnswered();
     fakeDataStoreMethods.stubGetUser();
     fakeDataStoreMethods.stubGetYourQuestionDetails();
+    fakeDataStoreMethods.stubGetYourTags();
 
     app.set('sessionMiddleware', (req, res, next) => {
       req.session = { id: 123 };
@@ -236,6 +237,21 @@ describe('-- PRIVATE GET METHODS --', function () {
         .get('/editQuestion/-1')
         .expect(/bad request/)
         .expect(statusCodes.badRequest, done);
+    });
+  });
+
+  context('/yourTags', function() {
+    it('should give the yourTags page', (done) => {
+      request(app)
+        .get('/yourTags')
+        .expect(/javascript/)
+        .expect(statusCodes.ok, done);
+    });
+
+    it('should give the yourTags page without any tag', (done) => {
+      request(app)
+        .get('/yourTags')
+        .expect(statusCodes.ok, done);
     });
   });
 });

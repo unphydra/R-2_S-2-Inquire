@@ -8,8 +8,8 @@ html(lang='en')
     link(rel="stylesheet", href="/css/home.css")
     script(src="../js/home.js")
     script(src="../js/renderingDates.js")
-  body(onload=`main(${questions.length})`)
+  body(onload='main()')
     include titleBar
     include menuBar
     include questions
-    +getHeader(`You have ${questions.length} Questions`)
+    +getQuestions(`You have ${questions.length} Questions`)

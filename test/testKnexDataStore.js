@@ -664,4 +664,12 @@ describe('knexDataStore', () => {
       assert.deepStrictEqual(actual, expected);
     });
   });
+
+  context('getYourTags', () => {
+    it('should give all the tags of the user', async () => {
+      const actual = await knexDataStore.getYourTags(58026024);
+      const expected = [{tags: [{ title: 'java' }, { title: 'javaScript' }]}];
+      assert.deepStrictEqual(actual, expected);
+    });
+  });
 });

@@ -1,5 +1,5 @@
 .menubar.flex-column
-  -let list = {"Home":'/home', "Your Questions":'/yourQuestions', "Your Answers":'/yourAnswers', "Your Tags":'', "Your Profile": `/viewProfile?id=${userInfo && userInfo.id}`}
+  -let list = {"Home":'/home', "Your Questions":'/yourQuestions', "Your Answers":'/yourAnswers', "Your Tags":'/yourTags', "Your Profile": `/viewProfile?id=${userInfo && userInfo.id}`}
   each url, menuItem  in list
     -const className = (!userInfo && menuItem !== 'Home') ? 'hide' : ''
     div(class=`menu-item ${className}` id=`${url}` onclick=`window.location.href='${url}'` )=menuItem

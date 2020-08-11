@@ -156,6 +156,16 @@ module.exports = {
       knexDataStore, 'getYourQuestionDetails', fakeGetYourQuestionDetails
     );
   },
+  stubGetYourTags: () => {
+    const fakeGetYourTags = sinon.stub();
+    fakeGetYourTags
+      .withArgs(123)
+      .onFirstCall().returns([{tags: [{title: 'javascript'}]}])
+      .onSecondCall().returns([]);
+    sinon.replace(
+      knexDataStore, 'getYourTags', fakeGetYourTags
+    );
+  },
   stubAddNewUser: () => {
     const fakeAddNewUser = sinon.fake.returns();
     sinon.replace(knexDataStore, 'addNewUser', fakeAddNewUser);

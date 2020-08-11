@@ -82,13 +82,13 @@ const cancelRegistration = function (req, res) {
   res.redirect('/');
 };
 
-const serveQuestions = async (req, res) => {
+const serveQuestions = async function(req, res) {
   const { id } = req.session;
   const [userInfo] = await knexDataStore.getUser(id);
   res.render(req.view, {userInfo, questions: req.questions});
 };
 
-const serveHomepage = async (req, res, next) => {
+const serveHomepage = async function(req, res, next) {
   req.questions = await knexDataStore.getAllQuestions();
   req.view = 'home';
   next();
@@ -100,13 +100,20 @@ const serveYourQuestionsPage = async function (req, res, next) {
   next();
 };
 
-const serveYourAnswersPage = async (req, res, next) => {
+const serveYourAnswersPage = async function(req, res, next) {
   req.questions = await knexDataStore.allQuestionsYouAnswered(req.session.id);
   req.view = 'yourAnswers';
   next();
 };
 
-const serveQuestionPage = async (req, res) => {
+const serveYourTags = async function(req, res) {
+  const id = req.session.id;
+  const [userInfo] = await knexDataStore.getUser(id);
+  const [tags] = await knexDataStore.getYourTags(id);
+  res.render('yourTags', {userInfo, tags});
+};
+
+const serveQuestionPage = async function(req, res) {
   const { id } = req.params;
   const [userInfo] = await knexDataStore.getUser(req.session.id);
   try {
@@ -304,6 +311,7 @@ module.exports = {
   serveHomepage,
   serveYourQuestionsPage,
   serveYourAnswersPage,
+  serveYourTags,
   serveQuestionPage,
   servePostQuestionPage,
   serveEditQuestionPage,

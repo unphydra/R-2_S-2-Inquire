@@ -216,6 +216,13 @@ const allQuestionsYouAnswered = function(id) {
     .then(data => NestHydrationJs.nest(data, currentDef));
 };
 
+const getYourTags = function(id){
+  return allQuestionsData.clone()
+    .select(allQuestionColumn)
+    .where('qoId', id)
+    .then(data => NestHydrationJs.nest(data, [{tags: [{title: 'tag'}]}]));
+};
+
 const getAllTags = function(){
   return tags.clone();
 };
@@ -421,6 +428,7 @@ module.exports = {
   getYourQuestionDetails,
   getQuestionDetails,
   allQuestionsYouAnswered,
+  getYourTags,
   getAllTags,
   insertNewQuestion,
   updateQuestion,

@@ -2,7 +2,7 @@ doctype
 html(lang='en')
   head
     meta(charset='utf-8')
-    title Inquire - Your Answers
+    title Inquire - Your Tags
     link(rel="stylesheet", href="/css/titlebar.css")
     link(rel="stylesheet", href="/css/menubar.css")
     link(rel="stylesheet", href="/css/home.css")
@@ -11,5 +11,11 @@ html(lang='en')
   body(onload='main()')
     include titleBar
     include menuBar
-    include questions
-    +getQuestions(`You have answered ${questions.length} Questions`)
+    .container
+      .container-h.flex-row
+        .con-header-title='Your Tags'
+      .container-b
+        .tags
+          if(tags)
+            each tag in tags.tags
+              .tag=tag.title

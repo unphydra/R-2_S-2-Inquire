@@ -6,6 +6,7 @@ const {
   serveQuestions,
   serveYourQuestionsPage,
   serveYourAnswersPage,
+  serveYourTags,
   servePostQuestionPage,
   serveEditQuestionPage,
   registerNewUser,
@@ -21,6 +22,7 @@ const {
 
 authRoute.get('/yourQuestions', serveYourQuestionsPage, serveQuestions);
 authRoute.get('/yourAnswers', serveYourAnswersPage, serveQuestions);
+authRoute.get('/yourTags', serveYourTags);
 authRoute.get('/askQuestion', servePostQuestionPage);
 authRoute.get('/editQuestion/:questionId', serveEditQuestionPage);
 
