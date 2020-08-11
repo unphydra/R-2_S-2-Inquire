@@ -37,5 +37,5 @@ html
             each tag in allTags
               span.tag(onclick=`selectTag('${tag.title}')`)=tag.title
           #formFooter.flex-row
-            button(onclick=`postQuestion(this, '${listener}')`) Submit
+            button(onclick=`postQuestion('${listener}')`) Submit
             a.flex-column(href=location) Cancel

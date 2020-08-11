@@ -48,7 +48,7 @@ const makeCommentEditable = (editBtn, commentId) => {
   localStorage.setItem('oldComment', comment.innerText);
 };
 
-const makeCommentUneditable = (cancelBtn, commentId) => {
+const makeCommentUnEditable = (cancelBtn, commentId) => {
   const comment = document.querySelector(`#${commentId}`).firstChild;
   comment.setAttribute('contenteditable', false);
   toggleHide(Array.from(cancelBtn.parentElement.children));
@@ -62,7 +62,9 @@ const updateComment = (commentId) => {
   return fetchReqText('/updateComment', getFetchOptions('POST', body))
     .then(data => {
       if (data) {
-        comment.innerHTML = data;
+        const div = document.createElement('div');
+        div.innerHTML = data;
+        comment.innerHTML = div.firstChild.innerHTML;
         localStorage.removeItem('oldComment');
         renderAllDates();
       }
@@ -90,8 +92,14 @@ const makeAnswerUneditable = (ansDivId) => {
   editorBox.removeChild(editorBox.firstChild);
 };
 
-const updateAnswer = (questionId, answerId) => {
+const updateAnswer = (btn, questionId, answerId) => {
   const editorBox = document.querySelector(`#a${answerId}e`).firstChild;
+  const length = editorBox.innerText.length;
+  const BL = 30;
+  if (length < BL) {
+    const message = '* please explain in brief';
+    return togglePopUp(btn.nextSibling, 'hide', message);
+  }
   const body = {
     answer: editorBox.innerHTML, answerId: +answerId, questionId: +questionId
   };
@@ -169,11 +177,12 @@ const moveCursor = (element) => {
 
 const postComment = function(boxId, qId, resId, table) {
   const commentBox = document.querySelector(`#${boxId}`);
-  const comment = commentBox.firstChild.value;
-  const length = comment.length;
+  const inputBox = commentBox.firstChild;
+  const comment = inputBox.value;
+  inputBox.value = '';
   const popup = document.querySelector(`#${boxId}p`);
   const lowerLimit = 9, upperLimit = 180;
-  if(length < lowerLimit || length > upperLimit) {
+  if(comment.length < lowerLimit || comment.length > upperLimit) {
     return togglePopUp(popup, 'hide', '*please enter at least ten character');
   }
   const body = {questionId: +qId, responseId: +resId, table, comment};

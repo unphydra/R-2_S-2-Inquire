@@ -8,7 +8,7 @@ mixin getComments(comments)
           if(userInfo && userInfo.id==ownerId)
             .edit-btn(onclick=`makeCommentEditable(this,'c${id}')`) edit
             .edit-btn(onclick=`deleteComment('${id}')`) delete
-            .cancel-btn.hide(onclick=`makeCommentUneditable('c${id}')`) cancel
+            .cancel-btn.hide(onclick=`makeCommentUnEditable(this,'c${id}')`) cancel
             .save-btn.hide(onclick=`updateComment('${id}')`) save
         .c-author
           span(onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=username
