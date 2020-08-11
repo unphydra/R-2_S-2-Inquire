@@ -9,12 +9,13 @@
   "scripts": {
     "test": "nyc mocha",
     "coverage": "nyc --reporter=text-lcov mocha | coveralls",
-    "start": "node -r dotenv/config server.js  ",
-    "dev": "nodemon -r dotenv/config server.js",
+    "start": "npm run compileSASS && node -r dotenv/config server.js  ",
+    "dev": "npm run compileSASS && nodemon -r dotenv/config server.js",
     "lint": "eslint src/*.js test/*.js public/js/*.js *.js library/*.js",
     "setup": "chmod +x scripts/runScripts.sh; ./scripts/runScripts.sh",
     "createDb": "run(){ cat data/insertTable.sql | sqlite3 data/inquire.db; }; run",
-    "createTestDb": "run(){ cat data/insertTable.sql data/insertData.sql | sqlite3 data/test.db; }; run"
+    "createTestDb": "run(){ cat data/insertTable.sql data/insertData.sql | sqlite3 data/test.db; }; run",
+    "compileSASS": "sass --no-source-map sass:public/styles"
   },
   "repository": {
     "type": "git",
@@ -45,6 +46,7 @@
     "nesthydrationjs": "^2.0.0",
     "nodemon": "^2.0.4",
     "pug": "^3.0.0",
+    "sass": "^1.26.10",
     "sqlite3": "^5.0.0",
     "superagent": "^5.3.1"
   }
