@@ -17,7 +17,8 @@ const {
   postComment,
   updateComment,
   acceptAnswer,
-  updateVote
+  updateVote,
+  deleteComment
 } = require('./handlers');
 
 authRoute.get('/yourQuestions', serveYourQuestionsPage, serveQuestions);
@@ -88,6 +89,13 @@ authRoute.post(
 authRoute.post(
   ['/upVote', '/downVote'],
   [checkOptions(['table', String], ['responseId', Number]), updateVote]
+);
+authRoute.post(
+  '/deleteComment',
+  [
+    checkOptions(['commentId', Number]),
+    deleteComment
+  ]
 );
 
 module.exports = { authRoute };

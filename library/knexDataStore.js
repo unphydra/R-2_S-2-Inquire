@@ -420,6 +420,14 @@ const updateVote = function(entries, table){
   );
 };
 
+const deleteComment = function(entries) {
+  return comments
+    .clone()
+    .del()
+    .where(entries)
+    .then(row => checkIfError(row, 'comment not found'));
+};
+
 module.exports = {
   getAllQuestions, 
   getUser, 
@@ -437,5 +445,6 @@ module.exports = {
   insertNewComment,
   updateComment,
   updateAcceptAnswer,
-  updateVote
+  updateVote,
+  deleteComment
 };

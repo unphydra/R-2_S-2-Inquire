@@ -299,6 +299,17 @@ const updateVote = async function (req, res) {
   }
 };
 
+const deleteComment = async function(req, res) {
+  try {
+    await knexDataStore.deleteComment(
+      {id: req.body.commentId, ownerId: req.session.id}
+    );
+    return res.status('200').send('done');
+  } catch (error) {
+    return res.status('400').send('bad request');
+  }
+};
+
 module.exports = {
   isLoggedIn,
   checkOptions,
@@ -324,5 +335,6 @@ module.exports = {
   postComment,
   updateComment,
   acceptAnswer,
-  updateVote
+  updateVote,
+  deleteComment
 };

@@ -185,6 +185,16 @@ const postComment = function(boxId, qId, resId, table) {
     });
 };
 
+const deleteComment = function(id) {
+  const options = getFetchOptions('POST', {commentId: +id});
+  fetch('/deleteComment', options).then(res => {
+    if (res.statusText === 'OK') {
+      const comment = document.querySelector(`#c${id}`);
+      comment.parentElement.removeChild(comment);
+    }
+  });
+};
+
 const renderAllDates = () => {
   renderDates('.time');
   renderDates('.q-comment-time');

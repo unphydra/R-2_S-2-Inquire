@@ -267,7 +267,10 @@ describe('-- POST METHODS --', function () {
     fakeDataStoreMethods.stubUpdateComment();
     fakeDataStoreMethods.stubUpdateAcceptAnswer();
     fakeDataStoreMethods.stubUpdateVote();
+    fakeDataStoreMethods.stubDeleteComment();
+  });
 
+  beforeEach(() => {
     app.set('sessionMiddleware', (req, res, next) => {
       req.session = { id: 123 };
       next();
@@ -474,6 +477,26 @@ describe('-- POST METHODS --', function () {
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
         .expect(statusCodes.unauthorized, done);
+    });
+  });
+
+  context('deleteComment', () => {
+    it('should delete a comment when id and ownerId valid', (done) => {
+      const body = { commentId: 1};
+      request(app)
+        .post('/deleteComment')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(statusCodes.ok, done);
+    });
+
+    it('should delete a comment when id and ownerId invalid', (done) => {
+      const body = { commentId: 2};
+      request(app)
+        .post('/deleteComment')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(statusCodes.badRequest, done);
     });
   });
 });

@@ -290,5 +290,15 @@ module.exports = {
       )
       .throws(new Error('error'));
     sinon.replace(knexDataStore, 'updateVote', fakeUpdateVote);
+  },
+  stubDeleteComment: () => {
+    const fakeDeleteComment = sinon.stub();
+    fakeDeleteComment
+      .withArgs({id: 1, ownerId: 123})
+      .returns(1);
+    fakeDeleteComment
+      .withArgs({id: 2, ownerId: 123})
+      .throws(new Error('error'));
+    sinon.replace(knexDataStore, 'deleteComment', fakeDeleteComment);
   }
 };

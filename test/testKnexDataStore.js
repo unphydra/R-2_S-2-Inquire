@@ -672,4 +672,20 @@ describe('knexDataStore', () => {
       assert.deepStrictEqual(actual, expected);
     });
   });
+
+  context('deleteComment', () => {
+    it('should delete comment of given id and ownerId', async () => {
+      const actual = await knexDataStore.deleteComment(
+        {id: 2, ownerId: 58026024}
+      );
+      const expected = 1;
+      assert.deepStrictEqual(actual, expected);
+    });
+
+    it('should not delete comment for mismatch id and ownerId', async () => {
+      await knexDataStore.deleteComment(
+        {id: 2, ownerId: 58026028}
+      ).catch(err => assert.match(err, /Error/));
+    });
+  });
 });
