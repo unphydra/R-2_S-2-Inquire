@@ -6,13 +6,13 @@ html(lang='en')
     link(rel="stylesheet", href="/css/newProfile.css")
   body(style="margin:0")
     #container
-      form(action="/newProfile", method="post")
+      form.flex-column(action="/newProfile", method="post")
         legend Welcome to Inquire!
         legend Fill the Form to continue
         label Name
           input(type="text" name="name" required autofocus)
         label Username
-          input(type="text" name="username" required autofocus)
+          input(type="text" name="username" required)
         label Email
           input(type="text" name="email")
         label Company
@@ -21,4 +21,4 @@ html(lang='en')
         textarea(name="bio" id="bio")
         #formFooter
           button Submit
-          a(href="/cancel" id="cancelButton") Cancel
+          a.flex-column#cancelButton(href="/cancel") Cancel
