@@ -1,3 +1,5 @@
+@use "./defaultConfig" as *
+  
 body
   margin: auto 0px
   font-family: Helvetica, sans-serif
@@ -37,8 +39,8 @@ button
   height: 6vh
   width: 80%
   font-size: larger
-  background-image: linear-gradient(to right,#16b3d6, #00a8cc ,#16b3d6)
-  color: #ffffff
+  background-image: linear-gradient(to right, $light-blue, $blue ,$light-blue)
+  color: $white
   border: none
   transition: border .3s ease-in
   margin-bottom: 11%
@@ -53,4 +55,4 @@ button:hover
   text-align: center
   margin: 0 !important
   margin-bottom: 10% !important
-  color: #00a8cc
+  color: $blue

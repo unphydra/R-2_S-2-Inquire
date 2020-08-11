@@ -1,3 +1,5 @@
+@use "./defaultConfig" as *
+  
 body  
   margin: auto 0px 
   font-family: Helvetica, sans-serif 
@@ -19,7 +21,7 @@ body
   margin-right: 4vw 
   border-bottom: 5px solid rgb(140 140 140) 
   font-weight: 400 
-  color: rgba(41, 41, 41, 0.9)  
+  color: $black-dark  
 
 .con-header-title 
   font-size: xx-large 
@@ -29,21 +31,21 @@ body
   align-self: center 
   height: 5vh 
   font-size: larger 
-  background-color: #00a8cc 
-  color: #ffffff 
+  background-color: $blue 
+  color: $white 
   border: none 
   transition: border .3s ease-in 
   outline: none 
 
 .askBtn:hover  
-  border: 1px solid #00a8cc 
+  border: 1px solid $blue 
   cursor: pointer 
 
 .container-b  
   height: auto 
   margin-right: 4vw 
   font-weight: 600 
-  color: rgba(41, 41, 41, 0.9) 
+  color: $black-dark 
 
 .question  
   padding: 3vh 0vw 
@@ -56,17 +58,17 @@ body
   margin-left: 1vw 
   text-align: center 
   align-self: center 
-  border: solid rgba(41, 41, 41, 0.9) 1px 
+  border: solid $black-dark 1px 
   justify-content: center 
 
 .countName-a  
-  border: 1px solid #42b883 
-  color: #42b883 
+  border: 1px solid $green 
+  color: $green 
 
 .countName-ac  
-  background-color: #42b883 
+  background-color: $green 
   color: whitesmoke 
-  border: 1px solid #42b883 
+  border: 1px solid $green 
 
 .count  
   font-size: x-large 
@@ -103,7 +105,7 @@ body
   align-self: center 
 
 .tag:hover  
-  background-color: #00a8cc 
+  background-color: $blue 
   color: white 
  
 
@@ -112,7 +114,7 @@ body
   font-weight: 400 
   padding-bottom: 1vh 
   text-align: right 
-  color: #f48024 
+  color: $orange 
 
 .q-author > .date-time  
   font-size: small 

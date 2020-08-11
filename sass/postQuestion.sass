@@ -1,3 +1,5 @@
+@use "./defaultConfig" as *
+
 #container 
   width: 100% 
   position: absolute 
@@ -7,7 +9,7 @@
 
 .pageHeading 
   font-size: xx-large 
-  color: rgba(41,41,41,0.8) 
+  color: $black-medium 
   margin: 1% 
 
 #title-error, #body-error, #tag-error  
@@ -40,7 +42,7 @@
 label  
   font-size: large 
   width: 80% 
-  color: rgba(41,41,41,0.7) 
+  color: $black-medium 
 
 input[name="title"], .tags-list, .tag-suggestions  
   font-size: large 
@@ -102,8 +104,8 @@ a, #formFooter > button
   width: 20% 
   height: 5vh 
   font-size: larger 
-  background-color: #00a8cc 
-  color: #ffffff 
+  background-color: $blue
+  color: $white 
   border: none 
   outline: none 
   transition: border .3s ease-in 

@@ -1,6 +1,8 @@
+@use "./defaultConfig" as *
+  
 .add-comment 
   margin: 1vh 2vw 
-  color: #f48024 
+  color: $orange 
 .add-comment span:first-child:hover 
   text-decoration: underline 
   cursor: pointer 
@@ -24,4 +26,4 @@
   font-weight: 100 
   outline: none 
   border: none 
-  border-bottom: solid 1px rgba(41,41,41,0.5) 
+  border-bottom: solid 1px $black-light
