@@ -268,6 +268,7 @@ describe('-- POST METHODS --', function () {
     fakeDataStoreMethods.stubUpdateAcceptAnswer();
     fakeDataStoreMethods.stubUpdateVote();
     fakeDataStoreMethods.stubDeleteComment();
+    fakeDataStoreMethods.stubDeleteAnswer();
   });
 
   beforeEach(() => {
@@ -494,6 +495,27 @@ describe('-- POST METHODS --', function () {
       const body = { commentId: 2};
       request(app)
         .post('/deleteComment')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect(statusCodes.badRequest, done);
+    });
+  });
+
+  context('deleteAnswer', () => {
+    it('should delete a answer when id and ownerId valid', (done) => {
+      const body = { answerId: 1, questionId: 1};
+      request(app)
+        .post('/deleteAnswer')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(body))
+        .expect('Location', '/question/1')
+        .expect(statusCodes.redirect, done);
+    });
+
+    it('should delete a answer when id and ownerId invalid', (done) => {
+      const body = { answerId: 2, questionId: 1};
+      request(app)
+        .post('/deleteAnswer')
         .set('content-type', 'application/json')
         .send(JSON.stringify(body))
         .expect(statusCodes.badRequest, done);

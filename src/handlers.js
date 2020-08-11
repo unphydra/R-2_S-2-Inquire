@@ -310,6 +310,18 @@ const deleteComment = async function(req, res) {
   }
 };
 
+const deleteAnswer = async function(req, res) {
+  const {answerId, questionId} = req.body;
+  try {
+    await knexDataStore.deleteAnswer(
+      {id: answerId, ownerId: req.session.id}
+    );
+    return res.redirect(`/question/${questionId}`);
+  } catch (error) {
+    return res.status('400').send('bad request');
+  }
+};
+
 module.exports = {
   isLoggedIn,
   checkOptions,
@@ -336,5 +348,6 @@ module.exports = {
   updateComment,
   acceptAnswer,
   updateVote,
-  deleteComment
+  deleteComment,
+  deleteAnswer
 };

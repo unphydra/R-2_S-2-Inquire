@@ -300,5 +300,15 @@ module.exports = {
       .withArgs({id: 2, ownerId: 123})
       .throws(new Error('error'));
     sinon.replace(knexDataStore, 'deleteComment', fakeDeleteComment);
+  },
+  stubDeleteAnswer: () => {
+    const fakeDeleteAnswer = sinon.stub();
+    fakeDeleteAnswer
+      .withArgs({id: 1, ownerId: 123})
+      .returns(1);
+    fakeDeleteAnswer
+      .withArgs({id: 2, ownerId: 123})
+      .throws(new Error('error'));
+    sinon.replace(knexDataStore, 'deleteAnswer', fakeDeleteAnswer);
   }
 };

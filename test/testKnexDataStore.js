@@ -688,4 +688,20 @@ describe('knexDataStore', () => {
       ).catch(err => assert.match(err, /Error/));
     });
   });
+
+  context('deleteAnswer', () => {
+    it('should delete answer of given id and ownerId', async () => {
+      const actual = await knexDataStore.deleteAnswer(
+        {id: 2, ownerId: 58026024}
+      );
+      const expected = 1;
+      assert.deepStrictEqual(actual, expected);
+    });
+
+    it('should not delete answer for mismatch id and ownerId', async () => {
+      await knexDataStore.deleteAnswer(
+        {id: 2, ownerId: 58026028}
+      ).catch(err => assert.match(err, /Error/));
+    });
+  });
 });

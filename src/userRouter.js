@@ -18,7 +18,8 @@ const {
   updateComment,
   acceptAnswer,
   updateVote,
-  deleteComment
+  deleteComment,
+  deleteAnswer
 } = require('./handlers');
 
 authRoute.get('/yourQuestions', serveYourQuestionsPage, serveQuestions);
@@ -95,6 +96,13 @@ authRoute.post(
   [
     checkOptions(['commentId', Number]),
     deleteComment
+  ]
+);
+authRoute.post(
+  '/deleteAnswer',
+  [
+    checkOptions(['answerId', Number], ['questionId', Number]),
+    deleteAnswer
   ]
 );
 

@@ -73,7 +73,8 @@ const makeAnswerEditable = (editBtn, answerId) => {
   const answerBox = document.querySelector(`#a${answerId}`);
   const editorBox = answerBox.firstChild;
   const answer = editorBox.nextElementSibling;
-  toggleHide([editBtn, editorBox, answer]);
+  const deleteBtn = editBtn.nextSibling;
+  toggleHide([editBtn, deleteBtn, editorBox, answer]);
   const answerQuill = renderEditor(`#a${answerId}e`);
   answerQuill.root.innerHTML = answer.innerHTML;
 };
@@ -82,8 +83,10 @@ const makeAnswerUneditable = (ansDivId) => {
   const answerBox = document.querySelector(`#${ansDivId}`);
   const editorBox = answerBox.firstChild;
   const answer = editorBox.nextElementSibling;
-  const editBtn = answerBox.nextSibling.querySelector('.edit-btn');
-  toggleHide([editBtn, editorBox, answer]);
+  const buttons = Array.from(
+    answerBox.nextSibling.querySelectorAll('.edit-btn')
+  );
+  toggleHide([...buttons, editorBox, answer]);
   editorBox.removeChild(editorBox.firstChild);
 };
 
@@ -193,6 +196,15 @@ const deleteComment = function(id) {
       comment.parentElement.removeChild(comment);
     }
   });
+};
+
+const deleteAnswer = function(qId, aId) {
+  const body = {questionId: +qId, answerId: +aId};
+  const options = getFetchOptions('POST', body);
+  fetch('/deleteAnswer', options)
+    .then(res => {
+      window.location.href = res.url;
+    });
 };
 
 const renderAllDates = () => {

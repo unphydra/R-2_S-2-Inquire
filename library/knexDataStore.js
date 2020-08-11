@@ -428,6 +428,26 @@ const deleteComment = function(entries) {
     .then(row => checkIfError(row, 'comment not found'));
 };
 
+const deleteAnswer = function(entries) {
+  const criteria = {responseId: entries.id, type: 0};
+  return knex.transaction((trx) => 
+    trx('answers')
+      .del()
+      .where(entries)
+      .then(row => checkIfError(row, 'answer not found'))
+      .then(() =>
+        trx('comments')
+          .del()
+          .where(criteria)
+      )
+      .then(() =>
+        trx('voteLog')
+          .del()
+          .where(criteria)
+      )
+  );
+};
+
 module.exports = {
   getAllQuestions, 
   getUser, 
@@ -446,5 +466,6 @@ module.exports = {
   updateComment,
   updateAcceptAnswer,
   updateVote,
-  deleteComment
+  deleteComment,
+  deleteAnswer
 };

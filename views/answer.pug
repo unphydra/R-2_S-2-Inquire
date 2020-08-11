@@ -21,6 +21,7 @@
         .edit-btns.flex-row
           if(userInfo && answer.ownerId == userInfo.id)
             .edit-btn(onclick=`makeAnswerEditable(this,'${answer.id}')`) edit
+            .edit-btn(onclick=`deleteAnswer('${qd.id}','${answer.id}')`) delete
         .question-title-b.flex-row.answer-author
           .avatar-div
             img.author-avatar(src=`${answer.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${answer.ownerId}'`)
