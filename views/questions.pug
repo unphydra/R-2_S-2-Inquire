@@ -1,19 +1,19 @@
 mixin getHeader(header)
   script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript")
   .container
-    .container-h
+    .container-h.flex-row
       .con-header-title=header
       if userInfo
         button.askBtn(onClick="window.location.href='/askQuestion'") Ask Question
-    .container-b
+    .container-b.flex-column
       if(questions.length > 0)
         each question in questions
           -const {id,ownerId,title,body,receivedAt,username,ansCount,isAnsAccepted,tags} = question
-          .question
+          .question.flex-row
             -const isAnyAnsAccepted = isAnsAccepted.some(a=>a.isAnsAccepted);
             -let className = ansCount ? "countName-a":"countName"
             -className = isAnyAnsAccepted ? "countName-ac" : className
-            div(class=className)
+            .flex-column(class=className)
               .count=ansCount || 0
                 .ansCount answers
             .question-details

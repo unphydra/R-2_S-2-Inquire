@@ -1,6 +1,6 @@
 mixin getVoteBox(resId, voteCount, voteDetails, type)
   .up-arrow(onclick=`updateVote('/upVote','${type}','${resId}',this)` class=voteDetails.voteType==1?'highlightUpArrow':'')
-  .countName.votes
+  .countName.votes.flex-column
     .count
       span=voteCount||0
       .ansCount votes

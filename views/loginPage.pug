@@ -5,11 +5,12 @@ html(lang='en')
     title Inquire - Login
     link(rel="stylesheet", href="/css/login.css")
   body
-    #container
-      .quote Inquire helps you to learn and share your 
-      .quote programming knowledge as well as clear your doubts.
-      .box
-        #formFooter
-          .legend Inquire
-          button(onclick="(window.location.href='/login')") Login With Github
-          button(onclick="(window.location.href='/')") Continue Without Login
+    #container.flex-column
+      .quotation
+        .quote Inquire helps you to learn and share your 
+        .quote programming knowledge as well as clear your doubts.
+      .box.flex-column
+        .legend Inquire
+        button(onclick="(window.location.href='/login')") Login With Github
+        button(onclick="(window.location.href='/')") Continue Without Login
+        

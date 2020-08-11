@@ -1,4 +1,4 @@
-div(class="menubar")
+.menubar.flex-column
   -let list = {"Home":'/home', "Your Questions":'/yourQuestions', "Your Answers":'/yourAnswers', "Your Tags":'', "Your Profile": `/viewProfile?id=${userInfo && userInfo.id}`}
   each url, menuItem  in list
     -const className = (!userInfo && menuItem !== 'Home') ? 'hide' : ''

@@ -11,7 +11,7 @@
           .vote-box
             include votes
             +getVoteBox(answer.id, answer.votes, answer.voteDetails, 'answers')
-      .flex-row      
+      .footer     
         .edit-btns
           if(userInfo && answer.ownerId == userInfo.id)
             .edit-btn(onclick=`makeAnswerEditable(this,'a${answer.id}_0','${answer.id}')`) edit
