@@ -9,7 +9,8 @@ mixin getComments(comments)
             .edit-btn(onclick=`makeCommentEditable(this,'c${id}')`) edit
             .edit-btn(onclick=`deleteComment('${id}')`) delete
             .cancel-btn.hide(onclick=`makeCommentUnEditable(this,'c${id}')`) cancel
-            .save-btn.hide(onclick=`updateComment('${id}')`) save
+            .save-btn.hide(onclick=`updateComment(this,'${id}')`) save
+        .popUpExt.hide.popUp *please enter at least ten character
         .c-author
           span(onclick=`window.location.href='/viewProfile?id=${ownerId}'`)=username
           span.a-comment-time(time=`${receivedAt}`) ,&nbsp;

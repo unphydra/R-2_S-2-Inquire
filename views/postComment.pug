@@ -5,6 +5,6 @@ mixin comments_editor(resId,table)
     span.popUp.hide &nbsp;&nbsp;*please login before add a comment
   .hide.new_comment_box(id=mainId)
     input(type="text",placeholder="Enter comment...")
-    .formFooter
+    .formFooter.flex-row
       button(onclick=`postComment('${mainId}','${qd.id}','${resId}','${table}')`) Post comment
       .popUp.hide(id=id=mainId+'p')

@@ -6,9 +6,10 @@
       .question-body(id=ansDivId)
         .editor-box.hide
           .editor-style(id=`${ansDivId}e`)
-          .formFooter.edit-answer-btns
+          .formFooter.flex-row
             button.cancel-btn(onclick=`makeAnswerUneditable('${ansDivId}')`) Cancel
-            button.save-btn(onclick=`updateAnswer('${qd.id}','${answer.id}')`) Save
+            button.save-btn(onclick=`updateAnswer(this,'${qd.id}','${answer.id}')`) Save
+            .popUp.hide *please write in brief
         .question-body-c!=answer.answer
         .sidebar
           .tickmark

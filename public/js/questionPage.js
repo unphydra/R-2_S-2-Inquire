@@ -1,3 +1,6 @@
+const aMinL = 30;
+const cMinL = 9, cMaxL = 180;
+
 const getFetchOptions = (method, body) => {
   return {
     method,
@@ -17,58 +20,46 @@ const togglePopUp = (element, className, message) => {
   setTimeout(() => element.classList.add(className), seconds);
 };
 
-const postAnswer = function (user, qId, button) {
-  const BL = 30;
-  const popUp = button.parentElement.lastElementChild;
-  if (!user) {
-    const message = '* please login before continue';
-    return togglePopUp(popUp, 'hide', message);
-  }
-  if (quill.getLength() < BL) {
-    const message = '* please explain in brief';
-    return togglePopUp(popUp, 'hide', message);
-  }
-  const body = {answer: quill.root.innerHTML, questionId: +qId};
-  fetch('/postAnswer', getFetchOptions('POST', body)).then(res => {
-    window.location.href = res.url;
-  });
-};
-
 const toggleHide = (elements) => {
   elements.forEach((btn) => {
     btn.classList.toggle('hide');
   });
 };
 
-const makeCommentEditable = (editBtn, commentId) => {
-  const comment = document.querySelector(`#${commentId}`).firstChild;
-  comment.setAttribute('contenteditable', true);
-  toggleHide(Array.from(editBtn.parentElement.children));
-  moveCursor(comment);
-  localStorage.setItem('oldComment', comment.innerText);
+const toggleCommentBox = (addComment) => 
+  addComment.nextElementSibling.classList.toggle('hide');
+
+const toggleBox = (addComment, userInfo) => {
+  if(userInfo) {
+    return toggleCommentBox(addComment);
+  }
+  togglePopUp(addComment.lastChild, 'hide');
 };
 
-const makeCommentUnEditable = (cancelBtn, commentId) => {
-  const comment = document.querySelector(`#${commentId}`).firstChild;
-  comment.setAttribute('contenteditable', false);
-  toggleHide(Array.from(cancelBtn.parentElement.children));
-  comment.innerText = localStorage.getItem('oldComment');
-  localStorage.removeItem('oldComment');
+const moveCursor = (element) => {
+  const range = document.createRange();
+  const sel = window.getSelection();
+  range.setStart(element.childNodes['0'], element.innerText.length);
+  range.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(range);
+  element.focus();
 };
 
-const updateComment = (commentId) => {
-  const comment = document.querySelector(`#c${commentId}`);
-  const body = {comment: comment.firstChild.innerText, commentId: +commentId};
-  return fetchReqText('/updateComment', getFetchOptions('POST', body))
-    .then(data => {
-      if (data) {
-        const div = document.createElement('div');
-        div.innerHTML = data;
-        comment.innerHTML = div.firstChild.innerHTML;
-        localStorage.removeItem('oldComment');
-        renderAllDates();
-      }
-    });
+const postAnswer = function (user, qId, button) {
+  const popUp = button.parentElement.lastElementChild;
+  if (!user) {
+    const message = '* please login before continue';
+    return togglePopUp(popUp, 'hide', message);
+  }
+  if (quill.getLength() < aMinL) {
+    const message = '* please write in brief';
+    return togglePopUp(popUp, 'hide', message);
+  }
+  const body = {answer: quill.root.innerHTML, questionId: +qId};
+  fetch('/postAnswer', getFetchOptions('POST', body)).then(res => {
+    window.location.href = res.url;
+  });
 };
 
 const makeAnswerEditable = (editBtn, answerId) => {
@@ -92,8 +83,12 @@ const makeAnswerUneditable = (ansDivId) => {
   editorBox.removeChild(editorBox.firstChild);
 };
 
-const updateAnswer = (questionId, answerId) => {
+const updateAnswer = (btn, questionId, answerId) => {
   const editorBox = document.querySelector(`#a${answerId}e`).firstChild;
+  const popup = btn.nextSibling;
+  if (editorBox.innerText.length < aMinL) {
+    return togglePopUp(popup, 'hide');
+  }
   const body = {
     answer: editorBox.innerHTML, answerId: +answerId, questionId: +questionId
   };
@@ -101,6 +96,63 @@ const updateAnswer = (questionId, answerId) => {
   fetch('/updateAnswer', options).then((res) => {
     window.location.href = res.url;
   });
+};
+
+const postComment = function(boxId, qId, resId, table) {
+  const commentBox = document.querySelector(`#${boxId}`);
+  const inputBox = commentBox.firstChild;
+  const comment = inputBox.value;
+  inputBox.value = '';
+  const popup = document.querySelector(`#${boxId}p`);
+  if(comment.length < cMinL || comment.length > cMaxL) {
+    return togglePopUp(popup, 'hide', '*please enter at least ten character');
+  }
+  const body = {questionId: +qId, responseId: +resId, table, comment};
+  return fetchReqText('/postComment', getFetchOptions('POST', body))
+    .then(data => {
+      if (data) {
+        const comments = document.querySelector(`#${table}_${resId}`);
+        comments.innerHTML += data;
+        toggleCommentBox(commentBox.previousSibling);
+        renderAllDates();
+      }
+    });
+};
+
+const makeCommentEditable = (editBtn, commentId) => {
+  const comment = document.querySelector(`#${commentId}`).firstChild;
+  comment.setAttribute('contenteditable', true);
+  toggleHide(Array.from(editBtn.parentElement.children));
+  moveCursor(comment);
+  localStorage.setItem('oldComment', comment.innerText);
+};
+
+const makeCommentUnEditable = (cancelBtn, commentId) => {
+  const comment = document.querySelector(`#${commentId}`).firstChild;
+  comment.setAttribute('contenteditable', false);
+  toggleHide(Array.from(cancelBtn.parentElement.children));
+  comment.innerText = localStorage.getItem('oldComment');
+  localStorage.removeItem('oldComment');
+};
+
+const updateComment = (btn, commentId) => {
+  const commentBox = document.querySelector(`#c${commentId}`);
+  const comment = commentBox.firstChild.innerText;
+  const popup = btn.parentElement.nextSibling;
+  if(comment.length < cMinL || comment.length > cMaxL) {
+    return togglePopUp(popup, 'hide');
+  }
+  const body = {comment, commentId: +commentId};
+  return fetchReqText('/updateComment', getFetchOptions('POST', body))
+    .then(data => {
+      if (data) {
+        const div = document.createElement('div');
+        div.innerHTML = data;
+        commentBox.innerHTML = div.firstChild.innerHTML;
+        localStorage.removeItem('oldComment');
+        renderAllDates();
+      }
+    });
 };
 
 const makeQuestionEditable = (questionId) => {
@@ -145,48 +197,6 @@ const updateAcceptAnswer = (qOwnerId, answerId, tickMark) => {
     .then(data => {
       if(data && data.isAccepted === ONE) {
         tickMark.firstElementChild.setAttribute('fill', '#42B883');
-      }
-    });
-};
-
-const toggleCommentBox = (addComment) => 
-  addComment.nextElementSibling.classList.toggle('hide');
-
-const toggleBox = (addComment, userInfo) => {
-  if(userInfo) {
-    return toggleCommentBox(addComment);
-  }
-  togglePopUp(addComment.lastChild, 'hide');
-};
-
-const moveCursor = (element) => {
-  const range = document.createRange();
-  const sel = window.getSelection();
-  range.setStart(element.childNodes['0'], element.innerText.length);
-  range.collapse(true);
-  sel.removeAllRanges();
-  sel.addRange(range);
-  element.focus();
-};
-
-const postComment = function(boxId, qId, resId, table) {
-  const commentBox = document.querySelector(`#${boxId}`);
-  const inputBox = commentBox.firstChild;
-  const comment = inputBox.value;
-  inputBox.value = '';
-  const popup = document.querySelector(`#${boxId}p`);
-  const lowerLimit = 9, upperLimit = 180;
-  if(comment.length < lowerLimit || comment.length > upperLimit) {
-    return togglePopUp(popup, 'hide', '*please enter at least ten character');
-  }
-  const body = {questionId: +qId, responseId: +resId, table, comment};
-  return fetchReqText('/postComment', getFetchOptions('POST', body))
-    .then(data => {
-      if (data) {
-        const comments = document.querySelector(`#${table}_${resId}`);
-        comments.innerHTML += data;
-        toggleCommentBox(commentBox.previousSibling);
-        renderAllDates();
       }
     });
 };
