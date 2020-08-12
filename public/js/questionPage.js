@@ -46,6 +46,10 @@ const moveCursor = (element) => {
   element.focus();
 };
 
+const formatAnswer = function(text) {
+  return text.replace(/<br>/g, '\n');
+};  
+
 const postAnswer = function (user, qId, button) {
   const popUp = button.parentElement.lastElementChild;
   if (!user) {
@@ -69,7 +73,7 @@ const makeAnswerEditable = (editBtn, answerId) => {
   const deleteBtn = editBtn.nextSibling;
   toggleHide([editBtn, deleteBtn, editorBox, answer]);
   const answerQuill = renderEditor(`#a${answerId}e`);
-  answerQuill.root.innerHTML = answer.innerHTML;
+  answerQuill.root.innerHTML = formatAnswer(answer.innerHTML);
 };
 
 const makeAnswerUneditable = (ansDivId) => {
