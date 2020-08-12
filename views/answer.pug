@@ -6,7 +6,7 @@
       .question-body(id=ansDivId)
         .editor-box.hide
           .editor-style(id=`${ansDivId}e`)
-          .formFooter.flex-row
+          .formFooter
             button.cancel-btn(onclick=`makeAnswerUneditable('${ansDivId}')`) Cancel
             button.save-btn(onclick=`updateAnswer(this,'${qd.id}','${answer.id}')`) Save
             .popUp.hide *please write in brief
