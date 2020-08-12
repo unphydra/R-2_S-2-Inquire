@@ -14,7 +14,7 @@ html
   body()
     include titleBar
     mixin getPostQuestion(listener, location, title, tags, body)
-      #container.flex-column
+      #container
         p.pageHeading Post Your Question
         .editor-box
           .blind#title-error Please enter the title atleast of 20 characters
@@ -25,7 +25,7 @@ html
           #editor!=body
           .blind#tag-error Please enter the tags atleast of 2 tags
           label Tags :
-          .tags-list.flex-row
+          .tags-list
             span.tags
               if(tags)
                 each tag in tags
@@ -36,6 +36,6 @@ html
           .tag-suggestions
             each tag in allTags
               span.tag(onclick=`selectTag('${tag.title}')`)=tag.title
-          #formFooter.flex-row
+          #formFooter
             button(onclick=`postQuestion('${listener}')`) Submit
-            a.flex-column(href=location) Cancel
+            a(href=location) Cancel

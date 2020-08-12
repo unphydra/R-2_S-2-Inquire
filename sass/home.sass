@@ -12,7 +12,8 @@ body
   overflow-y: scroll 
 
 
-.container-h  
+.container-h
+  @include flex-row  
   justify-content: space-between 
   padding: 3vh 0vw 3vh 2vw 
   margin-right: 4vw 
@@ -38,18 +39,21 @@ body
   border: 1px solid $blue 
   cursor: pointer 
 
-.container-b  
+.container-b
+  @include flex-column
   height: auto 
   margin-right: 4vw 
   font-weight: 600 
   color: $black-dark 
 
-.question  
+.question
+  @include flex-row 
   padding: 3vh 0vw 
   border-bottom: solid #C5C5C5 1px 
   text-align: justify 
 
-.countName,.countName-a,.countName-ac  
+.countName,.countName-a,.countName-ac
+  @include flex-column
   width: 4vw 
   height: 8vh 
   margin-left: 1vw 

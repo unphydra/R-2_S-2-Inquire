@@ -7,7 +7,8 @@
   margin: 1vh 6vw 1vh 1vw 
   justify-content: center 
 
-.votes 
+.votes
+  @include flex-column
   margin-left: 0 
 
 .tickmark > svg
@@ -35,7 +36,8 @@
 .question-title-h 
   word-break: break-word 
 
-.question-title-b 
+.question-title-b
+  @include flex-row
   margin-top: 3vh 
   justify-content: flex-start 
 
@@ -115,7 +117,8 @@
   margin-left: 2vw 
   padding: 0 
 
-.footer 
+.footer
+  @include flex-row
   width: 82% 
   justify-content: space-between 
   margin-left: 2vw 
@@ -130,7 +133,8 @@
   margin-top: 2vh 
   margin-left: 3vw 
 
-.edit-btns 
+.edit-btns
+  @include flex-row
   width: 30% 
   text-align: center 
   margin-bottom: 1.5% 

@@ -1,6 +1,7 @@
 @use "./defaultConfig" as *
 
-#container 
+#container
+  @include flex-column
   width: 100% 
   position: absolute 
   top: 8vh 
@@ -53,7 +54,8 @@ input::placeholder
   opacity: 0.7 
   font-size: large 
 
-.tags-list   
+.tags-list
+  @include flex-row 
   margin-bottom: 0 
   width: 100% 
   padding: 0 
@@ -88,10 +90,12 @@ input::placeholder
   margin: 1vh 
 
 #formFooter  
+  @include flex-row
   width: 80% 
   margin-top: 2% 
 
-a  
+a
+  @include flex-column 
   text-decoration: none 
   text-align: center 
   justify-content: center 

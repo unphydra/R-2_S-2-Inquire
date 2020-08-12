@@ -25,10 +25,10 @@ html(lang='en')
       else
         -const {ownerId,title,body,receivedAt,ansCount,vote,tags,comments,voteDetails} = questionDetails
         -const qd = questionDetails
-        .container-h.flex-row
+        .container-h
           .question-title
             .question-title-h=title
-            .question-title-b.flex-row
+            .question-title-b
               .avatar-div
                 img.author-avatar(src=`${qd.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${ownerId}'`)
               div

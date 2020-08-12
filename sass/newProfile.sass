@@ -13,11 +13,8 @@ body
   background: url("../images/bg.jpg") no-repeat 
   background-size: 100%  
 
-.flex-column 
-  display: flex 
-  flex-direction: column  
-
 form 
+  @include flex-column
   align-items: center 
   width: 28% 
   background-color: white 
@@ -68,7 +65,8 @@ label
   padding: 10% 0% 
   justify-content: space-evenly  
 
-#cancelButton 
+#cancelButton
+  @include flex-column
   text-align: center 
   justify-content: center 
   text-decoration: none  

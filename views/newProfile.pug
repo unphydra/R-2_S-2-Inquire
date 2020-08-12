@@ -6,7 +6,7 @@ html(lang='en')
     link(rel="stylesheet", href="/styles/newProfile.css")
   body(style="margin:0")
     #container
-      form.flex-column(action="/newProfile", method="post")
+      form(action="/newProfile", method="post")
         legend Welcome to Inquire!
         legend Fill the Form to continue
         label Name
@@ -21,4 +21,4 @@ html(lang='en')
         textarea(name="bio" id="bio")
         #formFooter
           button Submit
-          a.flex-column#cancelButton(href="/cancel") Cancel
+          a#cancelButton(href="/cancel") Cancel

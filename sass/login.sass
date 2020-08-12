@@ -3,11 +3,8 @@
 body
   @include body
 
-.flex-column
-  display: flex
-  flex-direction: column
-
 #container
+  @include flex-column
   position: absolute
   top: 0vh
   width: 100vw
@@ -27,6 +24,7 @@ body
   color: white
 
 .box
+  @include flex-column
   align-self: center
   align-items: center
   width: 20%

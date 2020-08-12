@@ -1,14 +1,7 @@
 @use "./defaultConfig" as *
-  
-.flex-row 
-  display: flex 
-  flex-direction: row 
 
-.flex-column 
-  display: flex 
-  flex-direction: column 
-
-.titleBar 
+.titleBar
+  @include flex-row
   justify-content: space-between 
   background: $blue
   position: fixed 
@@ -26,7 +19,8 @@
 .logo:hover 
   opacity: 0.9 
 
-.userInfo 
+.userInfo
+  @include flex-row
   padding: 1vh 2vw 1vh 1vw 
   justify-content: flex-end 
   align-items: center 
@@ -64,7 +58,8 @@
   border-radius: 50% 
   height: 100% 
 
-.popUp-text 
+.popUp-text
+  @include flex-column 
   visibility: hidden 
   width: 10vw 
   background-color: #555555e6 

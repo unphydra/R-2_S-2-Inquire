@@ -17,12 +17,12 @@
           .vote-box
             include votes
             +getVoteBox(answer.id, answer.votes, answer.voteDetails, 'answers')
-      .footer.flex-row    
-        .edit-btns.flex-row
+      .footer  
+        .edit-btns
           if(userInfo && answer.ownerId == userInfo.id)
             .edit-btn(onclick=`makeAnswerEditable(this,'${answer.id}')`) edit
             .edit-btn(onclick=`deleteAnswer('${qd.id}','${answer.id}')`) delete
-        .question-title-b.flex-row.answer-author
+        .question-title-b.answer-author
           .avatar-div
             img.author-avatar(src=`${answer.avatar}`, alt="alt" onClick=`window.location.href='/viewProfile?id=${answer.ownerId}'`)
           div
