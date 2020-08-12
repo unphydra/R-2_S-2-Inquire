@@ -12,44 +12,37 @@
 .post-answer > .editor-box 
   margin:1% 0vw 0% 2vw 
 
-.editor-box 
-  align-self: center 
-  width: 82.25% 
-  text-align: left 
-
 .editor-style 
   min-height: 25vh 
   margin-bottom: 2% 
 
+.editor-box 
+  @include editor-box
+  width: 82.25% 
+
 .ql-editor 
-  font-size: large !important 
-
+  @include ql-editor
+  
 .ql-syntax 
-  background-color: whitesmoke !important 
-  color: black !important  
-  overflow: visible 
-
+  @include ql-syntax
+  
 .ql-tooltip 
-  left:0 !important
-
+  @include ql-tooltip
+  
 .formFooter 
   width: 80% 
   margin-bottom: 1.5% 
 
 .formFooter > button 
+  @include formFooter-btn
   margin-right:5% 
   width: 30% 
   height: 5vh 
-  font-size: larger 
   background-color: $blue 
-  color: $white 
-  border: none 
-  outline: none 
-  transition: border .3s ease-in 
-.formFooter > a:hover, .formFooter > button:hover 
-  box-shadow: 0px 0px 3px 0px rgb(66, 66, 66) 
-  cursor: pointer 
 
+.formFooter > a:hover, .formFooter > button:hover 
+  @include formFooter-hover
+  
 .popUp 
   color: red 
   align-self: center 

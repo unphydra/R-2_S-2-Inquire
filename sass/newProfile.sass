@@ -1,10 +1,7 @@
 @use "./defaultConfig" as *
   
 body 
-  margin: auto 0px 
-  font-family: Helvetica, sans-serif 
-  word-break: break-word 
-  overflow-x: hidden  
+  @include body
 
 #container 
   position: absolute 
@@ -77,13 +74,11 @@ label
   text-decoration: none  
 
 #cancelButton, #formFooter > button 
+  @include formFooter-btn
   width: 30% 
   height: 5vh 
-  font-size: larger 
   background-color: $blue
-  color: $white 
-  border: none 
-  cursor: pointer  
 
 #formFooter > a:hover, #formFooter > button:hover 
-  box-shadow: 0px 0px 3px 0px rgb(66, 66, 66)  
+  @include formFooter-hover
+  

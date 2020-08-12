@@ -16,24 +16,21 @@
   color: red 
   text-align: center 
 
-.ql-toolbar  
-  margin-top: 1% 
+.editor-box 
+  @include editor-box
+  width: 60% 
 
 .ql-editor  
-  font-size: large !important 
+  @include ql-editor 
 
 .ql-syntax  
-  background-color: whitesmoke !important 
-  color: black !important  
-  overflow: visible 
-
+  @include ql-syntax
+  
 .ql-tooltip  
-  left:0 !important
-
-.editor-box  
-  align-self: center 
-  width: 60% 
-  text-align: left 
+  @include ql-tooltip
+  
+.ql-toolbar  
+  margin-top: 1% 
 
 #editor  
   height: 60% 
@@ -100,19 +97,14 @@ a
   justify-content: center 
 
 a, #formFooter > button  
+  @include formFooter-btn
   margin-right:5% 
   width: 20% 
   height: 5vh 
-  font-size: larger 
   background-color: $blue
-  color: $white 
-  border: none 
-  outline: none 
-  transition: border .3s ease-in 
 
 #formFooter > a:hover, #formFooter > button:hover  
-  box-shadow: 0px 0px 3px 0px rgb(66, 66, 66) 
-  cursor: pointer 
+  @include formFooter-hover
 
 .blind  
   opacity: 0 

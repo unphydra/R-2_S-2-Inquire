@@ -7,3 +7,36 @@ $black-medium: rgba(41, 41, 41, 0.7)
 $black-light: rgba(41, 41, 41, 0.5)
 $white: #ffffff
 $light-white: #f4f4f4
+
+@mixin body
+  margin: auto 0px
+  font-family: Helvetica, sans-serif
+  word-break: break-word
+
+@mixin editor-box  
+  align-self: center 
+  text-align: left 
+
+@mixin ql-editor  
+  font-size: large !important 
+
+@mixin ql-syntax  
+  background-color: whitesmoke !important 
+  color: black !important  
+  overflow: visible 
+
+@mixin ql-tooltip  
+  left:0 !important 
+  
+@mixin formFooter-btn
+  font-size: larger 
+  color: $white 
+  border: none 
+  outline: none 
+  transition: border .3s ease-in 
+
+@mixin formFooter-hover
+  box-shadow: 0px 0px 3px 0px rgb(66, 66, 66) 
+  cursor: pointer 
+  
+  
